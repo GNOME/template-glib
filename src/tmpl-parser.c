@@ -260,7 +260,7 @@ tmpl_parser_set_locator (TmplParser          *self,
                          TmplTemplateLocator *locator)
 {
   g_return_if_fail (TMPL_IS_PARSER (self));
-  g_return_if_fail (TMPL_IS_TEMPLATE_LOCATOR (locator));
+  g_return_if_fail (!locator || TMPL_IS_TEMPLATE_LOCATOR (locator));
 
   if (g_set_object (&self->locator, locator))
     g_object_notify_by_pspec (G_OBJECT (self), properties [PROP_LOCATOR]);
