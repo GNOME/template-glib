@@ -38,6 +38,8 @@ void        tmpl_scope_set   (TmplScope   *self,
                               const gchar *name,
                               TmplSymbol  *symbol);
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (TmplScope, tmpl_scope_unref)
+
 G_END_DECLS
 
 #endif /* TMPL_SCOPE_H */
