@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:gnome="http://api.gnome.org/doap-extensions#"
+         xmlns="http://usefulinc.com/ns/doap#">
+
+  <name>Template-GLib</name>
+  <shortname>template-glib</shortname>
+  <shortdesc>Template-GLib is a templating library for GLib. It includes a simple template format along with integration into GObject-Introspection for properties and methods. It separates the parsing of templates and the expansion of templates for faster expansion. You can also define scope, custom functions, and more with the embedded expression language.</shortdesc>
+  <homepage rdf:resource="https://wiki.gnome.org/Projects/TemplateGlib" />
+  <download-page rdf:resource="http://download.gnome.org/sources/template-glib/" />
+
+  <programming-language>C</programming-language>
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Christian Hergert</foaf:name>
+      <foaf:mbox rdf:resource="mailto:chergert@gnome.org" />
+      <gnome:userid>chergert</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+
+  <author>
+    <foaf:Person>
+      <foaf:name>Christian Hergert</foaf:name>
+      <foaf:mbox rdf:resource="mailto:chergert@gnome.org" />
+      <gnome:userid>chergert</gnome:userid>
+    </foaf:Person>
+  </author>
+
+</Project>
