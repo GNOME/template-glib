@@ -1,21 +1,8 @@
 SUBDIRS = data src tests po doc examples
 
-INTLTOOL_FILES = \
-	intltool-extract.in \
-	intltool-merge.in \
-	intltool-update.in \
-	$(NULL)
-
 EXTRA_DIST = \
-	$(INTLTOOL_FILES) \
 	AUTHORS \
 	$(NULL)
-
-DISTCLEANFILES = \
-	intltool-extract \
-	intltool-merge \
-	intltool-update \
-	po/.intltool-merge-cache
 
 DISTCHECK_CONFIGURE_FLAGS = \
 	--enable-introspection \
@@ -33,6 +20,7 @@ GITIGNOREFILES = \
 	gtk-doc.m4 \
 	gtk-doc.make \
 	INSTALL \
+	ABOUT-NLS \
 	$(NULL)
 
 AUTHORS:

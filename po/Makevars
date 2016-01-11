@@ -1,0 +1,6 @@
+top_builddir = ..
+subdir = po
+
+DOMAIN = $(PACKAGE)
+MSGMERGE_OPTIONS = --quiet
+DIST_DEPENDS_ON_UPDATE_PO = no
