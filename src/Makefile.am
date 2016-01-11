@@ -15,29 +15,38 @@ template_glib_eval_CFLAGS = $(TMPL_CFLAGS)
 template_glib_eval_LDADD = libtemplate-glib-1.0.la
 template_glib_eval_SOURCES = main.c
 
+pkgincludedir = $(includedir)/template-glib-1.0
+pkginclude_HEADERS = \
+	tmpl-error.h \
+	tmpl-expr-types.h \
+	tmpl-expr.h \
+	tmpl-glib.h \
+	tmpl-scope.h \
+	tmpl-symbol.h \
+	tmpl-template-locator.h \
+	tmpl-template.h \
+	$(NULL)
+
 libtemplate_glib_1_0_la_CFLAGS = $(TMPL_CFLAGS)
 libtemplate_glib_1_0_la_LIBADD = $(TMPL_LIBS)
 libtemplate_glib_1_0_la_SOURCES = \
+	$(pkginclude_HEADERS) \
 	tmpl-branch-node.c \
 	tmpl-branch-node.h \
 	tmpl-condition-node.c \
 	tmpl-condition-node.h \
 	tmpl-debug.h \
 	tmpl-error.c \
-	tmpl-error.h \
+	tmpl-expr-eval.c \
 	tmpl-expr-node.c \
 	tmpl-expr-node.h \
-	tmpl-expr-types.h \
-	tmpl-expr.c \
-	tmpl-expr.h \
-	tmpl-expr-eval.c \
-	tmpl-expr-parser.y \
 	tmpl-expr-parser-private.h \
+	tmpl-expr-parser.y \
 	tmpl-expr-private.h \
 	tmpl-expr-scanner.l \
-	tmpl-gi.c \
+	tmpl-expr.c \
 	tmpl-gi-private.h \
-	tmpl-glib.h \
+	tmpl-gi.c \
 	tmpl-iter-node.c \
 	tmpl-iter-node.h \
 	tmpl-iterator.c \
@@ -49,21 +58,17 @@ libtemplate_glib_1_0_la_SOURCES = \
 	tmpl-parser.c \
 	tmpl-parser.h \
 	tmpl-scope.c \
-	tmpl-scope.h \
 	tmpl-symbol.c \
-	tmpl-symbol.h \
 	tmpl-template-locator.c \
-	tmpl-template-locator.h \
 	tmpl-template.c \
-	tmpl-template.h \
 	tmpl-text-node.c \
 	tmpl-text-node.h \
 	tmpl-token-input-stream.c \
 	tmpl-token-input-stream.h \
 	tmpl-token.c \
 	tmpl-token.h \
-	tmpl-util.c \
 	tmpl-util-private.h \
+	tmpl-util.c \
 	$(NULL)
 
 GITIGNOREFILES = \

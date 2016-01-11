@@ -25,7 +25,10 @@ G_BEGIN_DECLS
 
 #define TMPL_GLIB_INSIDE
 # include "tmpl-error.h"
-# include "tmpl-iterator.h"
+# include "tmpl-expr.h"
+# include "tmpl-expr-types.h"
+# include "tmpl-scope.h"
+# include "tmpl-symbol.h"
 # include "tmpl-template.h"
 # include "tmpl-template-locator.h"
 #undef TMPL_GLIB_INSIDE
