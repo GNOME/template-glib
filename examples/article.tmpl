@@ -1,0 +1,17 @@
+<!--
+  this assumes you have an article GObject in scope
+  with the properties title, author, sections and data.
+  content is a GListModel of paragraphs.
+-->
+<html>
+ <head>
+  <title>{{article.title}}</title>
+ </head>
+ <body>
+  <h1>{{article.title}}</h1>
+  <div>By {{article.author}} on {{article.date}}</div>
+  {{for section in article.sections}}
+    <div>{{section}}</div>
+  {{end}}
+ </body>
+</html>

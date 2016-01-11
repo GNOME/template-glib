@@ -1,0 +1,4 @@
+src/tmpl-expr-parser.c
+src/tmpl-parser.c
+src/tmpl-template-locator.c
+src/tmpl-template.c
