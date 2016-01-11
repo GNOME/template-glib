@@ -25,14 +25,13 @@
 
 #include <glib-object.h>
 
+#include "tmpl-enums.h"
+
 G_BEGIN_DECLS
 
-#define TMPL_TYPE_EXPR         (tmpl_expr_get_type())
-#define TMPL_TYPE_EXPR_BUILTIN (tmpl_expr_builtin_get_type())
-#define TMPL_TYPE_EXPR_TYPE    (tmpl_expr_type_get_type())
-#define TMPL_TYPE_SCOPE        (tmpl_scope_get_type())
-#define TMPL_TYPE_SYMBOL       (tmpl_symbol_get_type())
-#define TMPL_TYPE_SYMBOL_TYPE  (tmpl_symbol_type_get_type())
+#define TMPL_TYPE_EXPR   (tmpl_expr_get_type())
+#define TMPL_TYPE_SCOPE  (tmpl_scope_get_type())
+#define TMPL_TYPE_SYMBOL (tmpl_symbol_get_type())
 
 typedef union  _TmplExpr   TmplExpr;
 typedef struct _TmplScope  TmplScope;
@@ -85,12 +84,9 @@ typedef enum
   TMPL_EXPR_BUILTIN_SQRT,
 } TmplExprBuiltin;
 
-GType tmpl_expr_builtin_get_type (void);
-GType tmpl_expr_type_get_type    (void);
-GType tmpl_expr_get_type         (void);
-GType tmpl_scope_get_type        (void);
-GType tmpl_symbol_get_type       (void);
-GType tmpl_symbol_type_get_type  (void);
+GType tmpl_expr_get_type   (void);
+GType tmpl_scope_get_type  (void);
+GType tmpl_symbol_get_type (void);
 
 G_END_DECLS
 

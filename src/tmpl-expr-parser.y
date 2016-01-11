@@ -86,11 +86,17 @@ expr: /* nothing */ EOL {
     YYACCEPT;
   }
   | FUNC NAME '(' symlist ')' '=' list EOL {
+    /* todo: add ast node to define the expr on the scope
+     * when evaluated.
+     */
     //tmpl_scope_add_user_func (parser->scope, $2, $4, $7);
     parser->ast = NULL;
     YYACCEPT;
   }
   | FUNC NAME '(' ')' '=' list EOL {
+    /* todo: add ast node to define the expr on the scope
+     * when evaluated.
+     */
     //tmpl_scope_add_user_func (parser->scope, $2, NULL, $6);
     parser->ast = NULL;
     YYACCEPT;

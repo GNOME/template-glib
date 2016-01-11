@@ -185,6 +185,16 @@ tmpl_template_locator_new (void)
   return g_object_new (TMPL_TYPE_TEMPLATE_LOCATOR, NULL);
 }
 
+/**
+ * tmpl_template_locator_locate:
+ * @self: A #TmplTemplateLocator.
+ * @path: a relative path to the file
+ *
+ * This will resolve the relative path using the search paths found within
+ * the template loader.
+ *
+ * Returns: (transfer full): A #GInputStream or %NULL and @error is set.
+ */
 GInputStream *
 tmpl_template_locator_locate (TmplTemplateLocator  *self,
                               const gchar          *path,

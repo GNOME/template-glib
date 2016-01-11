@@ -32,7 +32,7 @@ main (gint   argc,
    * Now create our scope used to expand the template,
    * and assign the "title" variable in the scope.
    */
-  scope = tmpl_scope_new (NULL);
+  scope = tmpl_scope_new ();
 
   symbol = tmpl_scope_get (scope, "title");
   tmpl_symbol_assign_string (symbol, "My Title");

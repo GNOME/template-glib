@@ -45,7 +45,7 @@ main (gint   argc,
   tmpl_template_locator_prepend_search_path (locator, ".");
   tmpl = tmpl_template_new (locator);
   file = g_file_new_for_commandline_arg (argv [1]);
-  scope = tmpl_scope_new (NULL);
+  scope = tmpl_scope_new ();
 
   if (!tmpl_template_parse_file (tmpl, file, NULL, &error))
     {

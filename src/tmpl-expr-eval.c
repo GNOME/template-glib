@@ -700,7 +700,7 @@ tmpl_expr_user_fn_call_eval (TmplExprUserFnCall  *node,
   expr = tmpl_symbol_get_expr (symbol, &args);
   n_args = args != NULL ? args->len : 0;
 
-  local_scope = tmpl_scope_new (scope);
+  local_scope = tmpl_scope_new_with_parent (scope);
 
   params = node->params;
 

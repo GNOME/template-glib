@@ -341,7 +341,7 @@ tmpl_template_expand_visitor (TmplNode *node,
         {
           TmplIterator iter;
           TmplScope *old_scope = state->scope;
-          TmplScope *new_scope = tmpl_scope_new (old_scope);
+          TmplScope *new_scope = tmpl_scope_new_with_parent (old_scope);
           TmplSymbol *symbol;
 
           state->scope = new_scope;
@@ -420,7 +420,7 @@ tmpl_template_expand (TmplTemplate  *self,
 
 /**
  * tmpl_template_get_locator:
- * @template: A #TmplTemplate
+ * @self: A #TmplTemplate
  *
  * Gets the template locator used when resolving template includes.
  *

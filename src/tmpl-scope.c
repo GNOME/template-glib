@@ -53,8 +53,36 @@ tmpl_scope_unref (TmplScope *self)
     }
 }
 
+/**
+ * tmpl_scope_new:
+ *
+ * Creates a new scope to contain variables and custom expressions,
+ *
+ * Returns: (transfer full): A newly created #TmplScope.
+ */
 TmplScope *
-tmpl_scope_new (TmplScope *parent)
+tmpl_scope_new (void)
+{
+  TmplScope *self;
+
+  self = g_slice_new0 (TmplScope);
+  self->ref_count = 1;
+  self->parent = NULL;
+
+  return self;
+}
+
+/**
+ * tmpl_scope_new_with_parent:
+ * @parent: (nullable): An optional parent scope
+ *
+ * Creates a new scope to contain variables and custom expressions,
+ * If @parent is set, the parent scope will be inherited.
+ *
+ * Returns: (transfer full): A newly created #TmplScope.
+ */
+TmplScope *
+tmpl_scope_new_with_parent (TmplScope *parent)
 {
   TmplScope *self;
 
@@ -111,6 +139,13 @@ tmpl_scope_get_full (TmplScope   *self,
   return symbol;
 }
 
+/**
+ * tmpl_scope_get:
+ *
+ * If the symbol could not be found, it will be allocated.
+ *
+ * Returns: (transfer none): A #TmplSymbol.
+ */
 TmplSymbol *
 tmpl_scope_get (TmplScope   *self,
                 const gchar *name)
@@ -118,6 +153,13 @@ tmpl_scope_get (TmplScope   *self,
   return tmpl_scope_get_full (self, name, TRUE);
 }
 
+/**
+ * tmpl_scope_peek:
+ *
+ * If the symbol could not be found, %NULL is returned.
+ *
+ * Returns: (transfer none) (nullable): A #TmplSymbol or %NULL.
+ */
 TmplSymbol *
 tmpl_scope_peek (TmplScope   *self,
                  const gchar *name)

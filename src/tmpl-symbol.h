@@ -34,7 +34,7 @@ TmplSymbolType  tmpl_symbol_get_symbol_type (TmplSymbol   *self);
 void            tmpl_symbol_get_value       (TmplSymbol   *self,
                                              GValue       *value);
 TmplExpr       *tmpl_symbol_get_expr        (TmplSymbol   *self,
-                                             GPtrArray   **args);
+                                             GPtrArray   **params);
 void            tmpl_symbol_assign_value    (TmplSymbol   *self,
                                              const GValue *value);
 void            tmpl_symbol_assign_boolean  (TmplSymbol   *self,

@@ -49,7 +49,7 @@ typedef enum
   TMPL_ERROR_NOT_IMPLEMENTED,
   TMPL_ERROR_NOT_A_VALUE,
   TMPL_ERROR_NOT_A_FUNCTION,
-} GisError;
+} TmplError;
 
 GQuark tmpl_error_quark (void);
 

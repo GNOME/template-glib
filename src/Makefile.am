@@ -1,3 +1,7 @@
+DISTCLEANFILES =
+CLEANFILES =
+BUILT_SOURCES =
+
 bin_PROGRAMS = template-glib-eval
 lib_LTLIBRARIES = libtemplate-glib-1.0.la
 
@@ -36,6 +40,8 @@ libtemplate_glib_1_0_la_SOURCES = \
 	tmpl-condition-node.c \
 	tmpl-condition-node.h \
 	tmpl-debug.h \
+	tmpl-enums.c \
+	tmpl-enums.h \
 	tmpl-error.c \
 	tmpl-expr-eval.c \
 	tmpl-expr-node.c \
@@ -70,6 +76,60 @@ libtemplate_glib_1_0_la_SOURCES = \
 	tmpl-util-private.h \
 	tmpl-util.c \
 	$(NULL)
+
+glib_enum_h = tmpl-enums.h
+glib_enum_c = tmpl-enums.c
+glib_enum_headers = \
+	tmpl-error.h \
+	tmpl-expr-types.h \
+	$(NULL)
+include $(top_srcdir)/build-aux/Makefile.am.enums
+
+if HAVE_INTROSPECTION
+-include $(INTROSPECTION_MAKEFILE)
+
+INTROSPECTION_GIRS =
+INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir) --warn-all
+INTROSPECTION_COMPILER_ARGS = --includedir=$(srcdir)
+
+introspection_sources = \
+	tmpl-enums.c \
+	tmpl-enums.h \
+	tmpl-error.h \
+	tmpl-expr.c \
+	tmpl-expr.h \
+	tmpl-expr-types.h \
+	tmpl-scope.c \
+	tmpl-scope.h \
+	tmpl-symbol.c \
+	tmpl-symbol.h \
+	tmpl-template-locator.c \
+	tmpl-template-locator.h \
+	tmpl-template.c \
+	tmpl-template.h \
+	$(NULL)
+
+Template-1.0.gir: libtemplate-glib-1.0.la
+Template_1_0_gir_INCLUDES = Gio-2.0
+Template_1_0_gir_CFLAGS = $(libtemplate_glib_1_0_la_CFLAGS)
+Template_1_0_gir_LIBS = libtemplate-glib-1.0.la
+Template_1_0_gir_FILES = $(introspection_sources)
+Template_1_0_gir_SCANNERFLAGS = \
+	-n Template \
+	--identifier-prefix Tmpl \
+	--symbol-prefix tmpl \
+	-DTMPL_GLIB_COMPILATION \
+	$(NULL)
+INTROSPECTION_GIRS += Template-1.0.gir
+
+girdir = $(datadir)/gir-1.0
+gir_DATA = $(INTROSPECTION_GIRS)
+
+typelibdir = $(libdir)/girepository-1.0
+typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
+
+CLEANFILES += $(gir_DATA) $(typelib_DATA)
+endif
 
 GITIGNOREFILES = \
 	tmpl-expr-parser.c \
