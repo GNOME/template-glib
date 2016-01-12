@@ -268,6 +268,10 @@ tmpl_template_expand_visitor (TmplNode *node,
   g_assert (TMPL_IS_NODE (node));
   g_assert (state != NULL);
 
+/* Short cirtcuit if an error occurred */
+  if (state->result == FALSE)
+    return;
+
   if (TMPL_IS_TEXT_NODE (node))
     {
       g_string_append (state->output, tmpl_text_node_get_text (TMPL_TEXT_NODE (node)));
