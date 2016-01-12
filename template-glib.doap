@@ -7,7 +7,8 @@
 
   <name>Template-GLib</name>
   <shortname>template-glib</shortname>
-  <shortdesc>Template-GLib is a templating library for GLib. It includes a simple template format along with integration into GObject-Introspection for properties and methods. It separates the parsing of templates and the expansion of templates for faster expansion. You can also define scope, custom functions, and more with the embedded expression language.</shortdesc>
+  <shortdesc>A templating library for GLib</shortdesc>
+  <description>Template-GLib is a templating library for GLib. It includes a simple template format along with integration into GObject-Introspection for properties and methods. It separates the parsing of templates and the expansion of templates for faster expansion. You can also define scope, custom functions, and more with the embedded expression language.</description>
   <homepage rdf:resource="https://wiki.gnome.org/Projects/TemplateGlib" />
   <download-page rdf:resource="http://download.gnome.org/sources/template-glib/" />
 
