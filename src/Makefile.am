@@ -134,6 +134,8 @@ endif
 GITIGNOREFILES = \
 	tmpl-expr-parser.c \
 	tmpl-expr-parser.h \
+	tmpl-expr-scanner.c \
+	tmpl-expr-scanner.h \
 	tmpl-debug.h \
 	lex.*
 
