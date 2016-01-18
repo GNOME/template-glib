@@ -398,6 +398,25 @@ tmpl_template_expand_visitor (TmplNode *node,
     }
 }
 
+/**
+ * tmpl_template_expand:
+ * @self: A TmplTemplate.
+ * @stream: a #GOutputStream to write the results to
+ * @scope: (nullable): A #TmplScope containing state for the template, or %NULL.
+ * @cancellable: (nullable): An optional cancellable for the operation.
+ * @error: A location for a #GError, or %NULL.
+ *
+ * Expands a template into @stream using the @scope provided.
+ *
+ * @scope should have all of the variables set that are required to expand
+ * the template, or you will get a symbol reference error and %FALSE will
+ * be returned.
+ *
+ * To set a symbol value, get the symbol with tmpl_scope_get() and assign
+ * a value using tmpl_scope_assign_value() or similar methods.
+ *
+ * Returns: %TRUE if successful, otherwise %FALSE and @error is set.
+ */
 gboolean
 tmpl_template_expand (TmplTemplate  *self,
                       GOutputStream *stream,
@@ -407,6 +426,7 @@ tmpl_template_expand (TmplTemplate  *self,
 {
   TmplTemplatePrivate *priv = tmpl_template_get_instance_private (self);
   TmplTemplateExpandState state = { 0 };
+  TmplScope *local_scope = NULL;
 
   g_return_val_if_fail (TMPL_IS_TEMPLATE (self), FALSE);
   g_return_val_if_fail (G_IS_OUTPUT_STREAM (stream), FALSE);
@@ -420,6 +440,9 @@ tmpl_template_expand (TmplTemplate  *self,
                    _("Must parse template before expanding"));
       return FALSE;
     }
+
+  if (scope == NULL)
+    scope = local_scope = tmpl_scope_new ();
 
   state.root = tmpl_parser_get_root (priv->parser);
   state.self = self;
@@ -440,7 +463,49 @@ tmpl_template_expand (TmplTemplate  *self,
 
   g_string_free (state.output, TRUE);
 
+  if (local_scope != NULL)
+    tmpl_scope_unref (local_scope);
+
   return state.result;
+}
+
+/**
+ * tmpl_template_expand_string:
+ * @self: A #TmplTemplate.
+ * @scope: (nullable): A #TmplScope or %NULL.
+ * @error: A location for a #GError, or %NULL
+ *
+ * Expands the template and returns the result as a string.
+ *
+ * Returns: A newly allocated string, or %NULL upon failure.
+ */
+gchar *
+tmpl_template_expand_string (TmplTemplate  *self,
+                             TmplScope     *scope,
+                             GError       **error)
+{
+  GOutputStream *stream;
+  gchar zero = 0;
+  gchar *ret;
+
+  g_return_val_if_fail (TMPL_IS_TEMPLATE (self), NULL);
+
+  stream = g_memory_output_stream_new (NULL, 0, g_realloc, g_free);
+
+  if (!tmpl_template_expand (self, stream, scope, NULL, error) ||
+      !g_output_stream_write_all (stream, &zero, 1, NULL, NULL, error) ||
+      !g_output_stream_close (stream, NULL, error))
+
+    {
+      g_object_unref (stream);
+      return NULL;
+    }
+
+  ret = g_memory_output_stream_steal_data (G_MEMORY_OUTPUT_STREAM (stream));
+
+  g_object_unref (stream);
+
+  return ret;
 }
 
 /**

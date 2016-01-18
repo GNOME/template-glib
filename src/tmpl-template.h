@@ -67,6 +67,9 @@ gboolean             tmpl_template_expand         (TmplTemplate         *self,
                                                    TmplScope            *scope,
                                                    GCancellable         *cancellable,
                                                    GError              **error);
+gchar               *tmpl_template_expand_string  (TmplTemplate         *self,
+                                                   TmplScope            *scope,
+                                                   GError              **error);
 
 G_END_DECLS
 
