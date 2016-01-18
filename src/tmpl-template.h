@@ -55,6 +55,9 @@ gboolean             tmpl_template_parse_path     (TmplTemplate         *self,
                                                    const gchar          *path,
                                                    GCancellable         *cancellable,
                                                    GError              **error);
+gboolean             tmpl_template_parse_string   (TmplTemplate         *self,
+                                                   const gchar          *input,
+                                                   GError              **error);
 gboolean             tmpl_template_parse          (TmplTemplate         *self,
                                                    GInputStream         *stream,
                                                    GCancellable         *cancellable,

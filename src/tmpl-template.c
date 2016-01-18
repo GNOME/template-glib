@@ -16,7 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#define G_LOG_DOMAIN "tmpl-template"
+
 #include <glib/gi18n.h>
+#include <string.h>
 
 #include "tmpl-branch-node.h"
 #include "tmpl-condition-node.h"
@@ -207,6 +210,24 @@ tmpl_template_parse_resource (TmplTemplate  *self,
 
   g_object_unref (file);
   g_free (copied);
+
+  return ret;
+}
+
+gboolean
+tmpl_template_parse_string (TmplTemplate  *self,
+                            const gchar   *str,
+                            GError       **error)
+{
+  GInputStream *stream;
+  gboolean ret;
+
+  g_return_val_if_fail (TMPL_IS_TEMPLATE (self), FALSE);
+  g_return_val_if_fail (str, FALSE);
+
+  stream = g_memory_input_stream_new_from_data (g_strdup (str), strlen (str), g_free);
+  ret = tmpl_template_parse (self, stream, NULL, error);
+  g_object_unref (stream);
 
   return ret;
 }
