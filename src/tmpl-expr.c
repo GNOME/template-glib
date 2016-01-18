@@ -145,12 +145,12 @@ tmpl_expr_destroy (TmplExpr *self)
 TmplExpr *
 tmpl_expr_new_boolean (gboolean value)
 {
-  TmplExprBoolean *ret;
+  TmplExpr *ret;
 
   ret = tmpl_expr_new (TMPL_EXPR_BOOLEAN);
-  ret->value = value;
+  ((TmplExprBoolean *)ret)->value = !!value;
 
-  return (TmplExpr *)ret;
+  return ret;
 }
 
 TmplExpr *

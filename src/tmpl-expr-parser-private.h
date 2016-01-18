@@ -36,8 +36,7 @@ typedef struct
 void     tmpl_expr_parser_destroy      (TmplExprParser  *parser);
 void     tmpl_expr_parser_flush        (TmplExprParser  *parser);
 void     tmpl_expr_parser_error        (TmplExprParser  *parser,
-                                        const char      *msg,
-                                        ...);
+                                        const char      *message);
 gboolean tmpl_expr_parser_parse_string (TmplExprParser  *parser,
                                         const gchar     *input,
                                         GError         **error);

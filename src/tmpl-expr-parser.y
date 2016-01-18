@@ -31,23 +31,15 @@ int tmpl_expr_parser_lex (YYSTYPE *, void *scanner);
 
 void
 tmpl_expr_parser_error (TmplExprParser *parser,
-                        const gchar    *message,
-                        ...)
+                        const gchar    *message)
 {
-  va_list args;
-  gchar *str = NULL;
-
   g_assert (parser != NULL);
   g_assert (message != NULL);
 
-  va_start (args, message);
-  g_vasprintf (&str, message, args);
-  va_end (args);
-
   g_clear_pointer (&parser->ast, tmpl_expr_unref);
 
-  g_clear_pointer (&parser->error_str, g_free);
-  parser->error_str = str;
+  g_free (parser->error_str);
+  parser->error_str = g_strdup (message);
 }
 
 # define scanner parser->scanner

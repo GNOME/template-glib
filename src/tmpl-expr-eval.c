@@ -619,7 +619,7 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
     }
 
   if (!g_function_info_invoke (function,
-                               (GIArgument *)in_args->data,
+                               (GIArgument *)(void *)in_args->data,
                                in_args->len,
                                NULL,
                                0,
