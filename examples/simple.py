@@ -19,8 +19,6 @@ scope = Template.Scope.new()
 title = scope.get('title')
 title.assign_string('Example Title')
 
-# Write to stdout
-stream = Gio.UnixOutputStream.new(0, False)
-
 # Expand the template into stream
-tmpl.expand(stream, scope, None)
+expanded = tmpl.expand_string(scope)
+print(expanded)

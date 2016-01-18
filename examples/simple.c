@@ -9,10 +9,8 @@ main (gint   argc,
   g_autoptr(TmplScope) scope = NULL;
   g_autoptr(TmplTemplate) tmpl = NULL;
   g_autoptr(GError) error = NULL;
-  g_autoptr(GOutputStream) stream = NULL;
   TmplSymbol *symbol = NULL;
-  const gchar *output;
-  gchar zero = 0;
+  gchar *str;
 
   /*
    * First we need to create and parse our template.
@@ -38,28 +36,17 @@ main (gint   argc,
   tmpl_symbol_assign_string (symbol, "My Title");
 
   /*
-   * Now lets expand the template into a memory stream. We could also
-   * just use a unix output stream using STDOUT, but this is more portable
-   * if people want to get this running on non-UNIX systems.
+   * Expand the template based on our scope. You can also expand into a
+   * GOutputStream, instead of a string.
    */
-  stream = g_memory_output_stream_new (NULL, 0, g_realloc, g_free);
-  if (!tmpl_template_expand (tmpl, stream, scope, NULL, &error))
+  if (!(str = tmpl_template_expand_string (tmpl, scope, &error)))
     {
       g_printerr ("%s\n", error->message);
       return EXIT_FAILURE;
     }
 
-  /*
-   * Because we are converting this to a C String, we need to add a trailing
-   * null byte.
-   */
-  g_output_stream_write (stream, &zero, 1, NULL, NULL);
-
-  /*
-   * Okay, finally we can print this to stdout.
-   */
-  output = g_memory_output_stream_get_data (G_MEMORY_OUTPUT_STREAM (stream));
-  g_print ("%s\n", output);
+  g_print ("%s\n", str);
+  g_free (str);
 
   /*
    * All our state gets cleaned up thanks to g_autoptr()!

@@ -19,4 +19,5 @@ title.assign_string("Example Title");
 let stream = Gio.UnixOutputStream.new (0, false);
 
 // Expand the template into stream
-tmpl.expand(stream, scope, null);
+let expanded = tmpl.expand_string(scope);
+log(expanded);
