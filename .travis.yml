@@ -19,6 +19,7 @@ notifications:
     on_failure: always
 
 before_install:
+  - sudo apt-get update
   - sudo apt-get install libglib2.0-dev libgirepository1.0-dev
 
 install:
