@@ -134,7 +134,7 @@ endif
 if ENABLE_VAPIGEN
 -include $(VAPIGEN_MAKEFILE)
 
-template-glib-1.0.vapi: Template-1.0.gir
+template-glib-1.0.vapi: Template-1.0.gir Template-1.0.metadata
 
 VAPIGEN_VAPIS = template-glib-1.0.vapi
 

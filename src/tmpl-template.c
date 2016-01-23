@@ -136,6 +136,17 @@ tmpl_template_init (TmplTemplate *self)
 {
 }
 
+/**
+ * tmpl_template_new:
+ * @locator: (nullable): A #TmplTemplateLocator or %NULL.
+ *
+ * Creates a new #TmplTemplate.
+ *
+ * If @locator is specified, @locator will be used to resolve include
+ * directives when parsing the template.
+ *
+ * Returns: (transfer full): A #TmplTemplate.
+ */
 TmplTemplate *
 tmpl_template_new (TmplTemplateLocator *locator)
 {
