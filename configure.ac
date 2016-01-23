@@ -63,12 +63,14 @@ AC_PROG_CC
 AC_PROG_INSTALL
 AM_PROG_LEX
 AC_PROG_YACC
+AM_PROG_VALAC
 AC_PATH_PROG([GLIB_GENMARSHAL], [glib-genmarshal])
 AC_PATH_PROG([GLIB_MKENUMS], [glib-mkenums])
 AC_PATH_PROG([GLIB_COMPILE_RESOURCES], [glib-compile-resources])
 PKG_PROG_PKG_CONFIG([0.22])
 GOBJECT_INTROSPECTION_CHECK([1.42.0])
 GLIB_GSETTINGS
+VAPIGEN_CHECK
 
 
 dnl ***********************************************************************
@@ -272,5 +274,6 @@ echo "  Enable Profiling (-pg)................ : ${enable_profiling}"
 echo "  Build Test Suite ..................... : ${enable_tests}"
 echo "  Build API reference .................. : ${enable_gtk_doc}"
 echo "  Use cross-referencing in API docs .... : ${enable_doc_cross_references}"
+echo "  Vala support ......................... : ${enable_vala}"
 echo ""
 

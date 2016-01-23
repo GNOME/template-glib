@@ -131,6 +131,28 @@ typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
 CLEANFILES += $(gir_DATA) $(typelib_DATA)
 endif
 
+if ENABLE_VAPIGEN
+-include $(VAPIGEN_MAKEFILE)
+
+template-glib-1.0.vapi: Template-1.0.gir
+
+VAPIGEN_VAPIS = template-glib-1.0.vapi
+
+template_glib_1_0_vapi_DEPS = gio-2.0
+template_glib_1_0_vapi_METADATADIRS = $(srcdir)
+template_glib_1_0_vapi_FILES = Template-1.0.gir
+
+template-glib-1.0.deps: Makefile
+	$(AM_V_GEN) echo $(template_glib_1_0_vapi_DEPS) | tr ' ' '\n' > $@
+
+vapidir = $(datadir)/vala/vapi/
+vapi_DATA = $(VAPIGEN_VAPIS) $(VAPIGEN_VAPIS:.vapi=.deps)
+
+EXTRA_DIST += template-glib-1.0.deps
+
+DISTCLEANFILES += $(vapi_DATA)
+endif
+
 GITIGNOREFILES = \
 	tmpl-expr-parser.c \
 	tmpl-expr-parser.h \

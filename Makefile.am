@@ -1,5 +1,7 @@
 SUBDIRS = data src tests po doc examples
 
+ACLOCAL_AMFLAGS = -I build-aux
+
 EXTRA_DIST = \
 	AUTHORS \
 	$(NULL)
