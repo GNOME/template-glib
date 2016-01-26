@@ -247,6 +247,7 @@ AC_CONFIG_FILES([
 	examples/Makefile
 
 	doc/Makefile
+	doc/version.xml
 
 	po/Makefile.in
 

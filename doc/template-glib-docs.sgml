@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+               "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"
+[
+  <!ENTITY % local.common.attrib "xmlns:xi  CDATA  #FIXED 'http://www.w3.org/2003/XInclude'">
+  <!ENTITY % gtkdocentities SYSTEM "xml/gtkdocentities.ent">
+  %gtkdocentities;
+]>
+<book id="index">
+  <bookinfo>
+    <title>&package_name; Reference Manual</title>
+    <releaseinfo>
+      for &package_string;.
+      The latest version of this documentation can be found on-line at
+      <ulink role="online-location" url="http://[SERVER]/&package_name;/index.html">http://[SERVER]/&package_name;/</ulink>.
+    </releaseinfo>
+  </bookinfo>
+
+  <chapter>
+    <title>[Insert title here]</title>
+        <xi:include href="xml/tmpl-branch-node.xml"/>
+    <xi:include href="xml/tmpl-condition-node.xml"/>
+    <xi:include href="xml/tmpl-debug.xml"/>
+    <xi:include href="xml/tmpl-enums.xml"/>
+    <xi:include href="xml/tmpl-error.xml"/>
+    <xi:include href="xml/tmpl-expr.xml"/>
+    <xi:include href="xml/tmpl-expr-node.xml"/>
+    <xi:include href="xml/tmpl-expr-parser.xml"/>
+    <xi:include href="xml/tmpl-expr-parser-private.xml"/>
+    <xi:include href="xml/tmpl-expr-private.xml"/>
+    <xi:include href="xml/tmpl-expr-scanner.xml"/>
+    <xi:include href="xml/tmpl-expr-types.xml"/>
+    <xi:include href="xml/tmpl-gi-private.xml"/>
+    <xi:include href="xml/tmpl-iter-node.xml"/>
+    <xi:include href="xml/tmpl-iterator.xml"/>
+    <xi:include href="xml/tmpl-lexer.xml"/>
+    <xi:include href="xml/tmpl-node.xml"/>
+    <xi:include href="xml/tmpl-parser.xml"/>
+    <xi:include href="xml/tmpl-scope.xml"/>
+    <xi:include href="xml/tmpl-symbol.xml"/>
+    <xi:include href="xml/tmpl-template.xml"/>
+    <xi:include href="xml/tmpl-template-locator.xml"/>
+    <xi:include href="xml/tmpl-text-node.xml"/>
+    <xi:include href="xml/tmpl-token.xml"/>
+    <xi:include href="xml/tmpl-token-input-stream.xml"/>
+    <xi:include href="xml/tmpl-util-private.xml"/>
+
+  </chapter>
+  <chapter id="object-tree">
+    <title>Object Hierarchy</title>
+    <xi:include href="xml/tree_index.sgml"/>
+  </chapter>
+  <index id="api-index-full">
+    <title>API Index</title>
+    <xi:include href="xml/api-index-full.xml"><xi:fallback /></xi:include>
+  </index>
+  <index id="deprecated-api-index" role="deprecated">
+    <title>Index of deprecated API</title>
+    <xi:include href="xml/api-index-deprecated.xml"><xi:fallback /></xi:include>
+  </index>
+  <xi:include href="xml/annotation-glossary.xml"><xi:fallback /></xi:include>
+</book>
