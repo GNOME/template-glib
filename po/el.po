@@ -1,0 +1,40 @@
+# Greek translation for template-glib.
+# Copyright (C) 2016 template-glib's COPYRIGHT HOLDER
+# This file is distributed under the same license as the template-glib package.
+# Γιάννης Κουτσούκος <giankoyt@gmail.com>, 2016.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: template-glib master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=template-glib&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2016-03-22 03:03+0000\n"
+"PO-Revision-Date: 2016-03-22 12:02+0200\n"
+"Last-Translator: Yannis Koutsoukos <giankoyt@gmail.com>\n"
+"Language-Team: Greek <gnome-el-list@gnome.org>\n"
+"Language: el\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: ../src/tmpl-parser.c:199
+#, c-format
+msgid "%s() may only be called once"
+msgstr "%s() μπορεί να κληθεί μόνο μία φορά"
+
+#: ../src/tmpl-parser.c:211
+#, c-format
+msgid "Parser does not contain an input stream"
+msgstr "O αναλυτής δεν περιέχει  ροή εισόδου"
+
+#: ../src/tmpl-template.c:451
+#, c-format
+msgid "Must parse template before expanding"
+msgstr "Πρέπει να αναλύσει το πρότυπο πριν από την επέκταση"
+
+#: ../src/tmpl-template-locator.c:105
+#, c-format
+msgid "Failed to locate template \"%s\""
+msgstr "Αποτυχία εντοπισμού προτύπου  \"%s\" "
