@@ -979,6 +979,7 @@ SIMPLE_OP_FUNC (mul_double_double, G_TYPE_DOUBLE,  set_double,  get_double, *,  
 SIMPLE_OP_FUNC (lt_double_double,  G_TYPE_BOOLEAN, set_boolean, get_double, <,  get_double)
 SIMPLE_OP_FUNC (lte_double_double, G_TYPE_BOOLEAN, set_boolean, get_double, <=, get_double)
 SIMPLE_OP_FUNC (gt_double_double,  G_TYPE_BOOLEAN, set_boolean, get_double, >,  get_double)
+SIMPLE_OP_FUNC (eq_double_double,  G_TYPE_BOOLEAN, set_boolean, get_double, ==, get_double)
 SIMPLE_OP_FUNC (gte_double_double, G_TYPE_BOOLEAN, set_boolean, get_double, >=, get_double)
 
 #undef SIMPLE_OP_FUNC
@@ -1005,6 +1006,7 @@ build_dispatch_table (void)
   ADD_DISPATCH_FUNC (TMPL_EXPR_GT,          G_TYPE_DOUBLE, G_TYPE_DOUBLE, gt_double_double);
   ADD_DISPATCH_FUNC (TMPL_EXPR_LTE,         G_TYPE_DOUBLE, G_TYPE_DOUBLE, lte_double_double);
   ADD_DISPATCH_FUNC (TMPL_EXPR_GTE,         G_TYPE_DOUBLE, G_TYPE_DOUBLE, gte_double_double);
+  ADD_DISPATCH_FUNC (TMPL_EXPR_EQ,          G_TYPE_DOUBLE, G_TYPE_DOUBLE, eq_double_double);
   ADD_DISPATCH_FUNC (TMPL_EXPR_MUL,         G_TYPE_STRING, G_TYPE_DOUBLE, mul_string_double);
   ADD_DISPATCH_FUNC (TMPL_EXPR_MUL,         G_TYPE_DOUBLE, G_TYPE_STRING, mul_double_string);
 
