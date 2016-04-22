@@ -958,6 +958,21 @@ add_string_string (const GValue  *left,
   return TRUE;
 }
 
+static gboolean
+eq_string_string (const GValue  *left,
+                  const GValue  *right,
+                  GValue        *return_value,
+                  GError       **error)
+{
+  const gchar *left_str = g_value_get_string (left);
+  const gchar *right_str = g_value_get_string (right);
+
+  g_value_init (return_value, G_TYPE_BOOLEAN);
+  g_value_set_boolean (return_value, 0 == g_strcmp0 (left_str, right_str));
+
+  return TRUE;
+}
+
 #define SIMPLE_OP_FUNC(func_name, ret_type, set_func, get_left, op, get_right)  \
 static gboolean                                                                 \
 func_name (const GValue  *left,                                                 \
@@ -1009,6 +1024,7 @@ build_dispatch_table (void)
   ADD_DISPATCH_FUNC (TMPL_EXPR_EQ,          G_TYPE_DOUBLE, G_TYPE_DOUBLE, eq_double_double);
   ADD_DISPATCH_FUNC (TMPL_EXPR_MUL,         G_TYPE_STRING, G_TYPE_DOUBLE, mul_string_double);
   ADD_DISPATCH_FUNC (TMPL_EXPR_MUL,         G_TYPE_DOUBLE, G_TYPE_STRING, mul_double_string);
+  ADD_DISPATCH_FUNC (TMPL_EXPR_EQ,          G_TYPE_STRING, G_TYPE_STRING, eq_string_string);
 
 #undef ADD_DISPATCH_FUNC
 
