@@ -21,6 +21,24 @@
 #include <stdlib.h>
 #include <tmpl-glib.h>
 
+static gboolean
+method_missing (TmplScope    *scope,
+                const gchar  *name,
+                TmplSymbol  **symbol,
+                gpointer      user_data)
+{
+  g_autofree gchar *str = g_strdup_printf ("missing symbol: %s", name);
+
+  g_assert (scope != NULL);
+  g_assert (name != NULL);
+  g_assert (symbol != NULL);
+
+  *symbol = tmpl_symbol_new ();
+  tmpl_symbol_assign_string (*symbol, str);
+
+  return TRUE;
+}
+
 gint
 main (gint   argc,
       gchar *argv[])
@@ -46,6 +64,8 @@ main (gint   argc,
   tmpl = tmpl_template_new (locator);
   file = g_file_new_for_commandline_arg (argv [1]);
   scope = tmpl_scope_new ();
+
+  tmpl_scope_set_resolver (scope, method_missing, NULL, NULL);
 
   if (!tmpl_template_parse_file (tmpl, file, NULL, &error))
     {
