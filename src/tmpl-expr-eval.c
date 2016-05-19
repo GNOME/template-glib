@@ -134,9 +134,9 @@ throw_type_mismatch (GError       **error,
 
 static gboolean
 tmpl_expr_simple_eval (TmplExprSimple  *node,
-                      TmplScope       *scope,
-                      GValue         *return_value,
-                      GError        **error)
+                       TmplScope       *scope,
+                       GValue          *return_value,
+                       GError         **error)
 {
   GValue left = G_VALUE_INIT;
   GValue right = G_VALUE_INIT;
