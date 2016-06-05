@@ -21,6 +21,7 @@ template_glib_eval_SOURCES = main.c
 
 pkgincludedir = $(includedir)/template-glib-1.0
 pkginclude_HEADERS = \
+	tmpl-enums.h \
 	tmpl-error.h \
 	tmpl-expr-types.h \
 	tmpl-expr.h \
@@ -41,7 +42,6 @@ libtemplate_glib_1_0_la_SOURCES = \
 	tmpl-condition-node.h \
 	tmpl-debug.h \
 	tmpl-enums.c \
-	tmpl-enums.h \
 	tmpl-error.c \
 	tmpl-expr-eval.c \
 	tmpl-expr-node.c \
