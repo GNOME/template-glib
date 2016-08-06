@@ -67,6 +67,14 @@ static gboolean builtin_repr                 (const GValue  *value,
 static gboolean builtin_sqrt                 (const GValue  *value,
                                               GValue        *return_value,
                                               GError       **error);
+static gboolean eq_enum_string               (const GValue  *left,
+                                              const GValue  *right,
+                                              GValue        *return_value,
+                                              GError       **error);
+static gboolean ne_enum_string               (const GValue  *left,
+                                              const GValue  *right,
+                                              GValue        *return_value,
+                                              GError       **error);
 
 static GHashTable *fast_dispatch;
 static BuiltinFunc builtin_funcs [] = {
@@ -85,8 +93,11 @@ build_hash (TmplExprType type,
             GType        left,
             GType        right)
 {
-  g_assert (!left || G_TYPE_IS_FUNDAMENTAL (left));
-  g_assert (!right || G_TYPE_IS_FUNDAMENTAL (right));
+  if (left && !G_TYPE_IS_FUNDAMENTAL (left))
+    return 0;
+
+  if (right && !G_TYPE_IS_FUNDAMENTAL (right))
+    return 0;
 
   return type | (left << 16) | (right << 24);
 }
@@ -132,6 +143,28 @@ throw_type_mismatch (GError       **error,
     return throw_type_mismatch (error, left, right, "invalid add"); \
   } G_STMT_END
 
+static FastDispatch
+find_dispatch_slow (TmplExprSimple *node,
+                    const GValue   *left,
+                    const GValue   *right)
+{
+  if (node->type == TMPL_EXPR_EQ)
+    {
+      if ((G_VALUE_HOLDS_STRING (left) && G_VALUE_HOLDS_ENUM (right)) ||
+          (G_VALUE_HOLDS_STRING (right) && G_VALUE_HOLDS_ENUM (left)))
+        return eq_enum_string;
+    }
+
+  if (node->type == TMPL_EXPR_NE)
+    {
+      if ((G_VALUE_HOLDS_STRING (left) && G_VALUE_HOLDS_ENUM (right)) ||
+          (G_VALUE_HOLDS_STRING (right) && G_VALUE_HOLDS_ENUM (left)))
+        return ne_enum_string;
+    }
+
+  return NULL;
+}
+
 static gboolean
 tmpl_expr_simple_eval (TmplExprSimple  *node,
                        TmplScope       *scope,
@@ -150,16 +183,23 @@ tmpl_expr_simple_eval (TmplExprSimple  *node,
       ((node->right == NULL) ||
        tmpl_expr_eval_internal (node->right, scope, &right, error)))
     {
-      FastDispatch dispatch;
+      FastDispatch dispatch = NULL;
       guint hash;
 
       hash = build_hash (node->type, G_VALUE_TYPE (&left), G_VALUE_TYPE (&right));
-      dispatch = g_hash_table_lookup (fast_dispatch, GINT_TO_POINTER (hash));
 
-      if (G_UNLIKELY (dispatch == NULL))
+      if (hash != 0)
+        dispatch = g_hash_table_lookup (fast_dispatch, GINT_TO_POINTER (hash));
+
+      if G_UNLIKELY (dispatch == NULL)
         {
-          throw_type_mismatch (error, &left, &right, "type mismatch");
-          goto cleanup;
+          dispatch = find_dispatch_slow (node, &left, &right);
+
+          if (dispatch == NULL)
+            {
+              throw_type_mismatch (error, &left, &right, "type mismatch");
+              goto cleanup;
+            }
         }
 
       ret = dispatch (&left, &right, return_value, error);
@@ -1074,6 +1114,55 @@ ne_string_string (const GValue  *left,
   return TRUE;
 }
 
+static gboolean
+eq_enum_string (const GValue  *left,
+                const GValue  *right,
+                GValue        *return_value,
+                GError       **error)
+{
+  const gchar *str;
+  GEnumClass *klass;
+  const GEnumValue *val;
+  GType type;
+  gint eval;
+
+  if (G_VALUE_HOLDS_STRING (left))
+    {
+      str = g_value_get_string (left);
+      eval = g_value_get_enum (right);
+      type = G_VALUE_TYPE (right);
+    }
+  else
+    {
+      str = g_value_get_string (right);
+      eval = g_value_get_enum (left);
+      type = G_VALUE_TYPE (left);
+    }
+
+  klass = g_type_class_peek (type);
+  val = g_enum_get_value ((GEnumClass *)klass, eval);
+
+  g_value_init (return_value, G_TYPE_BOOLEAN);
+  g_value_set_boolean (return_value, 0 == g_strcmp0 (str, val->value_nick));
+
+  return TRUE;
+}
+
+static gboolean
+ne_enum_string (const GValue  *left,
+                const GValue  *right,
+                GValue        *return_value,
+                GError       **error)
+{
+  if (eq_enum_string (left, right, return_value, error))
+    {
+      g_value_set_boolean (return_value, !g_value_get_boolean (return_value));
+      return TRUE;
+    }
+
+  return FALSE;
+}
+
 #define SIMPLE_OP_FUNC(func_name, ret_type, set_func, get_left, op, get_right)  \
 static gboolean                                                                 \
 func_name (const GValue  *left,                                                 \
@@ -1098,11 +1187,10 @@ SIMPLE_OP_FUNC (gt_double_double,  G_TYPE_BOOLEAN, set_boolean, get_double, >,  
 SIMPLE_OP_FUNC (eq_double_double,  G_TYPE_BOOLEAN, set_boolean, get_double, ==, get_double)
 SIMPLE_OP_FUNC (ne_double_double,  G_TYPE_BOOLEAN, set_boolean, get_double, !=, get_double)
 SIMPLE_OP_FUNC (gte_double_double, G_TYPE_BOOLEAN, set_boolean, get_double, >=, get_double)
-
-SIMPLE_OP_FUNC (eq_uint_double, G_TYPE_BOOLEAN, set_boolean, get_uint, ==, get_double)
-SIMPLE_OP_FUNC (eq_double_uint, G_TYPE_BOOLEAN, set_boolean, get_double, ==, get_uint)
-SIMPLE_OP_FUNC (ne_uint_double, G_TYPE_BOOLEAN, set_boolean, get_uint, !=, get_double)
-SIMPLE_OP_FUNC (ne_double_uint, G_TYPE_BOOLEAN, set_boolean, get_double, !=, get_uint)
+SIMPLE_OP_FUNC (eq_uint_double,    G_TYPE_BOOLEAN, set_boolean, get_uint,   ==, get_double)
+SIMPLE_OP_FUNC (eq_double_uint,    G_TYPE_BOOLEAN, set_boolean, get_double, ==, get_uint)
+SIMPLE_OP_FUNC (ne_uint_double,    G_TYPE_BOOLEAN, set_boolean, get_uint,   !=, get_double)
+SIMPLE_OP_FUNC (ne_double_uint,    G_TYPE_BOOLEAN, set_boolean, get_double, !=, get_uint)
 
 #undef SIMPLE_OP_FUNC
 
