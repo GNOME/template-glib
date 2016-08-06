@@ -569,6 +569,8 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
 
   while (g_type_is_a (type, G_TYPE_OBJECT))
     {
+      guint n_ifaces;
+
       base_info = g_irepository_find_by_gtype (repository, type);
 
       if (base_info == NULL)
@@ -582,6 +584,19 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
         }
 
       function = g_object_info_find_method ((GIObjectInfo *)base_info, node->name);
+      if (function != NULL)
+        break;
+
+      /* Maybe the function is found in an interface */
+      n_ifaces = g_object_info_get_n_interfaces ((GIObjectInfo *)base_info);
+      for (i = 0; function == NULL && i < n_ifaces; i++)
+        {
+          GIInterfaceInfo *iface_info;
+
+          iface_info = g_object_info_get_interface ((GIObjectInfo *)base_info, i);
+
+          function = g_interface_info_find_method (iface_info, node->name);
+        }
       if (function != NULL)
         break;
 
