@@ -920,6 +920,24 @@ tmpl_expr_eval_internal (TmplExpr   *node,
     case TMPL_EXPR_REQUIRE:
       return tmpl_expr_require_eval ((TmplExprRequire *)node, scope, return_value, error);
 
+    case TMPL_EXPR_INVERT_BOOLEAN:
+      {
+        GValue tmp = G_VALUE_INIT;
+        gboolean ret;
+
+        ret = tmpl_expr_eval_internal (((TmplExprSimple *)node)->left, scope, &tmp, error);
+
+        if (ret)
+          {
+            g_value_init (return_value, G_TYPE_BOOLEAN);
+            g_value_set_boolean (return_value, !tmpl_value_as_boolean (&tmp));
+          }
+
+        TMPL_CLEAR_VALUE (&tmp);
+
+        return ret;
+      }
+
     default:
       break;
     }
