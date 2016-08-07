@@ -18,6 +18,7 @@
 
 #include <girepository.h>
 #include <math.h>
+#include <string.h>
 
 #include "tmpl-error.h"
 #include "tmpl-expr.h"
@@ -556,9 +557,9 @@ cleanup:
 
 static gboolean
 tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
-                       TmplScope       *scope,
-                       GValue         *return_value,
-                       GError        **error)
+                        TmplScope       *scope,
+                        GValue          *return_value,
+                        GError         **error)
 {
   GValue left = G_VALUE_INIT;
   GValue right = G_VALUE_INIT;
@@ -582,6 +583,55 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
 
   if (!tmpl_expr_eval_internal (node->object, scope, &left, error))
     goto cleanup;
+
+  if (G_VALUE_HOLDS_STRING (&left))
+    {
+      const gchar *str = g_value_get_string (&left) ?: "";
+
+      /*
+       * TODO: This should be abstracted somewhere else rather than our G-I call.
+       *       Basically we are adding useful string functions like:
+       *
+       *       "foo".upper()
+       *       "foo".lower()
+       *       "foo".casefold()
+       *       "foo".reverse()
+       *       "foo".len()
+       */
+      if (FALSE) {}
+      else if (g_str_equal (node->name, "upper"))
+        {
+          g_value_init (return_value, G_TYPE_STRING);
+          g_value_take_string (return_value, g_utf8_strup (str, -1));
+          ret = TRUE;
+        }
+      else if (g_str_equal (node->name, "lower"))
+        {
+          g_value_init (return_value, G_TYPE_STRING);
+          g_value_take_string (return_value, g_utf8_strdown (str, -1));
+          ret = TRUE;
+        }
+      else if (g_str_equal (node->name, "casefold"))
+        {
+          g_value_init (return_value, G_TYPE_STRING);
+          g_value_take_string (return_value, g_utf8_casefold (str, -1));
+          ret = TRUE;
+        }
+      else if (g_str_equal (node->name, "reverse"))
+        {
+          g_value_init (return_value, G_TYPE_STRING);
+          g_value_take_string (return_value, g_utf8_strreverse (str, -1));
+          ret = TRUE;
+        }
+      else if (g_str_equal (node->name, "len"))
+        {
+          g_value_init (return_value, G_TYPE_UINT);
+          g_value_set_uint (return_value, strlen (str));
+          ret = TRUE;
+        }
+
+      goto cleanup;
+    }
 
   if (!G_VALUE_HOLDS_OBJECT (&left))
     {
