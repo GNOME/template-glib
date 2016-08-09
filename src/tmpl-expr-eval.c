@@ -680,6 +680,14 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
           g_value_take_string (return_value, make_title (str));
           ret = TRUE;
         }
+      else
+        {
+          g_set_error (error,
+                       TMPL_ERROR,
+                       TMPL_ERROR_GI_FAILURE,
+                       "No such method %s for string",
+                       node->name);
+        }
 
       goto cleanup;
     }
