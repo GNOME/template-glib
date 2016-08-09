@@ -395,6 +395,9 @@ tmpl_template_expand_visitor (TmplNode *node,
               TMPL_CLEAR_VALUE (&value);
 
               tmpl_node_visit_children (node, tmpl_template_expand_visitor, state);
+
+              if (state->result == FALSE)
+                break;
             }
 
           state->scope = old_scope;
