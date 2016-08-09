@@ -1071,8 +1071,7 @@ tmpl_expr_eval_internal (TmplExpr   *node,
       return TRUE;
 
     case TMPL_EXPR_STMT_LIST:
-      tmpl_expr_stmt_list_eval ((TmplExprSimple *)node, scope, return_value, error);
-      break;
+      return tmpl_expr_stmt_list_eval ((TmplExprSimple *)node, scope, return_value, error);
 
     case TMPL_EXPR_IF:
     case TMPL_EXPR_WHILE:
