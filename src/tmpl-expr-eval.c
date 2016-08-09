@@ -692,6 +692,23 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
       goto cleanup;
     }
 
+  if (G_VALUE_HOLDS_ENUM (&left))
+    {
+      if (FALSE) {}
+      else if (g_str_equal (node->name, "nick"))
+        {
+          GEnumClass *enum_class = g_type_class_peek (G_VALUE_TYPE (&left));
+          GEnumValue *enum_value = g_enum_get_value (enum_class, g_value_get_enum (&left));
+
+          g_value_init (return_value, G_TYPE_STRING);
+
+          if (enum_value != NULL)
+            g_value_set_static_string (return_value, enum_value->value_nick);
+
+          ret = TRUE;
+        }
+    }
+
   if (!G_VALUE_HOLDS_OBJECT (&left))
     {
       g_set_error (error,
