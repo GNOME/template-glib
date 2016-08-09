@@ -300,7 +300,7 @@ tmpl_template_expand_visitor (TmplNode *node,
   g_assert (TMPL_IS_NODE (node));
   g_assert (state != NULL);
 
-/* Short cirtcuit if an error occurred */
+  /* Short cirtcuit if an error occurred */
   if (state->result == FALSE)
     return;
 
