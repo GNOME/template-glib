@@ -509,6 +509,13 @@ tmpl_template_expand_string (TmplTemplate  *self,
 
     {
       g_object_unref (stream);
+
+      if (error != NULL && *error == NULL)
+        g_set_error (error,
+                     G_IO_ERROR,
+                     G_IO_ERROR_UNKNOWN,
+                     "An unknown error occurred while expanding the template");
+
       return NULL;
     }
 
