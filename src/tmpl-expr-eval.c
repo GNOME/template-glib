@@ -662,6 +662,18 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
           g_value_set_uint (return_value, strlen (str));
           ret = TRUE;
         }
+      else if (g_str_equal (node->name, "space"))
+        {
+          gchar *space;
+          guint len = strlen (str);
+
+          g_value_init (return_value, G_TYPE_STRING);
+          space = g_malloc (len + 1);
+          memset (space, ' ', len);
+          space[len] = '\0';
+          g_value_take_string (return_value, space);
+          ret = TRUE;
+        }
       else if (g_str_equal (node->name, "title"))
         {
           g_value_init (return_value, G_TYPE_STRING);
