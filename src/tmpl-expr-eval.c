@@ -552,6 +552,8 @@ cleanup:
   TMPL_CLEAR_VALUE (&left);
   TMPL_CLEAR_VALUE (&right);
 
+  g_assert (ret == TRUE || (error == NULL || *error != NULL));
+
   return ret;
 }
 
@@ -936,6 +938,8 @@ tmpl_expr_require_eval (TmplExprRequire  *node,
                                    G_IREPOSITORY_LOAD_FLAG_LAZY,
                                    error);
 
+  g_assert (typelib != NULL || (error == NULL || *error != NULL));
+
   if (typelib == NULL)
     return FALSE;
 
@@ -1039,6 +1043,8 @@ tmpl_expr_eval_internal (TmplExpr   *node,
           }
 
         TMPL_CLEAR_VALUE (&tmp);
+
+        g_assert (ret == TRUE || (error == NULL || *error != NULL));
 
         return ret;
       }
@@ -1288,6 +1294,8 @@ tmpl_expr_eval (TmplExpr   *node,
                 GValue     *return_value,
                 GError    **error)
 {
+  gboolean ret;
+
   g_return_val_if_fail (node != NULL, FALSE);
   g_return_val_if_fail (scope != NULL, FALSE);
   g_return_val_if_fail (return_value != NULL, FALSE);
@@ -1296,7 +1304,11 @@ tmpl_expr_eval (TmplExpr   *node,
   if (g_once_init_enter (&fast_dispatch))
     g_once_init_leave (&fast_dispatch, build_dispatch_table ());
 
-  return tmpl_expr_eval_internal (node, scope, return_value, error);
+  ret = tmpl_expr_eval_internal (node, scope, return_value, error);
+
+  g_assert (ret == TRUE || (error == NULL || *error != NULL));
+
+  return ret;
 }
 
 static gboolean
