@@ -557,6 +557,36 @@ cleanup:
   return ret;
 }
 
+static gchar *
+make_title (const gchar *str)
+{
+  g_auto(GStrv) parts = NULL;
+  GString *ret;
+
+  g_assert (str != NULL);
+
+  ret = g_string_new (NULL);
+
+  for (; *str; str = g_utf8_next_char (str))
+    {
+      gunichar ch = g_utf8_get_char (str);
+
+      if (!g_unichar_isalnum (ch))
+        {
+          if (ret->len && ret->str[ret->len - 1] != ' ')
+            g_string_append_c (ret, ' ');
+          continue;
+        }
+
+      if (ret->len && ret->str[ret->len - 1] != ' ')
+        g_string_append_unichar (ret, ch);
+      else
+        g_string_append_unichar (ret, g_unichar_toupper (ch));
+    }
+
+  return g_string_free (ret, FALSE);
+}
+
 static gboolean
 tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
                         TmplScope       *scope,
@@ -599,6 +629,7 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
        *       "foo".casefold()
        *       "foo".reverse()
        *       "foo".len()
+       *       "foo".title()
        */
       if (FALSE) {}
       else if (g_str_equal (node->name, "upper"))
@@ -629,6 +660,12 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
         {
           g_value_init (return_value, G_TYPE_UINT);
           g_value_set_uint (return_value, strlen (str));
+          ret = TRUE;
+        }
+      else if (g_str_equal (node->name, "title"))
+        {
+          g_value_init (return_value, G_TYPE_STRING);
+          g_value_take_string (return_value, make_title (str));
           ret = TRUE;
         }
 
