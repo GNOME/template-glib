@@ -995,9 +995,9 @@ cleanup:
 
 static gboolean
 tmpl_expr_require_eval (TmplExprRequire  *node,
-                       TmplScope        *scope,
-                       GValue          *return_value,
-                       GError         **error)
+                        TmplScope        *scope,
+                        GValue           *return_value,
+                        GError          **error)
 {
   GITypelib *typelib;
   TmplSymbol *symbol;
@@ -1082,7 +1082,6 @@ tmpl_expr_eval_internal (TmplExpr   *node,
 
     case TMPL_EXPR_SYMBOL_ASSIGN:
       return tmpl_expr_symbol_assign_eval ((TmplExprSymbolAssign *)node, scope, return_value, error);
-      break;
 
     case TMPL_EXPR_FN_CALL:
       return tmpl_expr_fn_call_eval ((TmplExprFnCall *)node, scope, return_value, error);
