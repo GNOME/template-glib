@@ -477,6 +477,8 @@ tmpl_template_expand (TmplTemplate  *self,
   if (local_scope != NULL)
     tmpl_scope_unref (local_scope);
 
+  g_assert (state.result == TRUE || (state.error == NULL || *state.error != NULL));
+
   return state.result;
 }
 
