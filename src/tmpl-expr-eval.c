@@ -707,6 +707,16 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
 
           ret = TRUE;
         }
+      else
+        {
+          g_set_error (error,
+                       TMPL_ERROR,
+                       TMPL_ERROR_GI_FAILURE,
+                       "No such method %s for enum",
+                       node->name);
+        }
+
+      goto cleanup;
     }
 
   if (!G_VALUE_HOLDS_OBJECT (&left))
