@@ -16,7 +16,7 @@ EXTRA_DIST = \
 	tmpl-expr-scanner.h
 
 template_glib_eval_CFLAGS = $(TMPL_CFLAGS)
-template_glib_eval_LDADD = libtemplate-glib-1.0.la
+template_glib_eval_LDADD = $(TMPL_LIBS) libtemplate-glib-1.0.la
 template_glib_eval_SOURCES = main.c
 
 pkgincludedir = $(includedir)/template-glib-1.0
