@@ -1,0 +1,39 @@
+# Friulian translation for template-glib.
+# Copyright (C) 2017 template-glib's COPYRIGHT HOLDER
+# This file is distributed under the same license as the template-glib package.
+# Fabio Tomat <f.t.public@gmail.com>, 2017.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: template-glib master\n"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
+"product=template-glib&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2017-04-08 15:34+0000\n"
+"PO-Revision-Date: 2017-04-08 21:41+0200\n"
+"Language-Team: Friulian <fur@li.org>\n"
+"Language: fur\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
+"X-Generator: Poedit 1.8.12\n"
+
+#: ../src/tmpl-parser.c:199
+#, c-format
+msgid "%s() may only be called once"
+msgstr "%s() al pues jessi clamât dome une volte"
+
+#: ../src/tmpl-parser.c:211
+#, c-format
+msgid "Parser does not contain an input stream"
+msgstr "L'analizadôr nol conten nissun flus di jentrade"
+
+#: ../src/tmpl-template.c:454
+#, c-format
+msgid "Must parse template before expanding"
+msgstr "Prime di espandi la sagome si scugne analizâle"
+
+#: ../src/tmpl-template-locator.c:105
+#, c-format
+msgid "Failed to locate template \"%s\""
+msgstr "no si è rivâts a cjatâ la sagome “%s”"
