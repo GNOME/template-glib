@@ -67,6 +67,8 @@ false                      => false
 1 / 3                      => .333333
 a = (1*3)                  => (a assigned 3)
 a * a                      => 9
+!true                      => false
+!!true                     => true
 
 func min(a,b) = if a < b then a; else b;;
 min(1,2)                   => 1

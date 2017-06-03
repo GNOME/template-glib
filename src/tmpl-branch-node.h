@@ -33,7 +33,7 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (TmplBranchNode, tmpl_branch_node, TMPL, BRANCH_NODE, TmplNode)
 
-TmplNode *tmpl_branch_node_new    (TmplExpr        *condition);
+TmplNode *tmpl_branch_node_new    (TmplExpr        *expr);
 TmplNode *tmpl_branch_node_branch (TmplBranchNode  *self,
                                    TmplScope       *scope,
                                    GError         **error);

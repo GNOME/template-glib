@@ -24,6 +24,8 @@
 G_BEGIN_DECLS
 
 #define TMPL_GLIB_INSIDE
+# include "tmpl-debug.h"
+# include "tmpl-enums.h"
 # include "tmpl-error.h"
 # include "tmpl-expr.h"
 # include "tmpl-expr-types.h"

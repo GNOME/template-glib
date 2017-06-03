@@ -1,0 +1,200 @@
+libtemplate_glib_header_subdir = 'template-glib-' + apiversion
+libtemplate_glib_header_dir = join_paths(get_option('includedir'), libtemplate_glib_header_subdir)
+
+version_data = configuration_data()
+version_data.set('TMPL_MAJOR_VERSION', template_glib_version_major)
+version_data.set('TMPL_MINOR_VERSION', template_glib_version_minor)
+version_data.set('TMPL_MICRO_VERSION', template_glib_version_micro)
+version_data.set('TMPL_VERSION', meson.project_version())
+version_data.set10('ENABLE_TRACING', get_option('enable_tracing'))
+
+tmpl_version_h = configure_file(
+          input: 'tmpl-version.h.in',
+         output: 'tmpl-version.h',
+    install_dir: libtemplate_glib_header_dir,
+        install: true,
+  configuration: version_data)
+
+tmpl_debug_h = configure_file(
+          input: 'tmpl-debug.h.in',
+         output: 'tmpl-debug.h',
+    install_dir: libtemplate_glib_header_dir,
+        install: true,
+  configuration: version_data)
+
+libtemplate_glib_enum_headers = [
+  'tmpl-error.h',
+  'tmpl-expr-types.h',
+]
+
+libtemplate_glib_enums = gnome.mkenums('tmpl-enums',
+       h_template: 'tmpl-enums.h.in',
+       c_template: 'tmpl-enums.c.in',
+          sources: libtemplate_glib_enum_headers,
+   install_header: true,
+      install_dir: libtemplate_glib_header_dir,
+)
+
+libtemplate_glib_generated_headers = [
+  tmpl_debug_h,
+  tmpl_version_h,
+  libtemplate_glib_enums[1],
+]
+
+libtemplate_glib_public_headers = [
+  'tmpl-error.h',
+  'tmpl-expr-types.h',
+  'tmpl-expr.h',
+  'tmpl-glib.h',
+  'tmpl-scope.h',
+  'tmpl-symbol.h',
+  'tmpl-template-locator.h',
+  'tmpl-template.h',
+]
+
+libtemplate_glib_public_sources = [
+  'tmpl-error.c',
+  'tmpl-expr.c',
+  'tmpl-scope.c',
+  'tmpl-symbol.c',
+  'tmpl-template.c',
+  'tmpl-template-locator.c',
+
+  libtemplate_glib_enums[0],
+]
+
+libtemplate_glib_deps = [
+  dependency('gio-2.0'),
+  dependency('gobject-introspection-1.0'),
+  cc.find_library('m', required: false),
+]
+
+
+flex = find_program('flex')
+bison = find_program('bison')
+sed = find_program('sed')
+
+tmpl_expr_parser = custom_target('tmpl-expr-parser',
+    input: 'tmpl-expr-parser.y',
+   output: ['tmpl-expr-parser.c', 'tmpl-expr-parser.h'],
+  command: [bison, '@INPUT@', '--defines=@OUTPUT1@', '--output=@OUTPUT0@']
+
+)
+
+# This is an awful workaround, flex files embed options to control the output
+# this fails with meson which wants to output to specific directories
+# and just to avoid any regressions we don't want to modify the autotools files
+tmpl_expr_scanner_flex = custom_target('tmpl-expr-scanner-flex',
+  input: 'tmpl-expr-scanner.l',
+  output: 'tmpl-expr-meson-scanner.l',
+  capture: true,
+  command: [sed, '-e', 's/^%option header-file.*$//',
+                 '-e', 's/^%option outfile.*$//', '@INPUT@']
+)
+tmpl_expr_scanner = custom_target('tmpl-expr-scanner',
+  input: tmpl_expr_scanner_flex,
+  output: 'tmpl-expr-scanner.c',
+  command: [flex, '-o', '@OUTPUT@', '@INPUT@']
+)
+
+
+libtemplate_glib_sources = [
+  libtemplate_glib_generated_headers,
+  libtemplate_glib_public_headers,
+  libtemplate_glib_public_sources,
+  tmpl_expr_parser,
+  tmpl_expr_scanner,
+
+  'tmpl-branch-node.c',
+  'tmpl-branch-node.h',
+  'tmpl-condition-node.c',
+  'tmpl-condition-node.h',
+  'tmpl-expr-eval.c',
+  'tmpl-expr-node.c',
+  'tmpl-expr-node.h',
+  'tmpl-expr-parser-private.h',
+  'tmpl-expr-private.h',
+  'tmpl-gi-private.h',
+  'tmpl-gi.c',
+  'tmpl-iter-node.c',
+  'tmpl-iter-node.h',
+  'tmpl-iterator.c',
+  'tmpl-iterator.h',
+  'tmpl-lexer.c',
+  'tmpl-lexer.h',
+  'tmpl-node.c',
+  'tmpl-node.h',
+  'tmpl-parser.c',
+  'tmpl-parser.h',
+  'tmpl-text-node.c',
+  'tmpl-text-node.h',
+  'tmpl-token-input-stream.c',
+  'tmpl-token-input-stream.h',
+  'tmpl-token.c',
+  'tmpl-token.h',
+  'tmpl-util-private.h',
+  'tmpl-util.c',
+]
+
+
+libtemplate_glib = library(
+  'template_glib-' + apiversion,
+  libtemplate_glib_sources,
+
+  link_depends: 'template-glib.map',
+     link_args: [ '-Wl,--version-script,' + join_paths(meson.current_source_dir(), 'template-glib.map') ],
+  dependencies: libtemplate_glib_deps,
+     soversion: soversion,
+       version: libversion,
+       install: true,
+)
+
+libtemplate_glib_dep = declare_dependency(
+              sources: libtemplate_glib_generated_headers,
+         dependencies: libtemplate_glib_deps,
+            link_with: libtemplate_glib,
+  include_directories: include_directories('.'),
+)
+
+if get_option('with_introspection')
+
+  libtemplate_glib_gir = gnome.generate_gir(libtemplate_glib,
+                sources: libtemplate_glib_generated_headers + libtemplate_glib_public_headers + libtemplate_glib_public_sources,
+              nsversion: apiversion,
+              namespace: 'Template',
+          symbol_prefix: 'tmpl',
+      identifier_prefix: 'Tmpl',
+              link_with: libtemplate_glib,
+               includes: [ 'Gio-2.0' ],
+                install: true,
+        install_dir_gir: girdir,
+    install_dir_typelib: typelibdir,
+             extra_args: [ '--c-include=tmpl-glib.h' ],
+  )
+
+  if get_option('with_vapi')
+
+    libtemplate_glib_vapi = gnome.generate_vapi('libtemplate-glib-' + apiversion,
+          sources: libtemplate_glib_gir[0],
+         packages: [ 'gio-2.0' ],
+          install: true,
+      install_dir: vapidir,
+    )
+
+  endif
+endif
+
+install_headers(libtemplate_glib_public_headers, subdir: libtemplate_glib_header_subdir)
+
+pkgg = import('pkgconfig')
+
+pkgg.generate(
+    libraries: [libtemplate_glib],
+      subdirs: 'libtemplate-glib-@0@'.format(apiversion),
+      version: meson.project_version(),
+         name: 'Template-GLib',
+     filebase: 'template-glib-@0@'.format(apiversion),
+  description: 'A templating library for GLib',
+     requires: 'gio-2.0',
+)
+
