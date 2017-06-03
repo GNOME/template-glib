@@ -88,6 +88,7 @@ typelibdir = join_paths(get_option('libdir'), 'girepository-1.0')
 vapidir = join_paths(get_option('datadir'), 'vala', 'vapi')
 
 gnome = import('gnome')
+i18n = import('i18n')
 
 subdir('src')
 subdir('tests')
