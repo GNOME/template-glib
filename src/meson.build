@@ -174,7 +174,7 @@ if get_option('with_introspection')
 
   if get_option('with_vapi')
 
-    libtemplate_glib_vapi = gnome.generate_vapi('libtemplate-glib-' + apiversion,
+    libtemplate_glib_vapi = gnome.generate_vapi('template-glib-' + apiversion,
           sources: libtemplate_glib_gir[0],
          packages: [ 'gio-2.0' ],
           install: true,
