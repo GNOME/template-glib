@@ -85,15 +85,15 @@ tmpl_expr_parser = custom_target('tmpl-expr-parser',
 # this fails with meson which wants to output to specific directories
 # and just to avoid any regressions we don't want to modify the autotools files
 tmpl_expr_scanner_flex = custom_target('tmpl-expr-scanner-flex',
-  input: 'tmpl-expr-scanner.l',
-  output: 'tmpl-expr-meson-scanner.l',
+    input: 'tmpl-expr-scanner.l',
+   output: 'tmpl-expr-meson-scanner.l',
   capture: true,
   command: [sed, '-e', 's/^%option header-file.*$//',
                  '-e', 's/^%option outfile.*$//', '@INPUT@']
 )
 tmpl_expr_scanner = custom_target('tmpl-expr-scanner',
-  input: tmpl_expr_scanner_flex,
-  output: 'tmpl-expr-scanner.c',
+    input: tmpl_expr_scanner_flex,
+   output: 'tmpl-expr-scanner.c',
   command: [flex, '-o', '@OUTPUT@', '@INPUT@']
 )
 

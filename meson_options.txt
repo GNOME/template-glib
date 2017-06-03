@@ -7,4 +7,7 @@ option('enable_profiling', type: 'boolean', value: false)
 option('with_introspection', type: 'boolean', value: true)
 option('with_vapi', type: 'boolean', value: true)
 
+option('enable-gtk-doc',
+       type: 'boolean', value: false,
+       description: 'Whether to generate the API reference for Template-GLib')
 
