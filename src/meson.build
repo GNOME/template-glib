@@ -190,7 +190,7 @@ pkgg = import('pkgconfig')
 
 pkgg.generate(
     libraries: [libtemplate_glib],
-      subdirs: 'libtemplate-glib-@0@'.format(apiversion),
+      subdirs: 'template-glib-@0@'.format(apiversion),
       version: meson.project_version(),
          name: 'Template-GLib',
      filebase: 'template-glib-@0@'.format(apiversion),
