@@ -1,0 +1,5 @@
+# List of source files containing translatable strings.
+# Please keep this file sorted alphabetically.
+src/tmpl-parser.c
+src/tmpl-template.c
+src/tmpl-template-locator.c
