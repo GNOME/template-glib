@@ -1,0 +1,16 @@
+==============
+Version 3.25.2
+==============
+
+This is the first release of template-glib.
+
+Template-GLib is a small templating library for GLib based applications. It
+supports a fairly simple scripting style for templates as well as integration
+with GObject Introspection. This allows templates to be created that need to
+iterate through data found in real GObjects.
+
+Currently, Template-GLib is used by the GNOME Builder project for project
+templates, but we think it could be useful to other projects as well.
+
+Thanks!
+ 
