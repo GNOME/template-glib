@@ -83,9 +83,19 @@ add_project_arguments(
 )
 
 # Setup various paths that subdirectory meson.build files need
-girdir = join_paths(get_option('datadir'), 'gir-1.0')
-typelibdir = join_paths(get_option('libdir'), 'girepository-1.0')
-vapidir = join_paths(get_option('datadir'), 'vala', 'vapi')
+if meson.is_subproject()
+  girdir = get_option('pkggirdir')
+  typelibdir = get_option('pkgtypelibdir')
+  libdir = get_option('pkglibdir')
+  vapidir = get_option('pkgvapidir')
+  includedir = get_option('pkgincludedir')
+else
+  libdir = get_option('libdir')
+  includedir = get_option('includedir')
+  girdir = join_paths(get_option('datadir'), 'gir-1.0')
+  typelibdir = join_paths(get_option('libdir'), 'girepository-1.0')
+  vapidir = join_paths(get_option('datadir'), 'vala', 'vapi')
+endif
 
 gnome = import('gnome')
 i18n = import('i18n')

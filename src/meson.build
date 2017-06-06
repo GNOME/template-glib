@@ -1,5 +1,5 @@
 libtemplate_glib_header_subdir = 'template-glib-' + apiversion
-libtemplate_glib_header_dir = join_paths(get_option('includedir'), libtemplate_glib_header_subdir)
+libtemplate_glib_header_dir = join_paths(includedir, libtemplate_glib_header_subdir)
 
 version_data = configuration_data()
 version_data.set('TMPL_MAJOR_VERSION', template_glib_version_major)
@@ -136,6 +136,9 @@ libtemplate_glib_sources = [
   'tmpl-util.c',
 ]
 
+if libdir == '' or includedir == ''
+  error('You must set pkglibdir and pkgincludedir when using as a subproject')
+endif
 
 libtemplate_glib = library(
   'template_glib-' + apiversion,
@@ -147,6 +150,7 @@ libtemplate_glib = library(
      soversion: soversion,
        version: libversion,
        install: true,
+   install_dir: libdir,
 )
 
 libtemplate_glib_dep = declare_dependency(
@@ -157,6 +161,9 @@ libtemplate_glib_dep = declare_dependency(
 )
 
 if get_option('with_introspection')
+  if girdir == '' or typelibdir == ''
+    error('You must set pkggirdir and pkgtypelidir when using as a subproject')
+  endif
 
   libtemplate_glib_gir = gnome.generate_gir(libtemplate_glib,
                 sources: libtemplate_glib_generated_headers + libtemplate_glib_public_headers + libtemplate_glib_public_sources,
@@ -173,6 +180,9 @@ if get_option('with_introspection')
   )
 
   if get_option('with_vapi')
+    if vapidir == ''
+      error('You must set pkgvapidir when using as a subproject')
+    endif
 
     libtemplate_glib_vapi = gnome.generate_vapi('template-glib-' + apiversion,
           sources: libtemplate_glib_gir[0],
@@ -184,7 +194,9 @@ if get_option('with_introspection')
   endif
 endif
 
-install_headers(libtemplate_glib_public_headers, subdir: libtemplate_glib_header_subdir)
+install_headers(libtemplate_glib_public_headers,
+  install_dir: libtemplate_glib_header_dir
+)
 
 pkgg = import('pkgconfig')
 
@@ -196,5 +208,6 @@ pkgg.generate(
      filebase: 'template-glib-@0@'.format(apiversion),
   description: 'A templating library for GLib',
      requires: 'gio-2.0',
+  install_dir: join_paths(libdir, 'pkgconfig'),
 )
 
