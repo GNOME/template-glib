@@ -8,20 +8,8 @@ option('with_introspection', type: 'boolean', value: true)
 option('with_vapi', type: 'boolean', value: true)
 
 # For subproject usage
-option('pkggirdir', type: 'string',
-  description: 'Private directory used when built as a subproject'
-)
-option('pkgvapidir', type: 'string',
-  description: 'Private directory used when built as a subproject'
-)
-option('pkglibdir', type: 'string',
-  description: 'Private directory used when built as a subproject'
-)
-option('pkgtypelibdir', type: 'string',
-  description: 'Private directory used when built as a subproject'
-)
-option('pkgincludedir', type: 'string',
-  description: 'Private directory used when built as a subproject'
+option('package_subdir', type: 'string',
+  description: 'Private sub-directory used when built as a subproject'
 )
 
 option('enable-gtk-doc',
