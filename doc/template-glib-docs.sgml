@@ -18,6 +18,8 @@
 
   <chapter>
     <title>Template-GLib API Reference</title>
+    <xi:include href="xml/tmpl-expr.xml"/>
+    <xi:include href="xml/tmpl-expr-types.xml"/>
     <xi:include href="xml/tmpl-error.xml"/>
     <xi:include href="xml/tmpl-scope.xml"/>
     <xi:include href="xml/tmpl-symbol.xml"/>
