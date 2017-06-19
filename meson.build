@@ -101,6 +101,6 @@ subdir('src')
 subdir('tests')
 subdir('po')
 
-if get_option('enable-gtk-doc')
+if get_option('enable_gtk_doc')
   subdir('doc')
 endif

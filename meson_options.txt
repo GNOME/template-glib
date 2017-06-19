@@ -12,7 +12,7 @@ option('package_subdir', type: 'string',
   description: 'Private sub-directory used when built as a subproject'
 )
 
-option('enable-gtk-doc',
+option('enable_gtk_doc',
        type: 'boolean', value: false,
        description: 'Whether to generate the API reference for Template-GLib')
 
