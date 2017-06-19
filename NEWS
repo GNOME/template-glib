@@ -1,4 +1,17 @@
 ==============
+Version 3.25.3
+==============
+
+Changes
+
+ • Add support for gtk-doc based documentation.
+ • Add support for using template-glib as a Meson subproject.
+
+Updated Translations:
+
+ • Swedish
+
+==============
 Version 3.25.2
 ==============
 
