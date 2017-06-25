@@ -1,16 +1,16 @@
 # Czech translation for template-glib.
 # Copyright (C) 2016 template-glib's COPYRIGHT HOLDER
 # This file is distributed under the same license as the template-glib package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# Marek Černocký <marek@manet.cz>, 2016.
+#
+# Marek Černocký <marek@manet.cz>, 2016, 2017.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: template-glib master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=template-glib&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-03-14 02:42+0000\n"
-"PO-Revision-Date: 2016-03-14 04:25+0100\n"
+"Project-Id-Version: template-glib\n"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"builder&keywords=I18N+L10N&component=templates\n"
+"POT-Creation-Date: 2017-06-05 10:48+0000\n"
+"PO-Revision-Date: 2017-06-25 12:10+0200\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -20,22 +20,20 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Generator: Gtranslator 2.91.7\n"
 
-#: ../src/tmpl-parser.c:199
+#: src/tmpl-parser.c:199
 #, c-format
 msgid "%s() may only be called once"
 msgstr "Funkce %s() může být zavolána jen jednou"
 
-#: ../src/tmpl-parser.c:211
-#, c-format
+#: src/tmpl-parser.c:211
 msgid "Parser does not contain an input stream"
 msgstr "Ve zpracování není žádný datový proud"
 
-#: ../src/tmpl-template.c:451
-#, c-format
+#: src/tmpl-template.c:454
 msgid "Must parse template before expanding"
 msgstr "Před rozbalením je šablonu nutné zpracovat"
 
-#: ../src/tmpl-template-locator.c:105
+#: src/tmpl-template-locator.c:105
 #, c-format
-msgid "Failed to locate template \"%s\""
+msgid "Failed to locate template “%s”"
 msgstr "Selhalo vyhledání šablony „%s“"
