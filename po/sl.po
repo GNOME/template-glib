@@ -35,9 +35,9 @@ msgstr "Razčlenjevalnik ne vključuje vhodnega pretoka"
 #: ../src/tmpl-template.c:454
 #, c-format
 msgid "Must parse template before expanding"
-msgstr "Predlogo je treba razčleniti pred razširjanjem"
+msgstr "Pred razširjanjem je treba predlogo razčleniti"
 
-#: ../src/tmpl-template-locator.c:105
+#: src/tmpl-template-locator.c:105
 #, c-format
 msgid "Failed to locate template \"%s\""
 msgstr "Iskanje predloge »%s« je spodletelo."
