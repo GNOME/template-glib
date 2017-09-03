@@ -560,7 +560,6 @@ cleanup:
 static gchar *
 make_title (const gchar *str)
 {
-  g_auto(GStrv) parts = NULL;
   GString *ret;
 
   g_assert (str != NULL);
