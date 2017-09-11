@@ -1,3 +1,12 @@
+==============
+Version 3.26.0
+==============
+
+Changes in this release:
+
+ • Don't store build dir in generated files to help with
+   build reproducibility.
+
 ===============
 Version 3.25.92
 ===============
