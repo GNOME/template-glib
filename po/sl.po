@@ -7,10 +7,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: template-glib master\n"
-"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
-"product=template-glib&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-05-04 08:47+0200\n"
-"PO-Revision-Date: 2017-05-04 08:48+0200\n"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"builder&keywords=I18N+L10N&component=templates\n"
+"POT-Creation-Date: 2017-09-18 21:16+0200\n"
+"PO-Revision-Date: 2017-09-18 21:16+0200\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -22,22 +22,20 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Generator: Poedit 2.0.1\n"
 
-#: ../src/tmpl-parser.c:199
+#: src/tmpl-parser.c:199
 #, c-format
 msgid "%s() may only be called once"
 msgstr "%s() je dovoljeno klicati le enkrat"
 
-#: ../src/tmpl-parser.c:211
-#, c-format
+#: src/tmpl-parser.c:211
 msgid "Parser does not contain an input stream"
 msgstr "Razčlenjevalnik ne vključuje vhodnega pretoka"
 
-#: ../src/tmpl-template.c:454
-#, c-format
+#: src/tmpl-template.c:454
 msgid "Must parse template before expanding"
 msgstr "Pred razširjanjem je treba predlogo razčleniti"
 
 #: src/tmpl-template-locator.c:105
 #, c-format
-msgid "Failed to locate template \"%s\""
+msgid "Failed to locate template “%s”"
 msgstr "Iskanje predloge »%s« je spodletelo."
