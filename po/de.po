@@ -1,15 +1,15 @@
 # German translation for template-glib.
 # Copyright (C) 2016 template-glib's COPYRIGHT HOLDER
 # This file is distributed under the same license as the template-glib package.
-# Mario Blättermann <mario.blaettermann@gmail.com>, 2016.
+# Mario Blättermann <mario.blaettermann@gmail.com>, 2016-2017.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: template-glib master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=template-glib&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-01-13 14:42+0000\n"
-"PO-Revision-Date: 2016-01-13 20:14+0100\n"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"builder&keywords=I18N+L10N&component=templates\n"
+"POT-Creation-Date: 2017-09-12 11:58+0000\n"
+"PO-Revision-Date: 2017-10-02 11:59+0200\n"
 "Last-Translator: Mario Blättermann <mario.blaettermann@gmail.com>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "Language: de\n"
@@ -17,24 +17,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.6\n"
+"X-Generator: Poedit 2.0.3\n"
 
-#: ../src/tmpl-parser.c:199
+#: src/tmpl-parser.c:199
 #, c-format
 msgid "%s() may only be called once"
 msgstr "%s() darf nur einmal aufgerufen werden"
 
-#: ../src/tmpl-parser.c:211
-#, c-format
+#: src/tmpl-parser.c:211
 msgid "Parser does not contain an input stream"
 msgstr "Parser enthält keinen Eingabe-Datenstrom"
 
-#: ../src/tmpl-template.c:399
-#, c-format
+#: src/tmpl-template.c:454
 msgid "Must parse template before expanding"
 msgstr "Vorlage muss vor dem Erweitern verarbeitet werden"
 
-#: ../src/tmpl-template-locator.c:105
+#: src/tmpl-template-locator.c:105
 #, c-format
-msgid "Failed to locate template \"%s\""
+msgid "Failed to locate template “%s”"
 msgstr "Vorlage »%s« konnte nicht gefunden werden"
