@@ -1,4 +1,14 @@
 ==============
+Version 3.26.1
+==============
+
+ • Enable C99 support specifically in meson.build
+
+Updated Translations:
+
+  German, Slovenian
+
+==============
 Version 3.26.0
 ==============
 
