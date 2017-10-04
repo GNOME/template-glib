@@ -155,7 +155,6 @@ libtemplate_glib = library(
      soversion: soversion,
        version: libversion,
        install: true,
-   install_dir: libdir,
 )
 
 libtemplate_glib_dep = declare_dependency(
