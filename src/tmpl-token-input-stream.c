@@ -244,11 +244,9 @@ tmpl_token_input_stream_read_token (TmplTokenInputStream  *self,
    */
   ch = g_data_input_stream_read_byte (stream, cancellable, &local_error);
 
-  if ((ch == 0) && (local_error != NULL))
-    {
-      g_propagate_error (error, local_error);
-      return NULL;
-    }
+  /* Probably just end of file */
+  if (ch == 0)
+    return NULL;
 
   /*
    * Handle possible escaped \{.
