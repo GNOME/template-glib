@@ -162,6 +162,9 @@ exp: exp CMP exp {
   | exp '.' NAME {
     $$ = tmpl_expr_new_getattr ($1, $3);
   }
+  | exp '.' VERSION {
+    $$ = tmpl_expr_new_getattr ($1, "version");
+  }
   | exp '.' NAME '=' exp {
     $$ = tmpl_expr_new_setattr ($1, $3, $5);
   }
