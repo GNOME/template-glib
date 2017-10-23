@@ -1562,7 +1562,17 @@ builtin_typeof (const GValue  *value,
                 GError       **error)
 {
   g_value_init (return_value, G_TYPE_GTYPE);
-  g_value_set_gtype (return_value, G_VALUE_TYPE (value));
+
+  if (G_VALUE_HOLDS (value, TMPL_TYPE_BASE_INFO) &&
+      g_value_get_pointer (value) != NULL)
+    g_value_set_gtype (return_value,
+                       g_registered_type_info_get_g_type (g_value_get_pointer (value)));
+  else if (G_VALUE_HOLDS_OBJECT (value) &&
+           g_value_get_object (value) != NULL)
+    g_value_set_gtype (return_value, G_OBJECT_TYPE (g_value_get_object (value)));
+  else
+    g_value_set_gtype (return_value, G_VALUE_TYPE (value));
+
   return TRUE;
 }
 
