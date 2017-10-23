@@ -110,7 +110,8 @@ tmpl_iterator_init (TmplIterator *iter,
       iter->get_value = string_get_value;
       iter->destroy = NULL;
     }
-  else if (G_VALUE_HOLDS (value, G_TYPE_LIST_MODEL))
+  else if (G_VALUE_HOLDS (value, G_TYPE_OBJECT) &&
+           G_IS_LIST_MODEL (g_value_get_object (value)))
     {
       iter->instance = g_value_get_object (value);
       iter->move_next = list_model_move_next;
