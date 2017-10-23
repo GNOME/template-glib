@@ -860,6 +860,7 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
   n_args = g_callable_info_get_n_args ((GICallableInfo *)function);
 
   values = g_array_new (FALSE, TRUE, sizeof (GValue));
+  g_array_set_clear_func (values, (GDestroyNotify)g_value_unset);
   g_array_set_size (values, n_args);
 
   in_args = g_array_new (FALSE, TRUE, sizeof (GIArgument));
