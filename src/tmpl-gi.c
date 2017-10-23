@@ -20,7 +20,8 @@
 #include "tmpl-error.h"
 #include "tmpl-gi-private.h"
 
-G_DEFINE_POINTER_TYPE (GisTypelib, tmpl_typelib)
+G_DEFINE_POINTER_TYPE (TmplTypelib, tmpl_typelib)
+G_DEFINE_POINTER_TYPE (TmplBaseInfo, tmpl_base_info)
 
 #define return_type_mismatch(value, type)                          \
   G_STMT_START {                                                   \

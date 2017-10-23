@@ -21,9 +21,11 @@
 
 G_BEGIN_DECLS
 
-#define TMPL_TYPE_TYPELIB (tmpl_typelib_get_type())
+#define TMPL_TYPE_TYPELIB   (tmpl_typelib_get_type())
+#define TMPL_TYPE_BASE_INFO (tmpl_base_info_get_type())
 
 GType    tmpl_typelib_get_type         (void);
+GType    tmpl_base_info_get_type       (void);
 gboolean tmpl_gi_argument_from_g_value (const GValue  *value,
                                         GITypeInfo    *type_info,
                                         GIArgument    *arg,

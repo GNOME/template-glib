@@ -484,6 +484,38 @@ tmpl_expr_getattr_eval (TmplExprGetattr  *node,
   if (!tmpl_expr_eval_internal (node->left, scope, &left, error))
     goto cleanup;
 
+  if (G_VALUE_HOLDS (&left, TMPL_TYPE_TYPELIB) &&
+      g_value_get_pointer (&left) != NULL)
+    {
+      GIRepository *repository = g_irepository_get_default ();
+      GITypelib *typelib = g_value_get_pointer (&left);
+      const gchar *ns = g_typelib_get_namespace (typelib);
+      GIBaseInfo *base_info;
+
+      /* Maybe we can resolve this dot accessor (.foo) using GObject
+       * Introspection from the first object.
+       */
+
+      base_info = g_irepository_find_by_name (repository, ns, node->attr);
+
+      if (base_info == NULL)
+        {
+          g_set_error (error,
+                       TMPL_ERROR,
+                       TMPL_ERROR_GI_FAILURE,
+                       "Failed to locate %s within %s",
+                       node->attr, ns);
+          goto cleanup;
+        }
+
+      g_value_init (return_value, TMPL_TYPE_BASE_INFO);
+      g_value_set_pointer (return_value, base_info);
+
+      ret = TRUE;
+
+      goto cleanup;
+    }
+
   if (!G_VALUE_HOLDS_OBJECT (&left))
     {
       g_set_error (error,
