@@ -668,12 +668,14 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
   GIFunctionInfo *function = NULL;
   GIArgument return_value_arg = { 0 };
   GITypeInfo return_value_type;
+  GIArgument *dispatch_args = NULL;
   TmplExpr *args;
   GObject *object;
   gboolean ret = FALSE;
   GArray *in_args = NULL;
   GArray *values = NULL;
   GType type;
+  guint dispatch_len = 0;
   guint n_args;
   guint i;
 
@@ -787,6 +789,44 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
       goto cleanup;
     }
 
+  repository = g_irepository_get_default ();
+
+  if (G_VALUE_HOLDS (&left, TMPL_TYPE_TYPELIB) &&
+      g_value_get_pointer (&left) != NULL)
+    {
+      GITypelib *typelib = g_value_get_pointer (&left);
+      const gchar *ns = g_typelib_get_namespace (typelib);
+
+      base_info = g_irepository_find_by_name (repository, ns, node->name);
+
+      if (!GI_IS_FUNCTION_INFO (base_info))
+        {
+          g_set_error (error,
+                       TMPL_ERROR,
+                       TMPL_ERROR_GI_FAILURE,
+                       "%s is not a function in %s",
+                       node->name, ns);
+          goto cleanup;
+        }
+
+      function = (GIFunctionInfo *)base_info;
+
+      n_args = g_callable_info_get_n_args ((GICallableInfo *)function);
+
+      values = g_array_new (FALSE, TRUE, sizeof (GValue));
+      g_array_set_clear_func (values, (GDestroyNotify)g_value_unset);
+      g_array_set_size (values, n_args);
+
+      in_args = g_array_new (FALSE, TRUE, sizeof (GIArgument));
+      g_array_set_size (in_args, n_args + 1);
+
+      /* Skip past first param, which is used for Object below */
+      dispatch_args = ((GIArgument *)(gpointer)in_args->data) + 1;
+      dispatch_len = in_args->len - 1;
+
+      goto apply_args;
+    }
+
   if (!G_VALUE_HOLDS_OBJECT (&left))
     {
       g_set_error (error,
@@ -808,7 +848,6 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
       goto cleanup;
     }
 
-  repository = g_irepository_get_default ();
   type = G_OBJECT_TYPE (object);
 
   while (g_type_is_a (type, G_TYPE_OBJECT))
@@ -827,6 +866,7 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
           goto cleanup;
         }
 
+      /* First locate the function in the object */
       function = g_object_info_find_method ((GIObjectInfo *)base_info, node->name);
       if (function != NULL)
         break;
@@ -838,9 +878,9 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
           GIInterfaceInfo *iface_info;
 
           iface_info = g_object_info_get_interface ((GIObjectInfo *)base_info, i);
-
           function = g_interface_info_find_method (iface_info, node->name);
         }
+
       if (function != NULL)
         break;
 
@@ -868,6 +908,10 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
 
   g_array_index (in_args, GIArgument, 0).v_pointer = object;
 
+  dispatch_args = (GIArgument *)(gpointer)in_args->data;
+  dispatch_len = in_args->len;
+
+apply_args:
   args = node->params;
 
   for (i = 0; i < n_args; i++)
@@ -928,8 +972,8 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
     }
 
   if (!g_function_info_invoke (function,
-                               (GIArgument *)(void *)in_args->data,
-                               in_args->len,
+                               dispatch_args,
+                               dispatch_len,
                                NULL,
                                0,
                                &return_value_arg,
@@ -1564,7 +1608,8 @@ builtin_typeof (const GValue  *value,
   g_value_init (return_value, G_TYPE_GTYPE);
 
   if (G_VALUE_HOLDS (value, TMPL_TYPE_BASE_INFO) &&
-      g_value_get_pointer (value) != NULL)
+      g_value_get_pointer (value) != NULL &&
+      GI_IS_REGISTERED_TYPE_INFO (g_value_get_pointer (value)))
     g_value_set_gtype (return_value,
                        g_registered_type_info_get_g_type (g_value_get_pointer (value)));
   else if (G_VALUE_HOLDS_OBJECT (value) &&
