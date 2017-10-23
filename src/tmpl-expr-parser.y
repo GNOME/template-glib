@@ -47,12 +47,11 @@ tmpl_expr_parser_error (TmplExprParser *parser,
 # define scanner parser->scanner
 %}
 
-%token <s> REQUIRE VERSION
-
 %token <b> BOOL
 %token <d> NUMBER
 %token <s> NAME STRING_LITERAL
 %token <fn> BUILTIN
+%token <s> REQUIRE VERSION
 %token EOL
 
 %token IF THEN ELSE WHILE DO FUNC
