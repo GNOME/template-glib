@@ -85,6 +85,7 @@ typedef enum
   TMPL_EXPR_BUILTIN_PRINT,
   TMPL_EXPR_BUILTIN_REPR,
   TMPL_EXPR_BUILTIN_SQRT,
+  TMPL_EXPR_BUILTIN_TYPEOF,
 } TmplExprBuiltin;
 
 GType tmpl_expr_get_type   (void);

@@ -68,6 +68,9 @@ static gboolean builtin_repr                 (const GValue  *value,
 static gboolean builtin_sqrt                 (const GValue  *value,
                                               GValue        *return_value,
                                               GError       **error);
+static gboolean builtin_typeof               (const GValue  *value,
+                                              GValue        *return_value,
+                                              GError       **error);
 static gboolean eq_enum_string               (const GValue  *left,
                                               const GValue  *right,
                                               GValue        *return_value,
@@ -87,6 +90,7 @@ static BuiltinFunc builtin_funcs [] = {
   builtin_print,
   builtin_repr,
   builtin_sqrt,
+  builtin_typeof,
 };
 
 static inline guint
@@ -103,6 +107,33 @@ build_hash (TmplExprType type,
   return type | (left << 16) | (right << 24);
 }
 
+static gboolean
+eq_gtype_gtype (const GValue  *left,
+                const GValue  *right,
+                GValue        *return_value,
+                GError       **error)
+{
+  g_value_init (return_value, G_TYPE_BOOLEAN);
+  g_value_set_boolean (return_value,
+                       g_value_get_gtype (left) == g_value_get_gtype (right) ||
+                       g_type_is_a (g_value_get_gtype (right), g_value_get_gtype (left)));
+  return TRUE;
+}
+
+static gboolean
+ne_gtype_gtype (const GValue  *left,
+                const GValue  *right,
+                GValue        *return_value,
+                GError       **error)
+{
+  if (eq_gtype_gtype (left, right, return_value, error))
+    {
+      g_value_set_boolean (return_value, !g_value_get_boolean (return_value));
+      return TRUE;
+    }
+
+  return FALSE;
+}
 
 static gboolean
 throw_type_mismatch (GError       **error,
@@ -154,6 +185,9 @@ find_dispatch_slow (TmplExprSimple *node,
       if ((G_VALUE_HOLDS_STRING (left) && G_VALUE_HOLDS_ENUM (right)) ||
           (G_VALUE_HOLDS_STRING (right) && G_VALUE_HOLDS_ENUM (left)))
         return eq_enum_string;
+
+      if (G_VALUE_HOLDS_GTYPE (left) && G_VALUE_HOLDS_GTYPE (right))
+        return eq_gtype_gtype;
     }
 
   if (node->type == TMPL_EXPR_NE)
@@ -161,6 +195,9 @@ find_dispatch_slow (TmplExprSimple *node,
       if ((G_VALUE_HOLDS_STRING (left) && G_VALUE_HOLDS_ENUM (right)) ||
           (G_VALUE_HOLDS_STRING (right) && G_VALUE_HOLDS_ENUM (left)))
         return ne_enum_string;
+
+      if (G_VALUE_HOLDS_GTYPE (left) && G_VALUE_HOLDS_GTYPE (right))
+        return ne_gtype_gtype;
     }
 
   return NULL;
@@ -1484,6 +1521,16 @@ builtin_sqrt (const GValue  *value,
   throw_type_mismatch (error, value, NULL, "requires double parameter");
 
   return FALSE;
+}
+
+static gboolean
+builtin_typeof (const GValue  *value,
+                GValue        *return_value,
+                GError       **error)
+{
+  g_value_init (return_value, G_TYPE_GTYPE);
+  g_value_set_gtype (return_value, G_VALUE_TYPE (value));
+  return TRUE;
 }
 
 static gboolean

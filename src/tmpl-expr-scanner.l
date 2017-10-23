@@ -66,13 +66,14 @@ TmplExprParser *parser = yyextra;
 "false"    { yylval->b = 0; return BOOL; }
 
  /* builtin functions */
-"ceil"  { yylval->fn = TMPL_EXPR_BUILTIN_CEIL; return BUILTIN; }
-"floor" { yylval->fn = TMPL_EXPR_BUILTIN_FLOOR; return BUILTIN; }
-"hex"   { yylval->fn = TMPL_EXPR_BUILTIN_HEX; return BUILTIN; }
-"log"   { yylval->fn = TMPL_EXPR_BUILTIN_LOG; return BUILTIN; }
-"print" { yylval->fn = TMPL_EXPR_BUILTIN_PRINT; return BUILTIN; }
-"repr"  { yylval->fn = TMPL_EXPR_BUILTIN_REPR; return BUILTIN; }
-"sqrt"  { yylval->fn = TMPL_EXPR_BUILTIN_SQRT; return BUILTIN; }
+"ceil"   { yylval->fn = TMPL_EXPR_BUILTIN_CEIL; return BUILTIN; }
+"floor"  { yylval->fn = TMPL_EXPR_BUILTIN_FLOOR; return BUILTIN; }
+"hex"    { yylval->fn = TMPL_EXPR_BUILTIN_HEX; return BUILTIN; }
+"log"    { yylval->fn = TMPL_EXPR_BUILTIN_LOG; return BUILTIN; }
+"print"  { yylval->fn = TMPL_EXPR_BUILTIN_PRINT; return BUILTIN; }
+"repr"   { yylval->fn = TMPL_EXPR_BUILTIN_REPR; return BUILTIN; }
+"sqrt"   { yylval->fn = TMPL_EXPR_BUILTIN_SQRT; return BUILTIN; }
+"typeof" { yylval->fn = TMPL_EXPR_BUILTIN_TYPEOF; return BUILTIN; }
 
  /* string literals */
 L?\"(\\.|[^\\"])*\" { yylval->s = yytext; return STRING_LITERAL; }
