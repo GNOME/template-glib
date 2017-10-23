@@ -142,6 +142,10 @@ tmpl_gi_argument_from_g_value (const GValue  *value,
     case GI_TYPE_TAG_GTYPE:
       if (G_VALUE_HOLDS (value, G_TYPE_GTYPE))
         arg->v_long = g_value_get_gtype (value);
+      else if (G_VALUE_HOLDS (value, TMPL_TYPE_BASE_INFO) &&
+               g_value_get_pointer (value) != NULL &&
+               GI_IS_REGISTERED_TYPE_INFO (g_value_get_pointer (value)))
+        arg->v_long = g_registered_type_info_get_g_type (g_value_get_pointer (value));
       else
         return_type_mismatch (value, G_TYPE_GTYPE);
       return TRUE;
