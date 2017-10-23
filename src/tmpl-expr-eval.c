@@ -898,7 +898,7 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
 
       if (args->any.type == TMPL_EXPR_STMT_LIST)
         {
-          if (!tmpl_expr_eval_internal (((TmplExprSimple *)node)->left, scope, value, error))
+          if (!tmpl_expr_eval_internal (((TmplExprSimple *)args)->left, scope, value, error))
             goto cleanup;
 
           args = ((TmplExprSimple *)args)->right;
