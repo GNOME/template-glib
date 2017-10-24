@@ -309,7 +309,7 @@ tmpl_token_input_stream_read_token (TmplTokenInputStream  *self,
   if (!(text = tmpl_token_input_stream_read_tag (self, &len, cancellable, error)))
     return NULL;
 
-  self->swallow_newline = self->last_was_text_with_newline;
+  self->swallow_newline = TRUE;
   self->last_was_text_with_newline = FALSE;
 
   return tmpl_token_new_generic (text);
