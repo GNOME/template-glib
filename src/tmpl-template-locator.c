@@ -40,7 +40,7 @@ tmpl_template_locator_locate_in_path (TmplTemplateLocator *self,
   g_assert (path_base != NULL);
   g_assert (path != NULL);
 
-  full_path = g_build_path (path_base, path, NULL);
+  full_path = g_build_filename (path_base, path, NULL);
 
   if (g_str_has_prefix (full_path, "resource://"))
     {
