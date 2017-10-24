@@ -799,7 +799,7 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
 
       base_info = g_irepository_find_by_name (repository, ns, node->name);
 
-      if (!GI_IS_FUNCTION_INFO (base_info))
+      if (base_info == NULL || !GI_IS_FUNCTION_INFO (base_info))
         {
           g_set_error (error,
                        TMPL_ERROR,
