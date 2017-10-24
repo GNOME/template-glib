@@ -326,11 +326,6 @@ tmpl_gi_argument_to_g_value (GValue      *value,
 
   tag = g_type_info_get_tag (type_info);
 
-  if (tag == GI_TYPE_TAG_INTERFACE)
-    {
-      g_warning ("TODO: proper return marshaling");
-    }
-
   switch (tag)
     {
     case GI_TYPE_TAG_VOID:
@@ -403,8 +398,46 @@ tmpl_gi_argument_to_g_value (GValue      *value,
       g_value_set_string (value, arg->v_string);
       return TRUE;
 
-    case GI_TYPE_TAG_ARRAY:
     case GI_TYPE_TAG_INTERFACE:
+      {
+        g_autoptr(GIBaseInfo) info = g_type_info_get_interface (type_info);
+        GIInfoType info_type = g_base_info_get_type (info);
+
+        switch (info_type)
+          {
+          case GI_INFO_TYPE_INTERFACE:
+          case GI_INFO_TYPE_OBJECT:
+            g_value_init (value, G_TYPE_OBJECT);
+            g_value_set_object (value, arg->v_pointer);
+            return TRUE;
+
+          case GI_INFO_TYPE_FLAGS:
+          case GI_INFO_TYPE_ENUM:
+          case GI_INFO_TYPE_BOXED:
+          case GI_INFO_TYPE_STRUCT:
+          case GI_INFO_TYPE_UNION:
+          case GI_INFO_TYPE_INVALID:
+          case GI_INFO_TYPE_INVALID_0:
+          case GI_INFO_TYPE_FUNCTION:
+          case GI_INFO_TYPE_CONSTANT:
+          case GI_INFO_TYPE_CALLBACK:
+          case GI_INFO_TYPE_VALUE:
+          case GI_INFO_TYPE_SIGNAL:
+          case GI_INFO_TYPE_VFUNC:
+          case GI_INFO_TYPE_PROPERTY:
+          case GI_INFO_TYPE_FIELD:
+          case GI_INFO_TYPE_ARG:
+          case GI_INFO_TYPE_TYPE:
+          case GI_INFO_TYPE_UNRESOLVED:
+          default:
+            g_warning ("TODO: proper return marshaling");
+            /* TODO: more marshalling of return types */
+            break;
+          }
+      }
+      break;
+
+    case GI_TYPE_TAG_ARRAY:
     case GI_TYPE_TAG_GLIST:
     case GI_TYPE_TAG_GSLIST:
     case GI_TYPE_TAG_GHASH:
