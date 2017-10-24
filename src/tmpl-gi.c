@@ -21,7 +21,11 @@
 #include "tmpl-gi-private.h"
 
 G_DEFINE_POINTER_TYPE (TmplTypelib, tmpl_typelib)
-G_DEFINE_POINTER_TYPE (TmplBaseInfo, tmpl_base_info)
+
+typedef struct GIBaseInfo TmplBaseInfo;
+G_DEFINE_BOXED_TYPE (TmplBaseInfo, tmpl_base_info,
+                     (GBoxedCopyFunc)g_base_info_ref,
+                     (GBoxedFreeFunc)g_base_info_unref)
 
 #define return_type_mismatch(value, type)                          \
   G_STMT_START {                                                   \
@@ -143,9 +147,9 @@ tmpl_gi_argument_from_g_value (const GValue  *value,
       if (G_VALUE_HOLDS (value, G_TYPE_GTYPE))
         arg->v_long = g_value_get_gtype (value);
       else if (G_VALUE_HOLDS (value, TMPL_TYPE_BASE_INFO) &&
-               g_value_get_pointer (value) != NULL &&
-               GI_IS_REGISTERED_TYPE_INFO (g_value_get_pointer (value)))
-        arg->v_long = g_registered_type_info_get_g_type (g_value_get_pointer (value));
+               g_value_get_boxed (value) != NULL &&
+               GI_IS_REGISTERED_TYPE_INFO (g_value_get_boxed (value)))
+        arg->v_long = g_registered_type_info_get_g_type (g_value_get_boxed (value));
       else
         return_type_mismatch (value, G_TYPE_GTYPE);
       return TRUE;

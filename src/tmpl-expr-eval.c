@@ -509,7 +509,7 @@ tmpl_expr_getattr_eval (TmplExprGetattr  *node,
         }
 
       g_value_init (return_value, TMPL_TYPE_BASE_INFO);
-      g_value_set_pointer (return_value, base_info);
+      g_value_take_boxed (return_value, base_info);
 
       ret = TRUE;
 
@@ -1608,10 +1608,10 @@ builtin_typeof (const GValue  *value,
   g_value_init (return_value, G_TYPE_GTYPE);
 
   if (G_VALUE_HOLDS (value, TMPL_TYPE_BASE_INFO) &&
-      g_value_get_pointer (value) != NULL &&
-      GI_IS_REGISTERED_TYPE_INFO (g_value_get_pointer (value)))
+      g_value_get_boxed (value) != NULL &&
+      GI_IS_REGISTERED_TYPE_INFO (g_value_get_boxed (value)))
     g_value_set_gtype (return_value,
-                       g_registered_type_info_get_g_type (g_value_get_pointer (value)));
+                       g_registered_type_info_get_g_type (g_value_get_boxed (value)));
   else if (G_VALUE_HOLDS_OBJECT (value) &&
            g_value_get_object (value) != NULL)
     g_value_set_gtype (return_value, G_OBJECT_TYPE (g_value_get_object (value)));
