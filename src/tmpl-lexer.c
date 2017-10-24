@@ -122,6 +122,9 @@ tmpl_lexer_next (TmplLexer     *self,
            */
           if (local_error == NULL)
             {
+              const gchar *path = g_object_get_data (G_OBJECT (stream), "PATH");
+              if (path != NULL && self->circular != NULL)
+                g_hash_table_remove (self->circular, path);
               g_queue_pop_head (self->stream_stack);
               g_object_unref (stream);
               continue;
@@ -161,6 +164,7 @@ tmpl_lexer_next (TmplLexer     *self,
           g_hash_table_insert (self->circular, g_strdup (path), NULL);
 
           stream = tmpl_token_input_stream_new (input);
+          g_object_set_data_full (G_OBJECT (stream), "PATH", g_strdup (path), g_free);
           g_queue_push_head (self->stream_stack, stream);
 
           g_clear_pointer (token, tmpl_token_free);
