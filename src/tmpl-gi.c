@@ -26,6 +26,7 @@ typedef struct GIBaseInfo TmplBaseInfo;
 G_DEFINE_BOXED_TYPE (TmplBaseInfo, tmpl_base_info,
                      (GBoxedCopyFunc)g_base_info_ref,
                      (GBoxedFreeFunc)g_base_info_unref)
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GIBaseInfo, g_base_info_unref)
 
 #define return_type_mismatch(value, type)                          \
   G_STMT_START {                                                   \
@@ -42,6 +43,28 @@ G_DEFINE_BOXED_TYPE (TmplBaseInfo, tmpl_base_info,
     if (!G_VALUE_HOLDS (value, type))    \
       return_type_mismatch(value, type); \
   } G_STMT_END
+
+static gboolean
+find_enum_value (GIEnumInfo  *info,
+                 const gchar *str,
+                 gint        *v_int)
+{
+  guint n = g_enum_info_get_n_values (info);
+
+  for (guint i = 0; i < n; i++)
+    {
+      g_autoptr(GIBaseInfo) vinfo = NULL;
+
+      vinfo = (GIBaseInfo *)g_enum_info_get_value (info, i);
+      if (g_strcmp0 (str, g_base_info_get_name (vinfo)) == 0)
+        {
+          *v_int = g_value_info_get_value ((GIValueInfo *)vinfo);
+          return TRUE;
+        }
+    }
+
+  return FALSE;
+}
 
 gboolean
 tmpl_gi_argument_from_g_value (const GValue  *value,
@@ -179,13 +202,11 @@ tmpl_gi_argument_from_g_value (const GValue  *value,
 
     case GI_TYPE_TAG_INTERFACE:
       {
-        GIBaseInfo *info;
+        g_autoptr(GIBaseInfo) info = NULL;
         GIInfoType info_type;
 
         info = g_type_info_get_interface (type_info);
         info_type = g_base_info_get_type (info);
-
-        g_base_info_unref (info);
 
         switch (info_type)
           {
@@ -197,6 +218,18 @@ tmpl_gi_argument_from_g_value (const GValue  *value,
             return TRUE;
 
           case GI_INFO_TYPE_ENUM:
+            if (G_VALUE_HOLDS_STRING (value))
+              {
+                if (find_enum_value ((GIEnumInfo *)info, g_value_get_string (value), &arg->v_int))
+                  return TRUE;
+              }
+
+            if (!G_VALUE_HOLDS_ENUM (value))
+              {
+                return_type_mismatch (value, G_TYPE_ENUM);
+                return FALSE;
+              }
+
             arg->v_int = g_value_get_enum (value);
             return TRUE;
 
