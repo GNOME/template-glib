@@ -33,6 +33,7 @@ gboolean tmpl_gi_argument_from_g_value (const GValue  *value,
 gboolean tmpl_gi_argument_to_g_value   (GValue        *value,
                                         GITypeInfo    *type_info,
                                         GIArgument    *arg,
+                                        GITransfer     xfer,
                                         GError       **error);
 
 G_END_DECLS

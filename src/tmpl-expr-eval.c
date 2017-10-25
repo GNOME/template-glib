@@ -669,6 +669,7 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
   GIArgument return_value_arg = { 0 };
   GITypeInfo return_value_type;
   GIArgument *dispatch_args = NULL;
+  GITransfer xfer = 0;
   TmplExpr *args;
   GObject *object;
   gboolean ret = FALSE;
@@ -981,8 +982,9 @@ apply_args:
     goto cleanup;
 
   g_callable_info_load_return_type ((GICallableInfo *)function, &return_value_type);
+  xfer = g_callable_info_get_caller_owns ((GICallableInfo *)function);
 
-  if (!tmpl_gi_argument_to_g_value (return_value, &return_value_type, &return_value_arg, error))
+  if (!tmpl_gi_argument_to_g_value (return_value, &return_value_type, &return_value_arg, xfer, error))
     goto cleanup;
 
   ret = TRUE;

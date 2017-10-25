@@ -316,6 +316,7 @@ gboolean
 tmpl_gi_argument_to_g_value (GValue      *value,
                              GITypeInfo  *type_info,
                              GIArgument  *arg,
+                             GITransfer   xfer,
                              GError     **error)
 {
   GITypeTag tag;
@@ -395,7 +396,10 @@ tmpl_gi_argument_to_g_value (GValue      *value,
     case GI_TYPE_TAG_UTF8:
     case GI_TYPE_TAG_FILENAME:
       g_value_init (value, G_TYPE_STRING);
-      g_value_set_string (value, arg->v_string);
+      if (xfer == GI_TRANSFER_NOTHING)
+        g_value_set_string (value, arg->v_string);
+      else
+        g_value_take_string (value, arg->v_string);
       return TRUE;
 
     case GI_TYPE_TAG_INTERFACE:
@@ -408,7 +412,10 @@ tmpl_gi_argument_to_g_value (GValue      *value,
           case GI_INFO_TYPE_INTERFACE:
           case GI_INFO_TYPE_OBJECT:
             g_value_init (value, G_TYPE_OBJECT);
-            g_value_set_object (value, arg->v_pointer);
+            if (xfer == GI_TRANSFER_NOTHING)
+              g_value_set_object (value, arg->v_pointer);
+            else
+              g_value_take_object (value, arg->v_pointer);
             return TRUE;
 
           case GI_INFO_TYPE_FLAGS:
