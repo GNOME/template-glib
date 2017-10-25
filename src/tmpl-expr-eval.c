@@ -733,6 +733,18 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
           g_value_set_uint (return_value, strlen (str));
           ret = TRUE;
         }
+      else if (g_str_equal (node->name, "escape"))
+        {
+          g_value_init (return_value, G_TYPE_STRING);
+          g_value_take_string (return_value, g_strescape (str, NULL));
+          ret = TRUE;
+        }
+      else if (g_str_equal (node->name, "escape_markup"))
+        {
+          g_value_init (return_value, G_TYPE_STRING);
+          g_value_take_string (return_value, g_markup_escape_text (str, -1));
+          ret = TRUE;
+        }
       else if (g_str_equal (node->name, "space"))
         {
           gchar *space;
