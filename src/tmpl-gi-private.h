@@ -28,6 +28,7 @@ GType    tmpl_typelib_get_type         (void);
 GType    tmpl_base_info_get_type       (void);
 gboolean tmpl_gi_argument_from_g_value (const GValue  *value,
                                         GITypeInfo    *type_info,
+                                        GIArgInfo     *arg_info,
                                         GIArgument    *arg,
                                         GError       **error);
 gboolean tmpl_gi_argument_to_g_value   (GValue        *value,
@@ -35,6 +36,9 @@ gboolean tmpl_gi_argument_to_g_value   (GValue        *value,
                                         GIArgument    *arg,
                                         GITransfer     xfer,
                                         GError       **error);
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GIBaseInfo, g_base_info_unref)
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GIArgInfo, g_base_info_unref)
 
 G_END_DECLS
 

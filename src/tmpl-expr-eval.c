@@ -917,7 +917,7 @@ apply_args:
 
   for (i = 0; i < n_args; i++)
     {
-      GIArgInfo *arg_info = g_callable_info_get_arg ((GICallableInfo *)function, i);
+      g_autoptr(GIArgInfo) arg_info = g_callable_info_get_arg ((GICallableInfo *)function, i);
       GIArgument *arg = &g_array_index (in_args, GIArgument, i + 1);
       GValue *value = &g_array_index (values, GValue, i);
       GITypeInfo type_info = { 0 };
@@ -958,7 +958,7 @@ apply_args:
 
       g_arg_info_load_type (arg_info, &type_info);
 
-      if (!tmpl_gi_argument_from_g_value (value, &type_info, arg, error))
+      if (!tmpl_gi_argument_from_g_value (value, &type_info, arg_info, arg, error))
         goto cleanup;
     }
 

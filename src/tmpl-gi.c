@@ -26,7 +26,6 @@ typedef struct GIBaseInfo TmplBaseInfo;
 G_DEFINE_BOXED_TYPE (TmplBaseInfo, tmpl_base_info,
                      (GBoxedCopyFunc)g_base_info_ref,
                      (GBoxedFreeFunc)g_base_info_unref)
-G_DEFINE_AUTOPTR_CLEANUP_FUNC (GIBaseInfo, g_base_info_unref)
 
 #define return_type_mismatch(value, type)                          \
   G_STMT_START {                                                   \
@@ -69,10 +68,12 @@ find_enum_value (GIEnumInfo  *info,
 gboolean
 tmpl_gi_argument_from_g_value (const GValue  *value,
                                GITypeInfo    *type_info,
+                               GIArgInfo     *arg_info,
                                GIArgument    *arg,
                                GError       **error)
 {
   GITypeTag type_tag = g_type_info_get_tag (type_info);
+  GITransfer xfer = g_arg_info_get_ownership_transfer (arg_info);
 
   /* For the long handling: long can be equivalent to
    * int32 or int64, depending on the architecture, but
@@ -182,7 +183,12 @@ tmpl_gi_argument_from_g_value (const GValue  *value,
       /* Callers are responsible for ensuring the GValue stays alive
        * long enough for the string to be copied. */
       if (G_VALUE_HOLDS (value, G_TYPE_STRING))
-        arg->v_string = (char *)g_value_get_string (value);
+        {
+          if (xfer == GI_TRANSFER_NOTHING)
+            arg->v_string = (char *)g_value_get_string (value);
+          else
+            arg->v_string = g_value_dup_string (value);
+        }
       else
         return_type_mismatch (value, G_TYPE_STRING);
       return TRUE;
@@ -236,18 +242,18 @@ tmpl_gi_argument_from_g_value (const GValue  *value,
           case GI_INFO_TYPE_INTERFACE:
           case GI_INFO_TYPE_OBJECT:
             if (G_VALUE_HOLDS_PARAM (value))
-              arg->v_pointer = g_value_get_param (value);
+              arg->v_pointer = xfer == GI_TRANSFER_NOTHING ? g_value_get_param (value) : g_value_dup_param (value);
             else
-              arg->v_pointer = g_value_get_object (value);
+              arg->v_pointer = xfer == GI_TRANSFER_NOTHING ? g_value_get_object (value) : g_value_dup_object (value);
             return TRUE;
 
           case GI_INFO_TYPE_BOXED:
           case GI_INFO_TYPE_STRUCT:
           case GI_INFO_TYPE_UNION:
             if (G_VALUE_HOLDS (value, G_TYPE_BOXED))
-              arg->v_pointer = g_value_get_boxed (value);
+              arg->v_pointer = xfer == GI_TRANSFER_NOTHING ? g_value_get_boxed (value) : g_value_dup_boxed (value);
             else if (G_VALUE_HOLDS (value, G_TYPE_VARIANT))
-              arg->v_pointer = g_value_get_variant (value);
+              arg->v_pointer = xfer == GI_TRANSFER_NOTHING ? g_value_get_variant (value) : g_value_dup_variant (value);
             else if (G_VALUE_HOLDS (value, G_TYPE_POINTER))
               arg->v_pointer = g_value_get_pointer (value);
             else
@@ -288,7 +294,7 @@ tmpl_gi_argument_from_g_value (const GValue  *value,
 
     case GI_TYPE_TAG_ERROR:
       if (G_VALUE_HOLDS (value, G_TYPE_ERROR))
-        arg->v_pointer = g_value_get_boxed (value);
+        arg->v_pointer = xfer == GI_TRANSFER_NOTHING ? g_value_get_boxed (value) : g_value_dup_boxed (value);
       else
         return_type_mismatch (value, G_TYPE_ERROR);
       return TRUE;
