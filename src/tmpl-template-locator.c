@@ -21,6 +21,18 @@
 #include "tmpl-error.h"
 #include "tmpl-template-locator.h"
 
+/**
+ * TmplTemplateLocator:
+ *
+ * The #TmplTemplateLoader class is used to specify how templates
+ * should be loaded. This can be used directly by your code that
+ * will compile the data streams into #TmplTemplate instances, or
+ * by a #TmplTemplate that is resolving includes from the
+ * `{{include "path.tmpl"}}` directive.
+ *
+ * See #TmplTemplate:locator for more information.
+ */
+
 typedef struct
 {
   GQueue  *search_path;
