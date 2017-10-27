@@ -79,6 +79,10 @@ static gboolean ne_enum_string               (const GValue  *left,
                                               const GValue  *right,
                                               GValue        *return_value,
                                               GError       **error);
+static gboolean add_string_string_slow       (const GValue  *left,
+                                              const GValue  *right,
+                                              GValue        *return_value,
+                                              GError       **error);
 
 static GHashTable *fast_dispatch;
 static BuiltinFunc builtin_funcs [] = {
@@ -198,6 +202,12 @@ find_dispatch_slow (TmplExprSimple *node,
 
       if (G_VALUE_HOLDS_GTYPE (left) && G_VALUE_HOLDS_GTYPE (right))
         return ne_gtype_gtype;
+    }
+
+  if (node->type == TMPL_EXPR_ADD)
+    {
+      if (G_VALUE_HOLDS_STRING (left) || G_VALUE_HOLDS_STRING (right))
+        return add_string_string_slow;
     }
 
   return NULL;
@@ -1347,6 +1357,38 @@ add_string_string (const GValue  *left,
                        g_strdup_printf ("%s%s",
                                         g_value_get_string (left),
                                         g_value_get_string (right)));
+  return TRUE;
+}
+
+static gboolean
+add_string_string_slow (const GValue  *left,
+                        const GValue  *right,
+                        GValue        *return_value,
+                        GError       **error)
+{
+  GValue trans = G_VALUE_INIT;
+
+  g_value_init (&trans, G_TYPE_STRING);
+  g_value_init (return_value, G_TYPE_STRING);
+
+  if (G_VALUE_HOLDS_STRING (left))
+    {
+      if (!g_value_transform (right, &trans))
+        return FALSE;
+      right = &trans;
+    }
+  else
+    {
+      if (!g_value_transform (left, &trans))
+        return FALSE;
+      left = &trans;
+    }
+
+  g_value_take_string (return_value,
+                       g_strdup_printf ("%s%s",
+                                        g_value_get_string (left),
+                                        g_value_get_string (right)));
+
   return TRUE;
 }
 
