@@ -172,7 +172,7 @@ throw_type_mismatch (GError       **error,
             return TRUE; \
           } \
       } \
-    return throw_type_mismatch (error, left, right, "invalid add"); \
+    return throw_type_mismatch (error, left, right, "invalid op " #op); \
   } G_STMT_END
 
 static FastDispatch
@@ -235,7 +235,8 @@ tmpl_expr_simple_eval (TmplExprSimple  *node,
 
           if (dispatch == NULL)
             {
-              throw_type_mismatch (error, &left, &right, "type mismatch");
+              g_autofree gchar *msg = g_strdup_printf ("type mismatch (%d)", node->type);
+              throw_type_mismatch (error, &left, &right, msg);
               goto cleanup;
             }
         }
