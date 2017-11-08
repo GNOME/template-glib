@@ -33,6 +33,8 @@ G_BEGIN_DECLS
 # include "tmpl-symbol.h"
 # include "tmpl-template.h"
 # include "tmpl-template-locator.h"
+# include "tmpl-version.h"
+# include "tmpl-version-macros.h"
 #undef TMPL_GLIB_INSIDE
 
 G_END_DECLS

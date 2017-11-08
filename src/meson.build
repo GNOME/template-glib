@@ -50,6 +50,7 @@ libtemplate_glib_public_headers = [
   'tmpl-symbol.h',
   'tmpl-template-locator.h',
   'tmpl-template.h',
+  'tmpl-version-macros.h',
 ]
 
 libtemplate_glib_public_sources = [
