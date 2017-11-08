@@ -23,6 +23,8 @@
 #ifndef TMPL_SCOPE_H
 #define TMPL_SCOPE_H
 
+#include "tmpl-version-macros.h"
+
 #include "tmpl-expr-types.h"
 
 G_BEGIN_DECLS
@@ -32,35 +34,49 @@ typedef gboolean (*TmplScopeResolver) (TmplScope    *scope,
                                        TmplSymbol  **symbol,
                                        gpointer      user_data);
 
+TMPL_AVAILABLE_IN_ALL
 TmplScope  *tmpl_scope_new             (void);
+TMPL_AVAILABLE_IN_ALL
 TmplScope  *tmpl_scope_new_with_parent (TmplScope         *parent);
+TMPL_AVAILABLE_IN_ALL
 TmplScope  *tmpl_scope_ref             (TmplScope         *self);
+TMPL_AVAILABLE_IN_ALL
 void        tmpl_scope_unref           (TmplScope         *self);
+TMPL_AVAILABLE_IN_ALL
 TmplSymbol *tmpl_scope_peek            (TmplScope         *self,
                                         const gchar       *name);
+TMPL_AVAILABLE_IN_ALL
 TmplSymbol *tmpl_scope_get             (TmplScope         *self,
                                         const gchar       *name);
+TMPL_AVAILABLE_IN_ALL
 void        tmpl_scope_set             (TmplScope         *self,
                                         const gchar       *name,
                                         TmplSymbol        *symbol);
+TMPL_AVAILABLE_IN_ALL
 void        tmpl_scope_take            (TmplScope         *self,
                                         const gchar       *name,
                                         TmplSymbol        *symbol);
+TMPL_AVAILABLE_IN_ALL
 void        tmpl_scope_set_value       (TmplScope         *self,
                                         const gchar       *name,
                                         const GValue      *value);
+TMPL_AVAILABLE_IN_ALL
 void        tmpl_scope_set_boolean     (TmplScope         *self,
                                         const gchar       *name,
                                         gboolean          value);
+TMPL_AVAILABLE_IN_ALL
 void        tmpl_scope_set_double      (TmplScope         *self,
                                         const gchar       *name,
                                         gdouble           value);
+TMPL_AVAILABLE_IN_ALL
 void        tmpl_scope_set_string      (TmplScope         *self,
                                         const gchar       *name,
                                         const gchar       *value);
+TMPL_AVAILABLE_IN_ALL
 void        tmpl_scope_set_object      (TmplScope         *self,
                                         const gchar       *name,
                                         gpointer           value);
+TMPL_AVAILABLE_IN_ALL
 void        tmpl_scope_set_resolver    (TmplScope         *self,
                                         TmplScopeResolver  resolver,
                                         gpointer           user_data,

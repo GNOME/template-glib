@@ -23,28 +23,42 @@
 #ifndef TMPL_SYMBOL_H
 #define TMPL_SYMBOL_H
 
+#include "tmpl-version-macros.h"
+
 #include "tmpl-expr-types.h"
 
 G_BEGIN_DECLS
 
+TMPL_AVAILABLE_IN_ALL
 TmplSymbol     *tmpl_symbol_new             (void);
+TMPL_AVAILABLE_IN_ALL
 TmplSymbol     *tmpl_symbol_ref             (TmplSymbol   *self);
+TMPL_AVAILABLE_IN_ALL
 void            tmpl_symbol_unref           (TmplSymbol   *self);
+TMPL_AVAILABLE_IN_ALL
 TmplSymbolType  tmpl_symbol_get_symbol_type (TmplSymbol   *self);
+TMPL_AVAILABLE_IN_ALL
 void            tmpl_symbol_get_value       (TmplSymbol   *self,
                                              GValue       *value);
+TMPL_AVAILABLE_IN_ALL
 TmplExpr       *tmpl_symbol_get_expr        (TmplSymbol   *self,
                                              GPtrArray   **params);
+TMPL_AVAILABLE_IN_ALL
 void            tmpl_symbol_assign_value    (TmplSymbol   *self,
                                              const GValue *value);
+TMPL_AVAILABLE_IN_ALL
 void            tmpl_symbol_assign_boolean  (TmplSymbol   *self,
                                              gboolean      v_bool);
+TMPL_AVAILABLE_IN_ALL
 void            tmpl_symbol_assign_double   (TmplSymbol   *self,
                                              gdouble       v_double);
+TMPL_AVAILABLE_IN_ALL
 void            tmpl_symbol_assign_string   (TmplSymbol   *self,
                                              const gchar  *v_string);
+TMPL_AVAILABLE_IN_ALL
 void            tmpl_symbol_assign_object   (TmplSymbol   *self,
                                              gpointer      v_object);
+TMPL_AVAILABLE_IN_ALL
 void            tmpl_symbol_assign_expr     (TmplSymbol   *self,
                                              TmplExpr     *expr,
                                              GPtrArray    *args);

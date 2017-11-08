@@ -25,6 +25,8 @@
 
 #include <gio/gio.h>
 
+#include "tmpl-version-macros.h"
+
 #include "tmpl-scope.h"
 #include "tmpl-template-locator.h"
 
@@ -39,34 +41,44 @@ struct _TmplTemplateClass
   GObjectClass parent_class;
 };
 
+TMPL_AVAILABLE_IN_ALL
 TmplTemplate        *tmpl_template_new            (TmplTemplateLocator  *locator);
+TMPL_AVAILABLE_IN_ALL
 TmplTemplateLocator *tmpl_template_get_locator    (TmplTemplate         *self);
+TMPL_AVAILABLE_IN_ALL
 void                 tmpl_template_set_locator    (TmplTemplate         *self,
                                                    TmplTemplateLocator  *locator);
+TMPL_AVAILABLE_IN_ALL
 gboolean             tmpl_template_parse_file     (TmplTemplate         *self,
                                                    GFile                *file,
                                                    GCancellable         *cancellable,
                                                    GError              **error);
+TMPL_AVAILABLE_IN_ALL
 gboolean             tmpl_template_parse_resource (TmplTemplate         *self,
                                                    const gchar          *path,
                                                    GCancellable         *cancellable,
                                                    GError              **error);
+TMPL_AVAILABLE_IN_ALL
 gboolean             tmpl_template_parse_path     (TmplTemplate         *self,
                                                    const gchar          *path,
                                                    GCancellable         *cancellable,
                                                    GError              **error);
+TMPL_AVAILABLE_IN_ALL
 gboolean             tmpl_template_parse_string   (TmplTemplate         *self,
                                                    const gchar          *input,
                                                    GError              **error);
+TMPL_AVAILABLE_IN_ALL
 gboolean             tmpl_template_parse          (TmplTemplate         *self,
                                                    GInputStream         *stream,
                                                    GCancellable         *cancellable,
                                                    GError              **error);
+TMPL_AVAILABLE_IN_ALL
 gboolean             tmpl_template_expand         (TmplTemplate         *self,
                                                    GOutputStream        *stream,
                                                    TmplScope            *scope,
                                                    GCancellable         *cancellable,
                                                    GError              **error);
+TMPL_AVAILABLE_IN_ALL
 gchar               *tmpl_template_expand_string  (TmplTemplate         *self,
                                                    TmplScope            *scope,
                                                    GError              **error);

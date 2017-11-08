@@ -25,6 +25,8 @@
 
 #include <glib.h>
 
+#include "tmpl-version-macros.h"
+
 G_BEGIN_DECLS
 
 #define TMPL_ERROR (tmpl_error_quark())
@@ -51,6 +53,7 @@ typedef enum
   TMPL_ERROR_NOT_A_FUNCTION,
 } TmplError;
 
+TMPL_AVAILABLE_IN_ALL
 GQuark tmpl_error_quark (void);
 
 G_END_DECLS

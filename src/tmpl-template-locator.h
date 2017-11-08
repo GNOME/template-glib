@@ -25,6 +25,8 @@
 
 #include <gio/gio.h>
 
+#include "tmpl-version-macros.h"
+
 #include "tmpl-template-locator.h"
 
 G_BEGIN_DECLS
@@ -42,14 +44,19 @@ struct _TmplTemplateLocatorClass
                            GError              **error);
 };
 
+TMPL_AVAILABLE_IN_ALL
 TmplTemplateLocator  *tmpl_template_locator_new                 (void);
+TMPL_AVAILABLE_IN_ALL
 void                  tmpl_template_locator_append_search_path  (TmplTemplateLocator  *self,
                                                                  const gchar          *path);
+TMPL_AVAILABLE_IN_ALL
 void                  tmpl_template_locator_prepend_search_path (TmplTemplateLocator  *self,
                                                                  const gchar          *path);
+TMPL_AVAILABLE_IN_ALL
 GInputStream         *tmpl_template_locator_locate              (TmplTemplateLocator  *self,
                                                                  const gchar          *path,
                                                                  GError              **error);
+TMPL_AVAILABLE_IN_ALL
 gchar               **tmpl_template_locator_get_search_path     (TmplTemplateLocator  *self);
 
 G_END_DECLS

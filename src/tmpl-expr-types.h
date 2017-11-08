@@ -25,6 +25,8 @@
 
 #include <glib-object.h>
 
+#include "tmpl-version-macros.h"
+
 #include "tmpl-enums.h"
 
 G_BEGIN_DECLS
@@ -88,8 +90,11 @@ typedef enum
   TMPL_EXPR_BUILTIN_TYPEOF,
 } TmplExprBuiltin;
 
+TMPL_AVAILABLE_IN_ALL
 GType tmpl_expr_get_type   (void);
+TMPL_AVAILABLE_IN_ALL
 GType tmpl_scope_get_type  (void);
+TMPL_AVAILABLE_IN_ALL
 GType tmpl_symbol_get_type (void);
 
 G_END_DECLS
