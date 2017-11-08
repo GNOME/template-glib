@@ -141,17 +141,10 @@ if libdir == '' or includedir == ''
   error('You must set pkglibdir and pkgincludedir when using as a subproject')
 endif
 
-libtemplate_glib_link_args = []
-if ld_supports_version_script
-libtemplate_glib_link_args += [ '-Wl,--version-script,' + join_paths(meson.current_source_dir(), 'template-glib.map') ]
-endif
-
 libtemplate_glib = library(
   'template_glib-' + apiversion,
   libtemplate_glib_sources,
 
-  link_depends: 'template-glib.map',
-     link_args: libtemplate_glib_link_args,
   dependencies: libtemplate_glib_deps,
      soversion: soversion,
        version: libversion,

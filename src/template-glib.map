@@ -1,6 +1,0 @@
-{
-global:
-    tmpl_*;
-local:
-    *;
-};
