@@ -1,4 +1,25 @@
 ==============
+Version 3.27.2
+==============
+
+Changes in this release:
+
+ • A number of imporovements to the template locator.
+ • Support for more gobject introspection API calls.
+ • You can know use typeof(expr) to get the GType of the result
+   of the expression.
+ • The token stream tries harder to supress newlines.
+ • require/version expression priority is now lower
+ • Some memory leaks were plugged
+ • Versioning of symbols is now down with export macros to be
+   more portable for alternative platforms.
+ • We now explicity require a modern C standard.
+
+Updated Translations:
+
+ German, Slovenian
+
+==============
 Version 3.26.0
 ==============
 
