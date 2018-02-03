@@ -58,6 +58,42 @@ string_get_value (TmplIterator *iter,
 }
 
 static gboolean
+strv_move_next (TmplIterator *iter)
+{
+  guint index = GPOINTER_TO_INT (iter->data1);
+  index++;
+  
+  if (iter->instance)
+    {
+      gchar **strv = iter->instance;
+      iter->data1 = GINT_TO_POINTER (index);
+      return strv[index] != 0;
+    }
+
+  return FALSE;
+}
+
+static gboolean
+strv_get_value (TmplIterator *iter,
+                GValue       *value)
+{
+  guint index = GPOINTER_TO_INT (iter->data1);
+
+  if (iter->instance)
+    {
+      gchar **strv = iter->instance;
+      gchar *str = strv[index];
+
+      g_value_init (value, G_TYPE_STRING);
+      g_value_set_string (value, str);
+
+      return TRUE;
+    }
+
+  return FALSE;
+}
+
+static gboolean
 list_model_move_next (TmplIterator *iter)
 {
   guint index = GPOINTER_TO_INT (iter->data1);
@@ -126,6 +162,32 @@ tmpl_iterator_init (TmplIterator *iter,
           iter->data1 = GUINT_TO_POINTER (iter->data1);
           iter->data2 = GUINT_TO_POINTER (n_items);
         }
+    }
+  else if (G_VALUE_HOLDS_VARIANT(value) &&
+            g_variant_is_of_type (
+              g_value_get_variant(value), G_VARIANT_TYPE_STRING_ARRAY))
+    {
+      iter->instance = (const gchar **) g_variant_get_strv (
+        g_value_get_variant (value), NULL);
+      iter->move_next = strv_move_next;
+      iter->get_value = strv_get_value;
+      iter->destroy = NULL;
+      iter->data1 = GINT_TO_POINTER (-1);
+    }
+  else if (G_VALUE_HOLDS_BOXED(value))
+    {
+      // TODO: On the basis more than just strv can be boxed there
+      // should be more checks here
+      iter->instance = (const gchar **) g_value_get_boxed (value);
+      iter->move_next = strv_move_next;
+      iter->get_value = strv_get_value;
+      iter->destroy = NULL;
+      iter->data1 = GINT_TO_POINTER (-1);
+    }
+  else
+    {
+      g_critical ("Don't know how to iterate %s",
+        g_strdup_value_contents (value));
     }
 
   /* TODO: More iter types */

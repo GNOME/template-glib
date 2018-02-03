@@ -301,6 +301,46 @@ tmpl_scope_set_object (TmplScope   *self,
 }
 
 /**
+ * tmpl_scope_set_variant:
+ * @self: A #TmplScope
+ * @name: a name for the symbol
+ * @value: (nullable): the variant to set it to, or %NULL
+ *
+ * Sets the value of the symbol named @name to the variant @value.
+ */
+void
+tmpl_scope_set_variant (TmplScope   *self,
+                        const gchar *name,
+                        GVariant    *value)
+{
+  g_return_if_fail (self != NULL);
+  g_return_if_fail (name != NULL);
+
+  tmpl_symbol_assign_variant (tmpl_scope_get_full (self, name, TRUE),
+    value);
+}
+
+/**
+ * tmpl_scope_set_strv:
+ * @self: A #TmplScope
+ * @name: a name for the symbol
+ * @value: (nullable) (array zero-terminated=1): the value to set it to, or %NULL
+ *
+ * Sets the value of the symbol named @name to the strv @value.
+ */
+void
+tmpl_scope_set_strv (TmplScope   *self,
+                     const gchar *name,
+                     const gchar **value)
+{
+  g_return_if_fail (self != NULL);
+  g_return_if_fail (name != NULL);
+
+  tmpl_symbol_assign_variant (tmpl_scope_get_full (self, name, TRUE),
+    g_variant_new_strv (value, -1));
+}
+
+/**
  * tmpl_scope_set_string:
  * @self: A #TmplScope
  * @name: a name for the symbol

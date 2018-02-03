@@ -58,6 +58,14 @@ void            tmpl_symbol_assign_string   (TmplSymbol   *self,
 TMPL_AVAILABLE_IN_ALL
 void            tmpl_symbol_assign_object   (TmplSymbol   *self,
                                              gpointer      v_object);
+TMPL_AVAILABLE_IN_3_28
+void            tmpl_symbol_assign_variant (TmplSymbol *self,
+                                            GVariant   *v_variant);
+
+TMPL_AVAILABLE_IN_3_28
+void            tmpl_symbol_assign_strv    (TmplSymbol *self,
+                                            const gchar **strv);
+
 TMPL_AVAILABLE_IN_ALL
 void            tmpl_symbol_assign_expr     (TmplSymbol   *self,
                                              TmplExpr     *expr,
