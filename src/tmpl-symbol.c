@@ -243,6 +243,15 @@ tmpl_symbol_assign_object (TmplSymbol *self,
   g_value_unset (&value);
 }
 
+/**
+ * tmpl_symbol_assign_variant:
+ * @self: A #TmplSymbol
+ * @v_object: (nullable): a #GVariant or %NULL.
+ *
+ * Sets the value to the #GVariant @v_variant.
+ *
+ * If @v_variant has a floating reference, it is consumed.
+ */
 void
 tmpl_symbol_assign_variant (TmplSymbol *self,
                             GVariant   *v_variant)

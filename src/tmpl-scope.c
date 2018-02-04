@@ -307,6 +307,8 @@ tmpl_scope_set_object (TmplScope   *self,
  * @value: (nullable): the variant to set it to, or %NULL
  *
  * Sets the value of the symbol named @name to the variant @value.
+ *
+ * If @value has a floating reference, it is consumed.
  */
 void
 tmpl_scope_set_variant (TmplScope   *self,

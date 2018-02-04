@@ -67,6 +67,10 @@ strv_move_next (TmplIterator *iter)
     {
       gchar **strv = iter->instance;
       iter->data1 = GINT_TO_POINTER (index);
+      if (!strv[index])
+        {
+          iter->instance = NULL;
+        }
       return strv[index] != 0;
     }
 
@@ -174,10 +178,8 @@ tmpl_iterator_init (TmplIterator *iter,
       iter->destroy = NULL;
       iter->data1 = GINT_TO_POINTER (-1);
     }
-  else if (G_VALUE_HOLDS_BOXED(value))
+  else if (G_VALUE_HOLDS (value, G_TYPE_STRV))
     {
-      // TODO: On the basis more than just strv can be boxed there
-      // should be more checks here
       iter->instance = (const gchar **) g_value_get_boxed (value);
       iter->move_next = strv_move_next;
       iter->get_value = strv_get_value;
