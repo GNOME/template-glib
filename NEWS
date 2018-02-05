@@ -1,3 +1,11 @@
+===============
+Version 3.27.90
+===============
+
+Changes in this release:
+
+ • Allow iteration of string arrays (GStrv)
+
 ==============
 Version 3.27.2
 ==============

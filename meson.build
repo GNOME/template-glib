@@ -1,5 +1,5 @@
 project('template-glib', 'c',
-          version: '3.27.2',
+          version: '3.27.90',
           license: 'LGPLv2.1+',
     meson_version: '>= 0.40.1',
   default_options: [ 'warning_level=1', 'buildtype=debugoptimized', 'c_std=gnu11' ],
