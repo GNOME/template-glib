@@ -246,7 +246,7 @@ tmpl_symbol_assign_object (TmplSymbol *self,
 /**
  * tmpl_symbol_assign_variant:
  * @self: A #TmplSymbol
- * @v_object: (nullable): a #GVariant or %NULL.
+ * @v_variant: (nullable): a #GVariant or %NULL.
  *
  * Sets the value to the #GVariant @v_variant.
  *
