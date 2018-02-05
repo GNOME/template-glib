@@ -76,6 +76,17 @@ TMPL_AVAILABLE_IN_ALL
 void        tmpl_scope_set_object      (TmplScope         *self,
                                         const gchar       *name,
                                         gpointer           value);
+
+TMPL_AVAILABLE_IN_3_28
+void        tmpl_scope_set_strv        (TmplScope   *self,
+                                        const gchar *name,
+                                        const gchar **value);
+
+TMPL_AVAILABLE_IN_3_28
+void        tmpl_scope_set_variant     (TmplScope   *self,
+                                        const gchar *name,
+                                        GVariant    *value);
+
 TMPL_AVAILABLE_IN_ALL
 void        tmpl_scope_set_resolver    (TmplScope         *self,
                                         TmplScopeResolver  resolver,

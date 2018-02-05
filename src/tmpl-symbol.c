@@ -222,6 +222,13 @@ tmpl_symbol_assign_string (TmplSymbol  *self,
   g_value_unset (&value);
 }
 
+/**
+ * tmpl_symbol_assign_object:
+ * @self: A #TmplSymbol
+ * @v_object: (type GObject.Object) (nullable): a #GObject or %NULL.
+ *
+ * Sets the value to the object @v_object.
+ */
 void
 tmpl_symbol_assign_object (TmplSymbol *self,
                            gpointer    v_object)
@@ -232,6 +239,50 @@ tmpl_symbol_assign_object (TmplSymbol *self,
 
   g_value_init (&value, G_TYPE_OBJECT);
   g_value_set_object (&value, v_object);
+  tmpl_symbol_assign_value (self, &value);
+  g_value_unset (&value);
+}
+
+/**
+ * tmpl_symbol_assign_variant:
+ * @self: A #TmplSymbol
+ * @v_object: (nullable): a #GVariant or %NULL.
+ *
+ * Sets the value to the #GVariant @v_variant.
+ *
+ * If @v_variant has a floating reference, it is consumed.
+ */
+void
+tmpl_symbol_assign_variant (TmplSymbol *self,
+                            GVariant   *v_variant)
+{
+  GValue value = G_VALUE_INIT;
+
+  g_return_if_fail (self != NULL);
+
+  g_value_init (&value, G_TYPE_VARIANT);
+  g_value_set_variant (&value, v_variant);
+  tmpl_symbol_assign_value (self, &value);
+  g_value_unset (&value);
+}
+
+/**
+ * tmpl_symbol_assign_strv:
+ * @self: A #TmplSymbol
+ * @strv: (nullable) (array zero-terminated=1): the value to set, or %NULL
+ *
+ * Sets the value to the strv @strv.
+ */
+void
+tmpl_symbol_assign_strv (TmplSymbol *self,
+                         const gchar **strv)
+{
+  GValue value = G_VALUE_INIT;
+
+  g_return_if_fail (self != NULL);
+
+  g_value_init (&value, G_TYPE_VARIANT);
+  g_value_set_variant (&value, g_variant_new_strv (strv, -1));
   tmpl_symbol_assign_value (self, &value);
   g_value_unset (&value);
 }
