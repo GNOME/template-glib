@@ -143,7 +143,15 @@ tmpl_lexer_next (TmplLexer     *self,
           GInputStream *input;
 
           g_assert (self->circular != NULL);
-          g_assert (path != NULL);
+
+          if (path == NULL)
+            {
+              local_error = g_error_new (TMPL_ERROR,
+                                         TMPL_ERROR_NOT_A_VALUE,
+                                         "Expected template path, got null");
+              g_clear_pointer (token, tmpl_token_free);
+              TMPL_GOTO (finish);
+            }
 
           if (g_hash_table_contains (self->circular, path))
             {
