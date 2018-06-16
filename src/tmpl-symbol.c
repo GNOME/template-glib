@@ -104,7 +104,7 @@ tmpl_symbol_assign_value (TmplSymbol   *self,
  * tmpl_symbol_assign_expr: (skip)
  * @self: A #TmplSymbol.
  * @expr: (nullable): An expression to assign, or %NULL.
- * params: (element-type utf8): A #GPtrArray of strings.
+ * @params: (element-type utf8): A #GPtrArray of strings.
  *
  * Sets the symbol as a %TMPL_SYMBOL_EXPR with the given ordered and
  * named parameters.
