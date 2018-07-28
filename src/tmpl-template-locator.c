@@ -123,8 +123,24 @@ tmpl_template_locator_real_locate (TmplTemplateLocator  *self,
 }
 
 static void
+tmpl_template_locator_finalize (GObject *object)
+{
+  TmplTemplateLocator *self = (TmplTemplateLocator *)object;
+  TmplTemplateLocatorPrivate *priv = tmpl_template_locator_get_instance_private (self);
+
+  g_queue_free_full (priv->search_path, g_free);
+  priv->search_path = NULL;
+
+  G_OBJECT_CLASS (tmpl_template_locator_parent_class)->finalize (object);
+}
+
+static void
 tmpl_template_locator_class_init (TmplTemplateLocatorClass *klass)
 {
+  GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
+  object_class->finalize = tmpl_template_locator_finalize;
+
   klass->locate = tmpl_template_locator_real_locate;
 }
 
