@@ -104,7 +104,7 @@ tmpl_symbol_assign_value (TmplSymbol   *self,
  * tmpl_symbol_assign_expr: (skip)
  * @self: A #TmplSymbol.
  * @expr: (nullable): An expression to assign, or %NULL.
- * @params: (element-type utf8): A #GPtrArray of strings.
+ * @args: (element-type utf8): A #GPtrArray of strings.
  *
  * Sets the symbol as a %TMPL_SYMBOL_EXPR with the given ordered and
  * named parameters.
@@ -112,7 +112,7 @@ tmpl_symbol_assign_value (TmplSymbol   *self,
 void
 tmpl_symbol_assign_expr (TmplSymbol *self,
                          TmplExpr   *expr,
-                         GPtrArray  *params)
+                         GPtrArray  *args)
 {
   g_return_if_fail (self != NULL);
 
@@ -123,8 +123,8 @@ tmpl_symbol_assign_expr (TmplSymbol *self,
   if (expr != NULL)
     self->u.expr.expr = tmpl_expr_ref (expr);
 
-  if (params != NULL)
-    self->u.expr.params = g_ptr_array_ref (params);
+  if (args != NULL)
+    self->u.expr.params = g_ptr_array_ref (args);
 }
 
 TmplSymbolType
