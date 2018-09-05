@@ -1,4 +1,14 @@
 ==============
+Version 3.30.0
+==============
+
+Changes in this release:
+
+ • Documentation fixes
+ • Check {{include}} for valid path
+ • Various G-I fixes
+
+==============
 Version 3.28.0
 ==============
 
