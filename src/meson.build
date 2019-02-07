@@ -174,7 +174,10 @@ if get_option('with_introspection')
                 install: true,
         install_dir_gir: girdir,
     install_dir_typelib: typelibdir,
-             extra_args: [ '--c-include=tmpl-glib.h' ],
+             extra_args: [
+               '--c-include=tmpl-glib.h',
+               '-DTMPL_GLIB_COMPILATION',
+             ],
   )
 
   if get_option('with_vapi')
