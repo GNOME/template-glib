@@ -1,0 +1,37 @@
+# Danish translation for template-glib.
+# Copyright (C) 2019 template-glib's COPYRIGHT HOLDER
+# This file is distributed under the same license as the template-glib package.
+# scootergrisen, 2019.
+msgid ""
+msgstr ""
+"Project-Id-Version: template-glib master\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/template-glib/issues\n"
+"POT-Creation-Date: 2019-02-07 02:09+0000\n"
+"PO-Revision-Date: 2019-02-20 00:00+0200\n"
+"Last-Translator: scootergrisen\n"
+"Language-Team: Danish\n"
+"Language: da\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/tmpl-parser.c:199
+#, c-format
+msgid "%s() may only be called once"
+msgstr "%s() må kun kaldes én gang"
+
+#: src/tmpl-parser.c:211
+#, c-format
+msgid "Parser does not contain an input stream"
+msgstr "Fortolker indeholder ikke en inputstrøm"
+
+#: src/tmpl-template.c:454
+#, c-format
+msgid "Must parse template before expanding"
+msgstr "Skal fortolke skabelon inden udvidelse"
+
+#: src/tmpl-template-locator.c:117
+#, c-format
+msgid "Failed to locate template “%s”"
+msgstr "Kunne ikke finde skabelonen “%s”"
