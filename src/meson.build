@@ -145,10 +145,11 @@ libtemplate_glib = library(
   'template_glib-' + apiversion,
   libtemplate_glib_sources,
 
-  dependencies: libtemplate_glib_deps,
-     soversion: soversion,
-       version: libversion,
-       install: true,
+   dependencies: libtemplate_glib_deps,
+      soversion: soversion,
+        version: libversion,
+darwin_versions: darwin_versions,
+        install: true,
 )
 
 libtemplate_glib_dep = declare_dependency(
