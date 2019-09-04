@@ -12,14 +12,12 @@ tmpl_version_h = configure_file(
           input: 'tmpl-version.h.in',
          output: 'tmpl-version.h',
     install_dir: libtemplate_glib_header_dir,
-        install: true,
   configuration: version_data)
 
 tmpl_debug_h = configure_file(
           input: 'tmpl-debug.h.in',
          output: 'tmpl-debug.h',
     install_dir: libtemplate_glib_header_dir,
-        install: true,
   configuration: version_data)
 
 libtemplate_glib_enum_headers = [
