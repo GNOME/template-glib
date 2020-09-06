@@ -1,0 +1,38 @@
+# Chinese (China) translation for template-glib.
+# Copyright (C) 2020 template-glib's COPYRIGHT HOLDER
+# This file is distributed under the same license as the template-glib package.
+# Boyuan Yang <073plan@gmail.com>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: template-glib master\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/template-glib/issues\n"
+"POT-Creation-Date: 2020-03-31 09:39+0000\n"
+"PO-Revision-Date: 2020-09-06 10:07-0400\n"
+"Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: \n"
+"X-Generator: Poedit 2.4.1\n"
+
+#: src/tmpl-parser.c:199
+#, c-format
+msgid "%s() may only be called once"
+msgstr "%s() 只能调用一次"
+
+#: src/tmpl-parser.c:211
+#, c-format
+msgid "Parser does not contain an input stream"
+msgstr "解析器未包含输入流"
+
+#: src/tmpl-template.c:454
+#, c-format
+msgid "Must parse template before expanding"
+msgstr "展开前必须解析模板"
+
+#: src/tmpl-template-locator.c:117
+#, c-format
+msgid "Failed to locate template “%s”"
+msgstr "无法定位模板“%s”"
