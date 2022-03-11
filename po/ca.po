@@ -1,0 +1,38 @@
+# Catalan translation for template-glib.
+# Copyright (C) 2021 template-glib's COPYRIGHT HOLDER
+# This file is distributed under the same license as the template-glib package.
+# maite <maite.guix@gmail.com>, 2021.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: template-glib template-glib-3-32\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/template-glib/issues\n"
+"POT-Creation-Date: 2021-09-17 14:30+0000\n"
+"PO-Revision-Date: 2021-11-01 17:45+0100\n"
+"Language-Team: Catalan <gnome@llistes.softcatala.org>\n"
+"Language: ca\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: maite guix <maite.guix@me.com>\n"
+"X-Generator: Poedit 3.0\n"
+
+#: src/tmpl-parser.c:199
+#, c-format
+msgid "%s() may only be called once"
+msgstr "%s() només es pot trucar una vegada"
+
+#: src/tmpl-parser.c:211
+#, c-format
+msgid "Parser does not contain an input stream"
+msgstr "L'analitzador no conté cap flux d'entrada"
+
+#: src/tmpl-template.c:454
+#, c-format
+msgid "Must parse template before expanding"
+msgstr "S'ha d'analitzar la plantilla abans d'expandir-la"
+
+#: src/tmpl-template-locator.c:117
+#, c-format
+msgid "Failed to locate template “%s”"
+msgstr "No s'ha pogut localitzar la plantilla «%s»"
