@@ -92,6 +92,10 @@ void        tmpl_scope_set_resolver    (TmplScope         *self,
                                         TmplScopeResolver  resolver,
                                         gpointer           user_data,
                                         GDestroyNotify     destroy);
+TMPL_AVAILABLE_IN_3_36
+gboolean    tmpl_scope_require         (TmplScope         *self,
+                                        const char        *namespace_,
+                                        const char        *version);
 
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (TmplScope, tmpl_scope_unref)
 

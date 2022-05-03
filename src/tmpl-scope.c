@@ -16,6 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
+
+#include "tmpl-gi-private.h"
 #include "tmpl-scope.h"
 #include "tmpl-symbol.h"
 
@@ -401,4 +404,36 @@ tmpl_scope_set_resolver (TmplScope         *self,
       self->resolver_data = user_data;
       self->resolver_destroy = destroy;
     }
+}
+
+/**
+ * tmpl_scope_require:
+ * @self: a #TmplScope
+ * @namespace_: the namespace to import into the scope
+ * @version: (nullable): the version of @namespace_ to import
+ *
+ * Imports @namespace_ into @self so it can be used by expressions.
+ *
+ * Returns: %TRUE if successful; otherwise %FALSE
+ */
+gboolean
+tmpl_scope_require (TmplScope    *self,
+                    const char   *namespace_,
+                    const char   *version)
+{
+  GITypelib *typelib;
+  GValue value = G_VALUE_INIT;
+
+  g_return_val_if_fail (self != NULL, FALSE);
+  g_return_val_if_fail (namespace_ != NULL, FALSE);
+
+  if (!(typelib = g_irepository_require (NULL, namespace_, version, 0, NULL)))
+    return FALSE;
+
+  g_value_init (&value, TMPL_TYPE_TYPELIB);
+  g_value_set_pointer (&value, typelib);
+  tmpl_scope_set_value (self, namespace_, &value);
+  g_value_unset (&value);
+
+  return TRUE;
 }
