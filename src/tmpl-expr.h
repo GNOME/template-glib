@@ -85,6 +85,8 @@ TMPL_AVAILABLE_IN_ALL
 TmplExpr *tmpl_expr_new_symbol_assign (const gchar      *symbol,
                                        TmplExpr         *right);
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (TmplExpr, tmpl_expr_unref)
+
 G_END_DECLS
 
 #endif /* TMPL_EXPR_H */
