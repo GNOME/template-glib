@@ -1,7 +1,7 @@
-%pure-parser
+%define api.pure
+%define parse.error verbose
 %name-prefix "tmpl_expr_parser_"
 %defines
-%error-verbose
 %parse-param { TmplExprParser *parser }
 %lex-param { void *scanner }
 
