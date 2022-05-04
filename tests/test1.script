@@ -4,6 +4,12 @@ require Gio version "2.0"
 assert(true)
 assert(true != false)
 assert(!false)
+assert(TRUE)
+assert(TRUE != false)
+assert(TRUE == true)
+assert(True == true)
+assert(False == FALSE)
+assert(False == false)
 
 assert(123 == 123)
 assert(123 != 124)
