@@ -181,7 +181,7 @@ tmpl_expr_new_stmt_list (GPtrArray *stmts)
   g_ptr_array_set_free_func (stmts, (GDestroyNotify)tmpl_expr_unref);
 
   ret = tmpl_expr_new (TMPL_EXPR_STMT_LIST);
-  ((TmplExprStmtList *)ret)->stmts = g_ptr_array_ref (stmts);
+  ((TmplExprStmtList *)ret)->stmts = stmts;
 
   return ret;
 }
