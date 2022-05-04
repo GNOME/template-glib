@@ -96,7 +96,7 @@ add_to_list (TmplExpr *stmt,
     }
 
   g_assert (list->any.type == TMPL_EXPR_STMT_LIST);
-  g_ptr_array_add (list->stmt_list.stmts, stmt);
+  g_ptr_array_insert (list->stmt_list.stmts, 0, stmt);
   return list;
 }
 
@@ -259,7 +259,7 @@ symlist: NAME {
   }
   | NAME ',' symlist {
     $$ = $3;
-    g_ptr_array_add ($$, $1);
+    g_ptr_array_insert ($$, 0, $1);
   }
 ;
 
