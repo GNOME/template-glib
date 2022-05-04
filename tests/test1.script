@@ -36,4 +36,6 @@ assert(multiply(-10, 10) == -100)
 func nop() = pass
 nop()
 
+;;;
+
 1234;
