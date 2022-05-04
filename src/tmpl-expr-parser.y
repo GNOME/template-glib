@@ -165,7 +165,7 @@ exp: exp CMP exp {
     $$ = tmpl_expr_new_boolean ($1);
   }
   | STRING_LITERAL {
-    $$ = tmpl_expr_new_string ($1+1, strlen($1) - 2);
+    $$ = tmpl_expr_new_string ($1, -1);
   }
   | NAME {
     $$ = tmpl_expr_new_symbol_ref ($1);
@@ -204,9 +204,7 @@ exp: exp CMP exp {
     $$ = tmpl_expr_new_require ($2, NULL);
   }
   | REQUIRE NAME VERSION STRING_LITERAL {
-    char *vstr = g_strndup ($4+1, strlen($4)-2);
-    $$ = tmpl_expr_new_require ($2, vstr);
-    g_free (vstr);
+    $$ = tmpl_expr_new_require ($2, $4);
   }
 ;
 

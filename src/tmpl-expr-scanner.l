@@ -16,6 +16,21 @@
 
 #pragma GCC diagnostic ignored "-Wswitch-default"
 #pragma GCC diagnostic ignored "-Wunused-function"
+
+static char *
+copy_literal (const char *str)
+{
+  gsize len;
+  if (str[0] == 'L')
+    str++;
+  g_assert (str[0] == '\"');
+  str++;
+  len = strlen (str);
+  g_assert (len > 0);
+  g_assert (str[len-1] == '\"');
+  return g_strndup (str, len - 1);
+}
+
 %}
 
 %option extra-type="TmplExprParser *"
@@ -76,7 +91,7 @@ TmplExprParser *parser = yyextra;
 "typeof" { yylval->fn = TMPL_EXPR_BUILTIN_TYPEOF; return BUILTIN; }
 
  /* string literals */
-L?\"(\\.|[^\\"])*\" { yylval->s = yytext; return STRING_LITERAL; }
+L?\"(\\.|[^\\"])*\" { yylval->s = copy_literal (yytext); return STRING_LITERAL; }
 
  /* @ to escape reserved keywords */
 @[a-zA-Z_][a-zA-Z0-9_]* {
