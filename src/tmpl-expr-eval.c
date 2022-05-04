@@ -1183,7 +1183,7 @@ tmpl_expr_require_eval (TmplExprRequire  *node,
                         GError          **error)
 {
   GITypelib *typelib;
-  TmplSymbol *symbol;
+  GError *local_error = NULL;
 
   g_assert (node != NULL);
   g_assert (scope != NULL);
@@ -1192,19 +1192,20 @@ tmpl_expr_require_eval (TmplExprRequire  *node,
   typelib = g_irepository_require (g_irepository_get_default (),
                                    node->name,
                                    node->version,
-                                   G_IREPOSITORY_LOAD_FLAG_LAZY,
-                                   error);
+                                   0,
+                                   &local_error);
 
-  g_assert (typelib != NULL || (error == NULL || *error != NULL));
+  g_assert (typelib != NULL || local_error != NULL);
 
   if (typelib == NULL)
-    return FALSE;
+    {
+      g_propagate_error (error, local_error);
+      return FALSE;
+    }
 
   g_value_init (return_value, TMPL_TYPE_TYPELIB);
   g_value_set_pointer (return_value, typelib);
-
-  symbol = tmpl_scope_get (scope, node->name);
-  tmpl_symbol_assign_value (symbol, return_value);
+  tmpl_scope_set_value (scope, node->name, return_value);
 
   return TRUE;
 }
