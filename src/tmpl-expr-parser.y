@@ -71,7 +71,6 @@ tmpl_expr_parser_error (TmplExprParser *parser,
 %%
 
 expr: /* nothing */ EOL {
-    parser->ast = NULL;
     YYACCEPT;
   }
   | stmt EOL {

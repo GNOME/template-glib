@@ -134,13 +134,17 @@ tmpl_expr_parser_parse_string (TmplExprParser  *self,
                                GError        **error)
 {
   YY_BUFFER_STATE buf;
-  gint ret;
+  int ret = 0;
 
   g_return_val_if_fail (self != NULL, FALSE);
 
   buf = tmpl_expr_parser__scan_string (input, self->scanner);
-  ret = tmpl_expr_parser_parse (self);
+  while (!self->reached_eof && ret == 0)
+    ret = tmpl_expr_parser_parse (self);
   tmpl_expr_parser__delete_buffer (buf, self->scanner);
+
+  if (ret == 0 && self->error_str == NULL)
+    return TRUE;
 
   if (self->error_str)
     {
@@ -150,9 +154,6 @@ tmpl_expr_parser_parse_string (TmplExprParser  *self,
                    "%s", self->error_str);
       return FALSE;
     }
-
-  if (ret == 0)
-    return TRUE;
 
   g_set_error (error,
                TMPL_ERROR,
