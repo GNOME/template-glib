@@ -81,6 +81,7 @@ TmplExprParser *parser = yyextra;
 "false"    { yylval->b = 0; return BOOL; }
 
  /* builtin functions */
+"assert" { yylval->fn = TMPL_EXPR_BUILTIN_ASSERT; return BUILTIN; }
 "ceil"   { yylval->fn = TMPL_EXPR_BUILTIN_CEIL; return BUILTIN; }
 "floor"  { yylval->fn = TMPL_EXPR_BUILTIN_FLOOR; return BUILTIN; }
 "hex"    { yylval->fn = TMPL_EXPR_BUILTIN_HEX; return BUILTIN; }

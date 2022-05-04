@@ -47,6 +47,9 @@ static gboolean throw_type_mismatch          (GError       **error,
 static gboolean builtin_abs                  (const GValue  *value,
                                               GValue        *return_value,
                                               GError       **error);
+static gboolean builtin_assert               (const GValue  *value,
+                                              GValue        *return_value,
+                                              GError       **error);
 static gboolean builtin_ceil                 (const GValue  *value,
                                               GValue        *return_value,
                                               GError       **error);
@@ -95,6 +98,7 @@ static BuiltinFunc builtin_funcs [] = {
   builtin_repr,
   builtin_sqrt,
   builtin_typeof,
+  builtin_assert,
 };
 
 static inline guint
@@ -1497,6 +1501,30 @@ ne_string_string (const GValue  *left,
 }
 
 static gboolean
+eq_boolean_boolean (const GValue  *left,
+                    const GValue  *right,
+                    GValue        *return_value,
+                    GError       **error)
+{
+  g_value_init (return_value, G_TYPE_BOOLEAN);
+  g_value_set_boolean (return_value,
+                       g_value_get_boolean (left) == g_value_get_boolean (right));
+  return TRUE;
+}
+
+static gboolean
+ne_boolean_boolean (const GValue  *left,
+                    const GValue  *right,
+                    GValue        *return_value,
+                    GError       **error)
+{
+  g_value_init (return_value, G_TYPE_BOOLEAN);
+  g_value_set_boolean (return_value,
+                       g_value_get_boolean (left) != g_value_get_boolean (right));
+  return TRUE;
+}
+
+static gboolean
 eq_enum_string (const GValue  *left,
                 const GValue  *right,
                 GValue        *return_value,
@@ -1609,6 +1637,9 @@ build_dispatch_table (void)
   ADD_DISPATCH_FUNC (TMPL_EXPR_EQ,          G_TYPE_STRING, G_TYPE_STRING, eq_string_string);
   ADD_DISPATCH_FUNC (TMPL_EXPR_NE,          G_TYPE_STRING, G_TYPE_STRING, ne_string_string);
 
+  ADD_DISPATCH_FUNC (TMPL_EXPR_EQ,          G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, eq_boolean_boolean);
+  ADD_DISPATCH_FUNC (TMPL_EXPR_NE,          G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, ne_boolean_boolean);
+
 #undef ADD_DISPATCH_FUNC
 
   return table;
@@ -1643,6 +1674,79 @@ builtin_abs (const GValue  *value,
              GError       **error)
 {
   throw_type_mismatch (error, value, NULL, "not implemented");
+  return FALSE;
+}
+
+static gboolean
+builtin_assert (const GValue  *value,
+                GValue        *return_value,
+                GError       **error)
+{
+  if (G_VALUE_TYPE (value) == G_TYPE_INVALID)
+    goto failure;
+
+  if (G_VALUE_HOLDS_BOOLEAN (value))
+    {
+      if (g_value_get_boolean (value) == FALSE)
+        goto failure;
+    }
+  else if (G_VALUE_HOLDS_STRING (value))
+    {
+      if (g_value_get_string (value) == NULL)
+        goto failure;
+    }
+  else if (G_VALUE_HOLDS_POINTER (value))
+    {
+      if (g_value_get_pointer (value) == NULL)
+        goto failure;
+    }
+  else if (G_VALUE_HOLDS_OBJECT (value))
+    {
+      if (g_value_get_object (value) == NULL)
+        goto failure;
+    }
+  else if (G_VALUE_HOLDS_INT (value))
+    {
+      if (g_value_get_int (value) == 0)
+        goto failure;
+    }
+  else if (G_VALUE_HOLDS_UINT (value))
+    {
+      if (g_value_get_uint (value) == 0)
+        goto failure;
+    }
+  else if (G_VALUE_HOLDS_INT64 (value))
+    {
+      if (g_value_get_int64 (value) == 0)
+        goto failure;
+    }
+  else if (G_VALUE_HOLDS_UINT64 (value))
+    {
+      if (g_value_get_uint64 (value) == 0)
+        goto failure;
+    }
+  else if (G_VALUE_HOLDS_DOUBLE (value))
+    {
+      if (g_value_get_double (value) == .0)
+        goto failure;
+    }
+  else if (G_VALUE_HOLDS_FLOAT (value))
+    {
+      if (g_value_get_float (value) == .0f)
+        goto failure;
+    }
+  else
+    {
+      goto failure;
+    }
+
+  return TRUE;
+
+failure:
+  g_set_error_literal (error,
+                       TMPL_ERROR,
+                       TMPL_ERROR_RUNTIME_ERROR,
+                       "Assertion failed");
   return FALSE;
 }
 

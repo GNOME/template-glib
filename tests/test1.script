@@ -1,6 +1,10 @@
 require GLib
 require Gio version "2.0"
 
+assert(true)
+assert(true != false)
+assert(!false)
+
 func multiply(x,y) = x * y;
 
 multiply(617, 2)
