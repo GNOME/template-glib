@@ -219,7 +219,8 @@ symlist: NAME {
     g_ptr_array_add ($$, $1);
   }
   | NAME ',' symlist {
-    g_ptr_array_insert ($3, 0, $1);
+    $$ = $3;
+    g_ptr_array_add ($$, $1);
   }
 ;
 
