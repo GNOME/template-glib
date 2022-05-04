@@ -152,6 +152,9 @@ tmpl_expr_destroy (TmplExpr *self)
       g_clear_pointer (&self->func.list, tmpl_expr_unref);
       break;
 
+    case TMPL_EXPR_NOP:
+      break;
+
     default:
       g_assert_not_reached ();
     }
@@ -399,7 +402,9 @@ tmpl_expr_new_func (char      *name,
   TmplExprFunc *ret;
 
   g_return_val_if_fail (name != NULL, NULL);
-  g_return_val_if_fail (list != NULL, NULL);
+
+  if (list == NULL)
+    list = tmpl_expr_new_nop ();
 
   ret = tmpl_expr_new (TMPL_EXPR_FUNC);
   ret->name = name;
@@ -407,4 +412,10 @@ tmpl_expr_new_func (char      *name,
   ret->list = list;
 
   return (TmplExpr *)ret;
+}
+
+TmplExpr *
+tmpl_expr_new_nop (void)
+{
+  return (TmplExpr *)tmpl_expr_new (TMPL_EXPR_NOP);
 }

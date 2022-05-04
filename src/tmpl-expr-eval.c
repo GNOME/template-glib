@@ -1359,6 +1359,9 @@ tmpl_expr_eval_internal (TmplExpr   *node,
     case TMPL_EXPR_FUNC:
       return tmpl_expr_func_eval ((TmplExprFunc *)node, scope, return_value, error);
 
+    case TMPL_EXPR_NOP:
+      return TRUE;
+
     default:
       break;
     }
