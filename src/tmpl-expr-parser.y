@@ -115,11 +115,11 @@ expr: /* nothing */ EOL {
     add_expr_to_parser (parser, $1);
     YYACCEPT;
   }
-  | FUNC NAME '(' symlist ')' '{' list '}' EOL {
+  | FUNC NAME '(' symlist ')' '=' list EOL {
     define_function (parser, $2, g_steal_pointer (&$4), $7);
     YYACCEPT;
   }
-  | FUNC NAME '(' ')' '{' list '}' EOL {
+  | FUNC NAME '(' ')' '=' list EOL {
     define_function (parser, $2, NULL, $6);
     YYACCEPT;
   }
