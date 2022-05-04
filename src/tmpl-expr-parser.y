@@ -166,45 +166,57 @@ exp: exp CMP exp {
   }
   | STRING_LITERAL {
     $$ = tmpl_expr_new_string ($1, -1);
+    g_free ($1);
   }
   | NAME {
     $$ = tmpl_expr_new_symbol_ref ($1);
+    g_free ($1);
   }
   | NAME '=' exp {
     $$ = tmpl_expr_new_symbol_assign ($1, $3);
+    g_free ($1);
   }
   | exp '.' NAME '(' ')' {
     $$ = tmpl_expr_new_gi_call ($1, $3, NULL);
+    g_free ($3);
   }
   | exp '.' NAME '(' explist ')' {
     $$ = tmpl_expr_new_gi_call ($1, $3, $5);
+    g_free ($3);
   }
   | exp '.' NAME {
     $$ = tmpl_expr_new_getattr ($1, $3);
+    g_free ($3);
   }
   | exp '.' VERSION {
     $$ = tmpl_expr_new_getattr ($1, "version");
   }
   | exp '.' NAME '=' exp {
     $$ = tmpl_expr_new_setattr ($1, $3, $5);
+    g_free ($3);
   }
   | BUILTIN '(' explist ')' {
     $$ = tmpl_expr_new_fn_call ($1, $3);
   }
   | NAME '(' explist ')' {
     $$ = tmpl_expr_new_user_fn_call ($1, $3);
+    g_free ($1);
   }
   | NAME '(' ')' {
     $$ = tmpl_expr_new_user_fn_call ($1, NULL);
+    g_free ($1);
   }
   | '!' exp {
     $$ = tmpl_expr_new_invert_boolean ($2);
   }
   | REQUIRE NAME {
     $$ = tmpl_expr_new_require ($2, NULL);
+    g_free ($2);
   }
   | REQUIRE NAME VERSION STRING_LITERAL {
     $$ = tmpl_expr_new_require ($2, $4);
+    g_free ($2);
+    g_free ($4);
   }
 ;
 
