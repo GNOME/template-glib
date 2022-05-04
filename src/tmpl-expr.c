@@ -83,6 +83,7 @@ tmpl_expr_destroy (TmplExpr *self)
     case TMPL_EXPR_AND:
     case TMPL_EXPR_OR:
     case TMPL_EXPR_INVERT_BOOLEAN:
+    case TMPL_EXPR_ARGS:
       g_clear_pointer (&self->simple.left, tmpl_expr_unref);
       g_clear_pointer (&self->simple.right, tmpl_expr_unref);
       break;
