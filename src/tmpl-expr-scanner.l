@@ -110,7 +110,6 @@ L?\"(\\.|[^\\"])*\" { yylval->s = copy_literal (yytext); return STRING_LITERAL; 
 
 "//".*
 [ \t] /* ignore whitespace */
-\\n     { printf ("c> "); }
 "\n"    { return EOL; }
 <<EOF>> { parser->reached_eof = TRUE; return EOL; }
 .       {
