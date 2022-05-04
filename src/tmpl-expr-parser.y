@@ -74,7 +74,21 @@ expr: /* nothing */ EOL {
     YYACCEPT;
   }
   | stmt EOL {
-    parser->ast = $1;
+    if (parser->ast != NULL)
+      {
+        if (parser->ast->any.type != TMPL_EXPR_STMT_LIST)
+          {
+            GPtrArray *ar = g_ptr_array_new_with_free_func ((GDestroyNotify)tmpl_expr_unref);
+            g_ptr_array_add (ar, parser->ast);
+            parser->ast = tmpl_expr_new_stmt_list (ar);
+          }
+        g_ptr_array_add (parser->ast->stmt_list.stmts, $1);
+      }
+    else
+      {
+        parser->ast = $1;
+      }
+
     YYACCEPT;
   }
   | FUNC NAME '(' symlist ')' '=' list EOL {
@@ -110,9 +124,16 @@ stmt: IF exp THEN list {
 list: /* nothing */ { $$ = NULL; }
   | stmt ';' list {
     if ($3 == NULL)
-      $$ = $1;
+      { $$ = $1; }
+    else if ($1->any.type == TMPL_EXPR_STMT_LIST)
+      { g_ptr_array_add ($1->stmt_list.stmts, $3); }
     else
-      $$ = tmpl_expr_new_simple (TMPL_EXPR_STMT_LIST, $1, $3);
+      {
+        GPtrArray *ar = g_ptr_array_new_with_free_func ((GDestroyNotify)tmpl_expr_unref);
+        g_ptr_array_add (ar, $1);
+        g_ptr_array_add (ar, $3);
+        $$ = tmpl_expr_new_stmt_list (ar);
+      }
   }
 ;
 
@@ -191,7 +212,7 @@ exp: exp CMP exp {
 
 explist: exp
   | exp ',' explist {
-    $$ = tmpl_expr_new_simple (TMPL_EXPR_STMT_LIST, $1, $3);
+    $$ = tmpl_expr_new_simple (TMPL_EXPR_ARGS, $1, $3);
   }
 ;
 

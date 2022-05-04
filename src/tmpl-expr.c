@@ -77,7 +77,6 @@ tmpl_expr_destroy (TmplExpr *self)
     case TMPL_EXPR_LTE:
     case TMPL_EXPR_MUL:
     case TMPL_EXPR_NE:
-    case TMPL_EXPR_STMT_LIST:
     case TMPL_EXPR_SUB:
     case TMPL_EXPR_UNARY_MINUS:
     case TMPL_EXPR_USER_FN_CALL:
@@ -97,6 +96,10 @@ tmpl_expr_destroy (TmplExpr *self)
       g_clear_pointer (&self->setattr.attr, g_free);
       g_clear_pointer (&self->setattr.left, tmpl_expr_unref);
       g_clear_pointer (&self->setattr.right, tmpl_expr_unref);
+      break;
+
+    case TMPL_EXPR_STMT_LIST:
+      g_clear_pointer (&self->stmt_list.stmts, g_ptr_array_unref);
       break;
 
     case TMPL_EXPR_BOOLEAN:
@@ -143,6 +146,33 @@ tmpl_expr_destroy (TmplExpr *self)
     }
 
   g_slice_free (TmplExpr, self);
+}
+
+/**
+ * tmpl_expr_new_stmt_list:
+ * @stmts: (transfer full) (element-type TmplExpr): a #GPtrArray of
+ *   #TmplExpr which will be evaluated in sequence.
+ *
+ * Creates a new statement list for which the last item will be
+ * used as the "return value" from execution.
+ *
+ * Returns: (transfer full): a new #TmplExpr
+ *
+ * Since: 3.36
+ */
+TmplExpr *
+tmpl_expr_new_stmt_list (GPtrArray *stmts)
+{
+  TmplExpr *ret;
+
+  g_return_val_if_fail (stmts != NULL, NULL);
+
+  g_ptr_array_set_free_func (stmts, (GDestroyNotify)tmpl_expr_unref);
+
+  ret = tmpl_expr_new (TMPL_EXPR_STMT_LIST);
+  ((TmplExprStmtList *)ret)->stmts = g_ptr_array_ref (stmts);
+
+  return ret;
 }
 
 TmplExpr *

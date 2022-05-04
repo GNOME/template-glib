@@ -396,10 +396,45 @@ cleanup:
 }
 
 static gboolean
-tmpl_expr_stmt_list_eval (TmplExprSimple  *node,
-                         TmplScope       *scope,
-                         GValue         *return_value,
-                         GError        **error)
+tmpl_expr_stmt_list_eval (TmplExprStmtList  *node,
+                          TmplScope         *scope,
+                          GValue            *return_value,
+                          GError           **error)
+{
+  GValue last = G_VALUE_INIT;
+
+  if G_UNLIKELY (node->stmts == NULL || node->stmts->len == 0)
+    {
+      g_set_error_literal (error,
+                           TMPL_ERROR,
+                           TMPL_ERROR_RUNTIME_ERROR,
+                           "Runtime Error: implausible TmplExprStmtList");
+      return FALSE;
+    }
+
+  for (guint i = 0; i < node->stmts->len; i++)
+    {
+      TmplExpr *stmt = g_ptr_array_index (node->stmts, i);
+
+      TMPL_CLEAR_VALUE (&last);
+
+      if (!tmpl_expr_eval_internal (stmt, scope, &last, error))
+        {
+          TMPL_CLEAR_VALUE (&last);
+          return FALSE;
+        }
+    }
+
+  *return_value = last;
+
+  return TRUE;
+}
+
+static gboolean
+tmpl_expr_args_eval (TmplExprSimple  *node,
+                     TmplScope       *scope,
+                     GValue          *return_value,
+                     GError         **error)
 {
   GValue left = G_VALUE_INIT;
   gboolean ret = FALSE;
@@ -964,7 +999,7 @@ apply_args:
           goto cleanup;
         }
 
-      if (args->any.type == TMPL_EXPR_STMT_LIST)
+      if (args->any.type == TMPL_EXPR_ARGS)
         {
           if (!tmpl_expr_eval_internal (((TmplExprSimple *)args)->left, scope, value, error))
             goto cleanup;
@@ -1097,7 +1132,7 @@ tmpl_expr_user_fn_call_eval (TmplExprUserFnCall  *node,
           return FALSE;
         }
 
-      if (params->any.type == TMPL_EXPR_STMT_LIST)
+      if (params->any.type == TMPL_EXPR_ARGS)
         {
           TmplExprSimple *simple = (TmplExprSimple *)params;
 
@@ -1218,8 +1253,11 @@ tmpl_expr_eval_internal (TmplExpr   *node,
       g_value_set_string (return_value, ((TmplExprString *)node)->value);
       return TRUE;
 
+    case TMPL_EXPR_ARGS:
+      return tmpl_expr_args_eval ((TmplExprSimple *)node, scope, return_value, error);
+
     case TMPL_EXPR_STMT_LIST:
-      return tmpl_expr_stmt_list_eval ((TmplExprSimple *)node, scope, return_value, error);
+      return tmpl_expr_stmt_list_eval ((TmplExprStmtList *)node, scope, return_value, error);
 
     case TMPL_EXPR_IF:
     case TMPL_EXPR_WHILE:

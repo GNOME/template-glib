@@ -136,6 +136,13 @@ typedef struct
   volatile gint  ref_count;
 } TmplExprAny;
 
+typedef struct
+{
+  TmplExprType   type;
+  volatile gint  ref_count;
+  GPtrArray     *stmts;
+} TmplExprStmtList;
+
 union _TmplExpr
 {
   TmplExprAny          any;
@@ -151,6 +158,7 @@ union _TmplExpr
   TmplExprGetattr      getattr;
   TmplExprSetattr      setattr;
   TmplExprRequire      require;
+  TmplExprStmtList     stmt_list;
 };
 
 G_END_DECLS
