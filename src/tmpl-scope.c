@@ -322,7 +322,7 @@ tmpl_scope_set_variant (TmplScope   *self,
   g_return_if_fail (name != NULL);
 
   tmpl_symbol_assign_variant (tmpl_scope_get_full (self, name, TRUE),
-    value);
+                              value);
 }
 
 /**
@@ -342,7 +342,7 @@ tmpl_scope_set_strv (TmplScope   *self,
   g_return_if_fail (name != NULL);
 
   tmpl_symbol_assign_variant (tmpl_scope_get_full (self, name, TRUE),
-    g_variant_new_strv (value, -1));
+                              g_variant_new_strv (value, -1));
 }
 
 /**
@@ -430,10 +430,56 @@ tmpl_scope_require (TmplScope    *self,
   if (!(typelib = g_irepository_require (NULL, namespace_, version, 0, NULL)))
     return FALSE;
 
+  g_print ("Inserting %s into scope %p\n", namespace_, typelib);
+
   g_value_init (&value, TMPL_TYPE_TYPELIB);
   g_value_set_pointer (&value, typelib);
   tmpl_scope_set_value (self, namespace_, &value);
   g_value_unset (&value);
 
   return TRUE;
+}
+
+static void
+tmpl_scope_list_symbols_internal (TmplScope *self,
+                                  GPtrArray *ar,
+                                  gboolean   recursive)
+{
+  GHashTableIter iter;
+  const char *key;
+
+  g_assert (self != NULL);
+  g_assert (ar != NULL);
+
+  g_hash_table_iter_init (&iter, self->symbols);
+  while (g_hash_table_iter_next (&iter, (gpointer *)&key, NULL))
+    g_ptr_array_add (ar, g_strdup (key));
+
+  if (recursive && self->parent)
+    tmpl_scope_list_symbols_internal (self->parent, ar, recursive);
+}
+
+/**
+ * tmpl_scope_list_symbols:
+ * @self: a #TmplScope
+ * @recursive: if the parent scopes should be included
+ *
+ * Gets the names of all symbols within the scope.
+ *
+ * Returns: (array zero-terminated=1) (element-type utf8) (transfer full):
+ *   an array containing the names of all symbols within the scope.
+ */
+char **
+tmpl_scope_list_symbols (TmplScope *self,
+                         gboolean   recursive)
+{
+  GPtrArray *ar;
+
+  g_return_val_if_fail (self != NULL, NULL);
+
+  ar = g_ptr_array_new ();
+  tmpl_scope_list_symbols_internal (self, ar, recursive);
+  g_ptr_array_add (ar, NULL);
+
+  return (char **)g_ptr_array_free (ar, FALSE);
 }

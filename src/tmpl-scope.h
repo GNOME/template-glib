@@ -96,6 +96,9 @@ TMPL_AVAILABLE_IN_3_36
 gboolean    tmpl_scope_require         (TmplScope         *self,
                                         const char        *namespace_,
                                         const char        *version);
+TMPL_AVAILABLE_IN_3_36
+char      **tmpl_scope_list_symbols    (TmplScope         *self,
+                                        gboolean           recursive);
 
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (TmplScope, tmpl_scope_unref)
 
