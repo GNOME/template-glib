@@ -109,6 +109,7 @@ add_to_list (TmplExpr *stmt,
 %token <fn> BUILTIN
 %token <s> REQUIRE VERSION
 %token EOL
+%token DEF END
 %token IF THEN ELSE WHILE DO FUNC
 %token NOP
 
@@ -153,6 +154,32 @@ expr: /* nothing */ EOL {
   }
   | FUNC NAME '(' ')' '=' list ';' {
     define_function (parser, $2, NULL, $6);
+    YYACCEPT;
+  }
+
+  | DEF NAME '(' ')' EOL list END {
+    define_function (parser, $2, NULL, $6);
+    YYACCEPT;
+  }
+  | DEF NAME '(' ')' list END {
+    define_function (parser, $2, NULL, $5);
+    YYACCEPT;
+  }
+  | DEF NAME '(' ')' EOL END {
+    define_function (parser, $2, NULL, NULL);
+    YYACCEPT;
+  }
+
+  | DEF NAME '(' symlist ')' EOL list END {
+    define_function (parser, $2, $4, $7);
+    YYACCEPT;
+  }
+  | DEF NAME '(' symlist ')' list END {
+    define_function (parser, $2, $4, $6);
+    YYACCEPT;
+  }
+  | DEF NAME '(' symlist ')' EOL END {
+    define_function (parser, $2, $4, NULL);
     YYACCEPT;
   }
 ;

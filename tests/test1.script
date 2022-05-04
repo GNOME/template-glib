@@ -36,5 +36,17 @@ assert(multiply(-10, 10) == -100)
 func nop() = pass
 nop()
 
+def order2(a,b) assert(a==1); assert(b==2); end
+order2(1,2)
+
+def order3(a,b,c)
+  assert(a == 1)
+  assert(b == 2)
+  assert(c == 3)
+end
+order3(1,2,3)
+
+def weird1(a) assert(a==1)
+end
 
 1234;

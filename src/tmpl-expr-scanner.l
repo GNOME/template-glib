@@ -74,6 +74,8 @@ TmplExprParser *parser = yyextra;
 "while"    { return WHILE; }
 "do"       { return DO; }
 "func"     { return FUNC; }
+"def"      { return DEF; }
+"end"      { return END; }
 "require"  { return REQUIRE; }
 "version"  { return VERSION; }
 "pass"     { return NOP; }
