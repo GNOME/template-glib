@@ -65,6 +65,23 @@ add_expr_to_parser (TmplExprParser *parser,
     }
 }
 
+static void
+define_function (TmplExprParser *parser,
+                 char           *name,
+                 GPtrArray      *symlist,
+                 TmplExpr       *list)
+{
+  char **strv = NULL;
+
+  if (symlist != NULL)
+    {
+      g_ptr_array_add (symlist, NULL);
+      strv = (char **)(gpointer)g_ptr_array_free (symlist, FALSE);
+    }
+
+  add_expr_to_parser (parser, tmpl_expr_new_func (name, strv, list));
+}
+
 # define scanner parser->scanner
 %}
 
@@ -98,17 +115,12 @@ expr: /* nothing */ EOL {
     add_expr_to_parser (parser, $1);
     YYACCEPT;
   }
-  | FUNC NAME '(' symlist ')' '=' list EOL {
-    g_ptr_array_add ($4, NULL);
-    add_expr_to_parser (parser,
-                        tmpl_expr_new_func ($2,
-                                            (char **)(gpointer)g_ptr_array_free ($4, FALSE),
-                                            $7));
-    $4 = NULL;
+  | FUNC NAME '(' symlist ')' '{' list '}' EOL {
+    define_function (parser, $2, g_steal_pointer (&$4), $7);
     YYACCEPT;
   }
-  | FUNC NAME '(' ')' '=' list EOL {
-    add_expr_to_parser (parser, tmpl_expr_new_func ($2, NULL, $6));
+  | FUNC NAME '(' ')' '{' list '}' EOL {
+    define_function (parser, $2, NULL, $6);
     YYACCEPT;
   }
 ;
