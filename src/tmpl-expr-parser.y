@@ -82,6 +82,24 @@ define_function (TmplExprParser *parser,
   add_expr_to_parser (parser, tmpl_expr_new_func (name, strv, list));
 }
 
+static TmplExpr *
+add_to_list (TmplExpr *stmt,
+             TmplExpr *list)
+{
+  g_assert (stmt != NULL);
+
+  if (list == NULL)
+    {
+      GPtrArray *ar = g_ptr_array_new_with_free_func ((GDestroyNotify)tmpl_expr_unref);
+      g_ptr_array_add (ar, stmt);
+      return tmpl_expr_new_stmt_list (ar);
+    }
+
+  g_assert (list->any.type == TMPL_EXPR_STMT_LIST);
+  g_ptr_array_add (list->stmt_list.stmts, stmt);
+  return list;
+}
+
 # define scanner parser->scanner
 %}
 
@@ -139,17 +157,7 @@ stmt: IF exp THEN list {
 
 list: /* nothing */ { $$ = NULL; }
   | stmt ';' list {
-    if ($3 == NULL)
-      { $$ = $1; }
-    else if ($1->any.type == TMPL_EXPR_STMT_LIST)
-      { g_ptr_array_add ($1->stmt_list.stmts, $3); }
-    else
-      {
-        GPtrArray *ar = g_ptr_array_new_with_free_func ((GDestroyNotify)tmpl_expr_unref);
-        g_ptr_array_add (ar, $1);
-        g_ptr_array_add (ar, $3);
-        $$ = tmpl_expr_new_stmt_list (ar);
-      }
+    $$ = add_to_list ($1, $3);
   }
 ;
 
