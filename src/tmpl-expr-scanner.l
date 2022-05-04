@@ -52,7 +52,6 @@ TmplExprParser *parser = yyextra;
 "=" |
 "," |
 "." |
-";" |
 "!" |
 "(" |
 ")" { return yytext [0]; }
@@ -117,6 +116,7 @@ L?\"(\\.|[^\\"])*\" { yylval->s = copy_literal (yytext); return STRING_LITERAL; 
 [ \t]   /* ignore whitespace */
 #[^\n]* { return EOL; } /* line-wise comments should EOL things */
 "\n"    { return EOL; }
+";"     { return EOL; }
 <<EOF>> { parser->reached_eof = TRUE; return EOL; }
 .       {
           g_free (parser->error_str);
