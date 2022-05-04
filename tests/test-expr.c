@@ -53,11 +53,10 @@ test1 (void)
   g_assert_no_error (error);
   g_assert_true (r);
 
-  g_print ("%s\n", G_VALUE_TYPE_NAME (&ret));
-
   g_assert_true (G_VALUE_HOLDS_DOUBLE (&ret));
   g_assert_cmpint (g_value_get_double (&ret), ==, 1234.0);
 
+  g_value_unset (&ret);
   tmpl_scope_unref (scope);
   tmpl_expr_unref (expr);
   g_free (contents);
