@@ -71,6 +71,15 @@ static gboolean builtin_repr                 (const GValue  *value,
 static gboolean builtin_sqrt                 (const GValue  *value,
                                               GValue        *return_value,
                                               GError       **error);
+static gboolean builtin_sin                  (const GValue  *value,
+                                              GValue        *return_value,
+                                              GError       **error);
+static gboolean builtin_tan                  (const GValue  *value,
+                                              GValue        *return_value,
+                                              GError       **error);
+static gboolean builtin_cos                  (const GValue  *value,
+                                              GValue        *return_value,
+                                              GError       **error);
 static gboolean builtin_typeof               (const GValue  *value,
                                               GValue        *return_value,
                                               GError       **error);
@@ -99,6 +108,9 @@ static BuiltinFunc builtin_funcs [] = {
   builtin_sqrt,
   builtin_typeof,
   builtin_assert,
+  builtin_sin,
+  builtin_tan,
+  builtin_cos,
 };
 
 static inline guint
@@ -1787,56 +1799,40 @@ failure:
   return FALSE;
 }
 
-static gboolean
-builtin_ceil (const GValue  *value,
-              GValue        *return_value,
-              GError       **error)
-{
-  if (G_VALUE_HOLDS_DOUBLE (value))
-    {
-      g_value_init (return_value, G_TYPE_DOUBLE);
-      g_value_set_double (return_value, ceil (g_value_get_double (value)));
-      return TRUE;
-    }
-
-  throw_type_mismatch (error, value, NULL, "requires double parameter");
-
-  return FALSE;
+#define BUILTIN_MATH(func)                                              \
+static gboolean                                                         \
+builtin_##func (const GValue  *value,                                   \
+                GValue        *return_value,                            \
+                GError       **error)                                   \
+{                                                                       \
+  GValue translated = G_VALUE_INIT;                                     \
+                                                                        \
+  if (!G_VALUE_HOLDS_DOUBLE (value))                                    \
+    {                                                                   \
+      if (!g_value_transform (value, &translated))                      \
+        {                                                               \
+          g_set_error (error,                                           \
+                       TMPL_ERROR,                                      \
+                       TMPL_ERROR_RUNTIME_ERROR,                        \
+                       "Cannot convert %s to double",                   \
+                       G_VALUE_TYPE_NAME (value));                      \
+          return FALSE;                                                 \
+        }                                                               \
+      value = &translated;                                              \
+    }                                                                   \
+                                                                        \
+  g_value_init (return_value, G_TYPE_DOUBLE);                           \
+  g_value_set_double (return_value, func (g_value_get_double (value))); \
+  return TRUE;                                                          \
 }
 
-static gboolean
-builtin_floor (const GValue  *value,
-               GValue        *return_value,
-               GError       **error)
-{
-  if (G_VALUE_HOLDS_DOUBLE (value))
-    {
-      g_value_init (return_value, G_TYPE_DOUBLE);
-      g_value_set_double (return_value, floor (g_value_get_double (value)));
-      return TRUE;
-    }
-
-  throw_type_mismatch (error, value, NULL, "requires double parameter");
-
-  return FALSE;
-}
-
-static gboolean
-builtin_log (const GValue  *value,
-             GValue        *return_value,
-             GError       **error)
-{
-  if (G_VALUE_HOLDS_DOUBLE (value))
-    {
-      g_value_init (return_value, G_TYPE_DOUBLE);
-      g_value_set_double (return_value, log (g_value_get_double (value)));
-      return TRUE;
-    }
-
-  throw_type_mismatch (error, value, NULL, "requires double parameter");
-
-  return FALSE;
-}
+BUILTIN_MATH (ceil)
+BUILTIN_MATH (floor)
+BUILTIN_MATH (log)
+BUILTIN_MATH (sqrt)
+BUILTIN_MATH (sin)
+BUILTIN_MATH (tan)
+BUILTIN_MATH (cos)
 
 static gboolean
 builtin_print (const GValue  *value,
@@ -1853,23 +1849,6 @@ builtin_print (const GValue  *value,
   g_value_set_boolean (return_value, TRUE);
 
   return TRUE;
-}
-
-static gboolean
-builtin_sqrt (const GValue  *value,
-              GValue        *return_value,
-              GError       **error)
-{
-  if (G_VALUE_HOLDS_DOUBLE (value))
-    {
-      g_value_init (return_value, G_TYPE_DOUBLE);
-      g_value_set_double (return_value, sqrt (g_value_get_double (value)));
-      return TRUE;
-    }
-
-  throw_type_mismatch (error, value, NULL, "requires double parameter");
-
-  return FALSE;
 }
 
 static gboolean

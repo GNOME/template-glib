@@ -91,6 +91,9 @@ TmplExprParser *parser = yyextra;
 "repr"   { yylval->fn = TMPL_EXPR_BUILTIN_REPR; return BUILTIN; }
 "sqrt"   { yylval->fn = TMPL_EXPR_BUILTIN_SQRT; return BUILTIN; }
 "typeof" { yylval->fn = TMPL_EXPR_BUILTIN_TYPEOF; return BUILTIN; }
+"sin"    { yylval->fn = TMPL_EXPR_BUILTIN_SIN; return BUILTIN; }
+"tan"    { yylval->fn = TMPL_EXPR_BUILTIN_TAN; return BUILTIN; }
+"cos"    { yylval->fn = TMPL_EXPR_BUILTIN_COS; return BUILTIN; }
 
  /* string literals */
 L?\"(\\.|[^\\"])*\" { yylval->s = copy_literal (yytext); return STRING_LITERAL; }
