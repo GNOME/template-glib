@@ -114,7 +114,8 @@ L?\"(\\.|[^\\"])*\" { yylval->s = copy_literal (yytext); return STRING_LITERAL; 
 "."?[0-9]+{EXP}? { yylval->d = atof(yytext); return NUMBER; }
 
 "//".*
-[ \t] /* ignore whitespace */
+[ \t]   /* ignore whitespace */
+#[^\n]* /* ignore line comments */
 "\n"    { return EOL; }
 <<EOF>> { parser->reached_eof = TRUE; return EOL; }
 .       {

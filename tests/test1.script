@@ -18,6 +18,8 @@ assert(abc == "abc")
 assert(abc != "abc\n")
 assert(abc != "def")
 
+# we can't do builtins yet w/ >1 param so this is a
+# very bad pow() implementation that works on integers only.
 func pow(a,b) = while b > 1 do a = a * a; b = b - 1;
 assert(pow(2,3) == 8)
 
