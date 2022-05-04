@@ -167,7 +167,7 @@ tmpl_expr_destroy (TmplExpr *self)
  * Creates a new statement list for which the last item will be
  * used as the "return value" from execution.
  *
- * Returns: (transfer full): a new #TmplExpr
+ * Returns: (transfer full) (element-type TmplExpr): a new #TmplExpr
  *
  * Since: 3.36
  */
