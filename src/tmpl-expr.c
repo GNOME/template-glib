@@ -79,13 +79,17 @@ tmpl_expr_destroy (TmplExpr *self)
     case TMPL_EXPR_NE:
     case TMPL_EXPR_SUB:
     case TMPL_EXPR_UNARY_MINUS:
-    case TMPL_EXPR_USER_FN_CALL:
     case TMPL_EXPR_AND:
     case TMPL_EXPR_OR:
     case TMPL_EXPR_INVERT_BOOLEAN:
     case TMPL_EXPR_ARGS:
       g_clear_pointer (&self->simple.left, tmpl_expr_unref);
       g_clear_pointer (&self->simple.right, tmpl_expr_unref);
+      break;
+
+    case TMPL_EXPR_USER_FN_CALL:
+      g_clear_pointer (&self->user_fn_call.symbol, g_free);
+      g_clear_pointer (&self->user_fn_call.params, tmpl_expr_unref);
       break;
 
     case TMPL_EXPR_GETATTR:
