@@ -18,6 +18,9 @@ assert(abc == "abc")
 assert(abc != "abc\n")
 assert(abc != "def")
 
+func pow(a,b) = while b > 1 do a = a * a; b = b - 1;
+assert(pow(2,3) == 8)
+
 func multiply(x,y) = x * y;
 assert(multiply(10, 10) == 100)
 assert(multiply(-10, 10) == -100)
