@@ -139,10 +139,14 @@ if libdir == '' or includedir == ''
   error('You must set pkglibdir and pkgincludedir when using as a subproject')
 endif
 
+core_lib = static_library('template_glib', libtemplate_glib_sources,
+   dependencies: libtemplate_glib_deps,
+)
+
 libtemplate_glib = library(
   'template_glib-' + apiversion,
-  libtemplate_glib_sources,
 
+     link_whole: core_lib,
    dependencies: libtemplate_glib_deps,
       soversion: soversion,
         version: libversion,
