@@ -22,7 +22,7 @@ assert(abc != "def")
 # very bad pow() implementation that works on integers only.
 func pow(a,b) = while b > 1 do a = a * a; b = b - 1;
 assert(pow(2,3) == 8)
-
+assert(pow(2,3) == 8) # and here
 func multiply(x,y) = x * y;
 assert(multiply(10, 10) == 100)
 assert(multiply(-10, 10) == -100)
