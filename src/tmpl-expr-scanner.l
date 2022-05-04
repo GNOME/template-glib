@@ -79,6 +79,10 @@ TmplExprParser *parser = yyextra;
 
 "true"     { yylval->b = 1; return BOOL; }
 "false"    { yylval->b = 0; return BOOL; }
+"True"     { yylval->b = 1; return BOOL; }
+"False"    { yylval->b = 0; return BOOL; }
+"TRUE"     { yylval->b = 1; return BOOL; }
+"FALSE"    { yylval->b = 0; return BOOL; }
 
  /* builtin functions */
 "assert" { yylval->fn = TMPL_EXPR_BUILTIN_ASSERT; return BUILTIN; }
