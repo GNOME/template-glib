@@ -78,6 +78,12 @@ TmplExprParser *parser = yyextra;
  /* string literals */
 L?\"(\\.|[^\\"])*\" { yylval->s = yytext; return STRING_LITERAL; }
 
+ /* @ to escape reserved keywords */
+@[a-zA-Z_][a-zA-Z0-9_]* {
+  yylval->s = g_strdup (yytext+1);
+  return NAME;
+}
+
  /* names */
 [a-zA-Z_][a-zA-Z0-9_]* {
   yylval->s = g_strdup (yytext);
