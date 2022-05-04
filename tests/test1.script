@@ -10,6 +10,9 @@ assert(123 != 124)
 assert(123 != -123)
 assert(123 == abs(-123))
 
+assert(1 - 10 == -9)
+assert(1 / 10 == .1)
+
 abc = "abc"
 assert(abc == "abc")
 assert(abc != "abc\n")
