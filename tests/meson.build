@@ -14,6 +14,7 @@ testsuite_c_args = [
 
 testsuite_sources = [
   ['test-expr'],
+  ['test-template'],
 ]
 
 foreach test: testsuite_sources
