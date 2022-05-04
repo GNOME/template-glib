@@ -44,6 +44,27 @@ tmpl_expr_parser_error (TmplExprParser *parser,
   parser->error_str = g_strdup (message);
 }
 
+static void
+add_expr_to_parser (TmplExprParser *parser,
+                    TmplExpr       *node)
+{
+  if (parser->ast != NULL)
+    {
+      if (parser->ast->any.type != TMPL_EXPR_STMT_LIST)
+        {
+          GPtrArray *ar = g_ptr_array_new_with_free_func ((GDestroyNotify)tmpl_expr_unref);
+          g_ptr_array_add (ar, parser->ast);
+          parser->ast = tmpl_expr_new_stmt_list (ar);
+        }
+
+      g_ptr_array_add (parser->ast->stmt_list.stmts, node);
+    }
+  else
+    {
+      parser->ast = node;
+    }
+}
+
 # define scanner parser->scanner
 %}
 
@@ -74,37 +95,20 @@ expr: /* nothing */ EOL {
     YYACCEPT;
   }
   | stmt EOL {
-    if (parser->ast != NULL)
-      {
-        if (parser->ast->any.type != TMPL_EXPR_STMT_LIST)
-          {
-            GPtrArray *ar = g_ptr_array_new_with_free_func ((GDestroyNotify)tmpl_expr_unref);
-            g_ptr_array_add (ar, parser->ast);
-            parser->ast = tmpl_expr_new_stmt_list (ar);
-          }
-        g_ptr_array_add (parser->ast->stmt_list.stmts, $1);
-      }
-    else
-      {
-        parser->ast = $1;
-      }
-
+    add_expr_to_parser (parser, $1);
     YYACCEPT;
   }
   | FUNC NAME '(' symlist ')' '=' list EOL {
-    /* todo: add ast node to define the expr on the scope
-     * when evaluated.
-     */
-    //tmpl_scope_add_user_func (parser->scope, $2, $4, $7);
-    parser->ast = NULL;
+    g_ptr_array_add ($4, NULL);
+    add_expr_to_parser (parser,
+                        tmpl_expr_new_func ($2,
+                                            (char **)(gpointer)g_ptr_array_free ($4, FALSE),
+                                            $7));
+    $4 = NULL;
     YYACCEPT;
   }
   | FUNC NAME '(' ')' '=' list EOL {
-    /* todo: add ast node to define the expr on the scope
-     * when evaluated.
-     */
-    //tmpl_scope_add_user_func (parser->scope, $2, NULL, $6);
-    parser->ast = NULL;
+    add_expr_to_parser (parser, tmpl_expr_new_func ($2, NULL, $6));
     YYACCEPT;
   }
 ;

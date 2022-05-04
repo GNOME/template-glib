@@ -143,6 +143,15 @@ typedef struct
   GPtrArray     *stmts;
 } TmplExprStmtList;
 
+typedef struct
+{
+  TmplExprType    type;
+  volatile gint   ref_count;
+  char           *name;
+  char          **symlist;
+  TmplExpr       *list;
+} TmplExprFunc;
+
 union _TmplExpr
 {
   TmplExprAny          any;
@@ -159,6 +168,7 @@ union _TmplExpr
   TmplExprSetattr      setattr;
   TmplExprRequire      require;
   TmplExprStmtList     stmt_list;
+  TmplExprFunc         func;
 };
 
 G_END_DECLS

@@ -1,5 +1,6 @@
 require GLib
 require Gio version "2.0"
 
-a = 2
-617 * a
+func multiply(x,y) = x * y;
+
+multiply(617, 2)

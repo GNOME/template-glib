@@ -142,6 +142,12 @@ tmpl_expr_destroy (TmplExpr *self)
       g_clear_pointer (&self->require.version, g_free);
       break;
 
+    case TMPL_EXPR_FUNC:
+      g_clear_pointer (&self->func.name, g_free);
+      g_clear_pointer (&self->func.symlist, g_strfreev);
+      g_clear_pointer (&self->func.list, tmpl_expr_unref);
+      break;
+
     default:
       g_assert_not_reached ();
     }
@@ -379,4 +385,22 @@ tmpl_expr_from_string (const gchar  *str,
   tmpl_expr_parser_destroy (&parser);
 
   return ret;
+}
+
+TmplExpr *
+tmpl_expr_new_func (char      *name,
+                    char     **symlist,
+                    TmplExpr  *list)
+{
+  TmplExprFunc *ret;
+
+  g_return_val_if_fail (name != NULL, NULL);
+  g_return_val_if_fail (list != NULL, NULL);
+
+  ret = tmpl_expr_new (TMPL_EXPR_FUNC);
+  ret->name = name;
+  ret->symlist = symlist;
+  ret->list = list;
+
+  return (TmplExpr *)ret;
 }

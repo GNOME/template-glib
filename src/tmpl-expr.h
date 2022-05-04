@@ -86,6 +86,10 @@ TmplExpr *tmpl_expr_new_symbol_assign (const gchar      *symbol,
                                        TmplExpr         *right);
 TMPL_AVAILABLE_IN_3_36
 TmplExpr *tmpl_expr_new_stmt_list     (GPtrArray        *stmts);
+TMPL_AVAILABLE_IN_3_36
+TmplExpr *tmpl_expr_new_func          (char             *name,
+                                       char            **symlist,
+                                       TmplExpr         *list);
 
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (TmplExpr, tmpl_expr_unref)
 

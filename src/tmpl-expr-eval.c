@@ -1211,6 +1211,38 @@ tmpl_expr_require_eval (TmplExprRequire  *node,
 }
 
 static gboolean
+tmpl_expr_func_eval (TmplExprFunc  *node,
+                     TmplScope     *scope,
+                     GValue        *return_value,
+                     GError       **error)
+{
+  GPtrArray *args = NULL;
+  TmplSymbol *symbol;
+
+  g_assert (node != NULL);
+  g_assert (scope != NULL);
+  g_assert (return_value != NULL);
+
+  /* We just need to insert a symbol into @scope that includes
+   * the function defined here. If the symbol already exists,
+   * it will be replaced with this function.
+   */
+
+  if (node->symlist != NULL)
+    {
+      args = g_ptr_array_new_with_free_func (g_free);
+      for (guint i = 0; node->symlist[i]; i++)
+        g_ptr_array_add (args, g_strdup (node->symlist[i]));
+    }
+
+  symbol = tmpl_scope_get (scope, node->name);
+  tmpl_symbol_assign_expr (symbol, node->list, args);
+  g_clear_pointer (&args, g_ptr_array_unref);
+
+  return TRUE;
+}
+
+static gboolean
 tmpl_expr_eval_internal (TmplExpr   *node,
                          TmplScope  *scope,
                          GValue     *return_value,
@@ -1307,6 +1339,9 @@ tmpl_expr_eval_internal (TmplExpr   *node,
 
         return ret;
       }
+
+    case TMPL_EXPR_FUNC:
+      return tmpl_expr_func_eval ((TmplExprFunc *)node, scope, return_value, error);
 
     default:
       break;
