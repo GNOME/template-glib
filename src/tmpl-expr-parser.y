@@ -109,8 +109,8 @@ add_to_list (TmplExpr *stmt,
 %token <fn> BUILTIN
 %token <s> REQUIRE VERSION
 %token EOL
-
 %token IF THEN ELSE WHILE DO FUNC
+%token NOP
 
 %nonassoc <cmp> CMP
 %right '='
@@ -232,6 +232,9 @@ exp: exp CMP exp {
   }
   | '!' exp {
     $$ = tmpl_expr_new_invert_boolean ($2);
+  }
+  | NOP {
+    $$ = tmpl_expr_new_nop ();
   }
   | REQUIRE NAME {
     $$ = tmpl_expr_new_require ($2, NULL);

@@ -75,6 +75,7 @@ TmplExprParser *parser = yyextra;
 "func"     { return FUNC; }
 "require"  { return REQUIRE; }
 "version"  { return VERSION; }
+"pass"     { return NOP; }
 
 "true"     { yylval->b = 1; return BOOL; }
 "false"    { yylval->b = 0; return BOOL; }
