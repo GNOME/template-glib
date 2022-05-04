@@ -156,7 +156,7 @@ stmt: IF exp THEN list {
 ;
 
 list: /* nothing */ { $$ = NULL; }
-  | stmt ';' list {
+  | stmt EOL list {
     $$ = add_to_list ($1, $3);
   }
 ;
