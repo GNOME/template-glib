@@ -5,6 +5,18 @@ assert(true)
 assert(true != false)
 assert(!false)
 
-func multiply(x,y) = x * y;
+assert(123 == 123)
+assert(123 != 124)
+assert(123 != -123)
+assert(123 == abs(-123))
 
-multiply(617, 2)
+abc = "abc"
+assert(abc == "abc")
+assert(abc != "abc\n")
+assert(abc != "def")
+
+func multiply(x,y) = x * y;
+assert(multiply(10, 10) == 100)
+assert(multiply(-10, 10) == -100)
+
+1234;

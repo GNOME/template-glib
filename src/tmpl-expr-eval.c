@@ -1673,7 +1673,44 @@ builtin_abs (const GValue  *value,
              GValue        *return_value,
              GError       **error)
 {
-  throw_type_mismatch (error, value, NULL, "not implemented");
+  char *errmsg;
+
+  if (G_VALUE_HOLDS_DOUBLE (value))
+    {
+      g_value_init (return_value, G_TYPE_DOUBLE);
+      g_value_set_double (return_value, ABS (g_value_get_double (value)));
+      return TRUE;
+    }
+  else if (G_VALUE_HOLDS_FLOAT (value))
+    {
+      g_value_init (return_value, G_TYPE_FLOAT);
+      g_value_set_float (return_value, ABS (g_value_get_float (value)));
+      return TRUE;
+    }
+  else if (G_VALUE_HOLDS_INT (value))
+    {
+      g_value_init (return_value, G_TYPE_INT);
+      g_value_set_int (return_value, ABS (g_value_get_int (value)));
+      return TRUE;
+    }
+  else if (G_VALUE_HOLDS_INT64 (value))
+    {
+      g_value_init (return_value, G_TYPE_INT64);
+      g_value_set_int64 (return_value, ABS (g_value_get_int64 (value)));
+      return TRUE;
+    }
+  else if (G_VALUE_HOLDS_UINT (value) ||
+           G_VALUE_HOLDS_UINT64 (value) ||
+           G_VALUE_HOLDS_UCHAR (value))
+    {
+      *return_value = *value;
+      return TRUE;
+    }
+
+  errmsg = g_strdup_printf ("Cannot abs() type %s", G_VALUE_TYPE_NAME (value));
+  throw_type_mismatch (error, value, NULL, errmsg);
+  g_free (errmsg);
+
   return FALSE;
 }
 
