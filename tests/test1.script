@@ -60,4 +60,10 @@ assert(myfunc() == 27);
 group = Gio.SimpleActionGroup.new()
 assert(group)
 
+t1 = typeof(group)
+t2 = typeof(Gio.SimpleActionGroup)
+assert(t1)
+assert(t2)
+assert(t1 == t2)
+
 1234;
