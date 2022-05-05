@@ -59,6 +59,10 @@ assert(myfunc() == 27);
 # test out construction
 group = Gio.SimpleActionGroup.new()
 assert(group)
+assert(group != null)
+assert(typeof(group).is_a(typeof(Gio.ActionGroup)))
+assert(typeof(group).is_a(typeof(Gio.ActionMap)))
+assert(!typeof(group).is_a(typeof(Gio.Action)))
 
 t1 = typeof(group)
 t2 = typeof(Gio.SimpleActionGroup)
@@ -76,5 +80,7 @@ assert(action != null)
 assert(typeof(action) != null)
 assert(typeof(action) == typeof(Gio.SimpleAction))
 assert(typeof(action) != typeof(Gio.SimpleActionGroup))
+assert(typeof(action).is_a(typeof(Gio.Action)))
+assert(!typeof(action).is_a(typeof(Gio.ActionMap)))
 
 1234;

@@ -929,6 +929,51 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
       goto cleanup;
     }
 
+  if (G_VALUE_HOLDS_GTYPE (&left))
+    {
+      if (FALSE) {}
+      else if (g_str_equal (node->name, "is_a"))
+        {
+          if (node->params != NULL)
+            {
+              GValue param1 = G_VALUE_INIT;
+
+              if (!tmpl_expr_eval_internal (node->params, scope, &param1, error))
+                goto cleanup;
+
+              if (!G_VALUE_HOLDS_GTYPE (&param1))
+                {
+                  g_set_error (error,
+                               TMPL_ERROR,
+                               TMPL_ERROR_TYPE_MISMATCH,
+                               "%s is not a GType",
+                               G_VALUE_TYPE_NAME (&param1));
+                  TMPL_CLEAR_VALUE (&param1);
+                  goto cleanup;
+                }
+
+              g_value_init (return_value, G_TYPE_BOOLEAN);
+              g_value_set_boolean (return_value,
+                                   g_type_is_a (g_value_get_gtype (&left),
+                                                g_value_get_gtype (&param1)));
+
+              TMPL_CLEAR_VALUE (&param1);
+
+              ret = TRUE;
+
+              goto cleanup;
+            }
+        }
+
+      g_set_error (error,
+                   TMPL_ERROR,
+                   TMPL_ERROR_GI_FAILURE,
+                   "No such method %s of GType",
+                   node->name);
+
+      goto cleanup;
+    }
+
   repository = g_irepository_get_default ();
 
   if (G_VALUE_HOLDS (&left, TMPL_TYPE_TYPELIB) &&
