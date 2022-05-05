@@ -286,3 +286,23 @@ tmpl_symbol_assign_strv (TmplSymbol *self,
   tmpl_symbol_assign_value (self, &value);
   g_value_unset (&value);
 }
+
+gboolean
+tmpl_symbol_holds (TmplSymbol *self,
+                   GType       type)
+{
+  return self != NULL &&
+         self->type == TMPL_SYMBOL_VALUE &&
+         self->u.value.g_type == type;
+}
+
+gpointer
+tmpl_symbol_get_boxed (TmplSymbol *self)
+{
+  if (self != NULL &&
+      self->type == TMPL_SYMBOL_VALUE &&
+      G_VALUE_HOLDS_BOXED (&self->u.value))
+    return g_value_get_boxed (&self->u.value);
+
+  return NULL;
+}

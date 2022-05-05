@@ -37,9 +37,14 @@ TMPL_AVAILABLE_IN_ALL
 void            tmpl_symbol_unref           (TmplSymbol   *self);
 TMPL_AVAILABLE_IN_ALL
 TmplSymbolType  tmpl_symbol_get_symbol_type (TmplSymbol   *self);
+TMPL_AVAILABLE_IN_3_36
+gboolean        tmpl_symbol_holds           (TmplSymbol   *self,
+                                             GType         type);
 TMPL_AVAILABLE_IN_ALL
 void            tmpl_symbol_get_value       (TmplSymbol   *self,
                                              GValue       *value);
+TMPL_AVAILABLE_IN_3_36
+gpointer        tmpl_symbol_get_boxed       (TmplSymbol   *self);
 TMPL_AVAILABLE_IN_ALL
 TmplExpr       *tmpl_symbol_get_expr        (TmplSymbol   *self,
                                              GPtrArray   **params);
