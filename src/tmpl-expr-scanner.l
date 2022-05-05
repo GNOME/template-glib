@@ -88,20 +88,20 @@ TmplExprParser *parser = yyextra;
 "FALSE"    { yylval->b = 0; return BOOL; }
 
  /* builtin functions */
-"assert" { yylval->fn = TMPL_EXPR_BUILTIN_ASSERT; return BUILTIN; }
-"abs"    { yylval->fn = TMPL_EXPR_BUILTIN_ABS; return BUILTIN; }
-"ceil"   { yylval->fn = TMPL_EXPR_BUILTIN_CEIL; return BUILTIN; }
-"floor"  { yylval->fn = TMPL_EXPR_BUILTIN_FLOOR; return BUILTIN; }
-"hex"    { yylval->fn = TMPL_EXPR_BUILTIN_HEX; return BUILTIN; }
-"log"    { yylval->fn = TMPL_EXPR_BUILTIN_LOG; return BUILTIN; }
-"print"  { yylval->fn = TMPL_EXPR_BUILTIN_PRINT; return BUILTIN; }
-"repr"   { yylval->fn = TMPL_EXPR_BUILTIN_REPR; return BUILTIN; }
-"sqrt"   { yylval->fn = TMPL_EXPR_BUILTIN_SQRT; return BUILTIN; }
-"typeof" { yylval->fn = TMPL_EXPR_BUILTIN_TYPEOF; return BUILTIN; }
-"sin"    { yylval->fn = TMPL_EXPR_BUILTIN_SIN; return BUILTIN; }
-"tan"    { yylval->fn = TMPL_EXPR_BUILTIN_TAN; return BUILTIN; }
-"cos"    { yylval->fn = TMPL_EXPR_BUILTIN_COS; return BUILTIN; }
+"assert"   { yylval->fn = TMPL_EXPR_BUILTIN_ASSERT; return BUILTIN; }
+"abs"      { yylval->fn = TMPL_EXPR_BUILTIN_ABS; return BUILTIN; }
+"ceil"     { yylval->fn = TMPL_EXPR_BUILTIN_CEIL; return BUILTIN; }
+"floor"    { yylval->fn = TMPL_EXPR_BUILTIN_FLOOR; return BUILTIN; }
+"hex"      { yylval->fn = TMPL_EXPR_BUILTIN_HEX; return BUILTIN; }
+"log"      { yylval->fn = TMPL_EXPR_BUILTIN_LOG; return BUILTIN; }
+"print"    { yylval->fn = TMPL_EXPR_BUILTIN_PRINT; return BUILTIN; }
 "printerr" { yylval->fn = TMPL_EXPR_BUILTIN_PRINTERR; return BUILTIN; }
+"repr"     { yylval->fn = TMPL_EXPR_BUILTIN_REPR; return BUILTIN; }
+"sqrt"     { yylval->fn = TMPL_EXPR_BUILTIN_SQRT; return BUILTIN; }
+"typeof"   { yylval->fn = TMPL_EXPR_BUILTIN_TYPEOF; return BUILTIN; }
+"sin"      { yylval->fn = TMPL_EXPR_BUILTIN_SIN; return BUILTIN; }
+"tan"      { yylval->fn = TMPL_EXPR_BUILTIN_TAN; return BUILTIN; }
+"cos"      { yylval->fn = TMPL_EXPR_BUILTIN_COS; return BUILTIN; }
 
  /* string literals */
 L?\"(\\.|[^\\"])*\" { yylval->s = copy_literal (yytext); return STRING_LITERAL; }
