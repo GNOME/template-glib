@@ -1932,6 +1932,11 @@ builtin_assert (const GValue  *value,
       if (g_value_get_float (value) == .0f)
         goto failure;
     }
+  else if (G_VALUE_HOLDS_GTYPE (value))
+    {
+      if (g_value_get_gtype (value) == G_TYPE_INVALID)
+        goto failure;
+    }
   else
     {
       goto failure;
