@@ -66,11 +66,15 @@ assert(t1)
 assert(t2)
 assert(t1 == t2)
 
+Nil = null
+assert(Nil == null)
+assert(null == null)
+assert(group != null)
+
 action = Gio.SimpleAction.new("myaction", null)
-assert(action)
+assert(action != null)
+assert(typeof(action) != null)
 assert(typeof(action) == typeof(Gio.SimpleAction))
 assert(typeof(action) != typeof(Gio.SimpleActionGroup))
-
-assert(null == null)
 
 1234;

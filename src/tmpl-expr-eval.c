@@ -161,6 +161,57 @@ ne_gtype_gtype (const GValue  *left,
 }
 
 static gboolean
+eq_null (const GValue  *left,
+         const GValue  *right,
+         GValue        *return_value,
+         GError       **error)
+{
+  const GValue *val;
+
+  g_value_init (return_value, G_TYPE_BOOLEAN);
+
+  if (G_VALUE_HOLDS_POINTER (left) && g_value_get_pointer (left) == NULL)
+    val = right;
+  else
+    val = left;
+
+  if (val->g_type == G_TYPE_INVALID ||
+      G_VALUE_HOLDS_POINTER (val) ||
+      G_VALUE_HOLDS_STRING (val) ||
+      G_VALUE_HOLDS_OBJECT (val) ||
+      G_VALUE_HOLDS_BOXED (val) ||
+      G_VALUE_HOLDS_GTYPE (val) ||
+      G_VALUE_HOLDS_VARIANT (val))
+    {
+      g_value_set_boolean (return_value, val->data[0].v_pointer == NULL);
+      return TRUE;
+    }
+
+  g_set_error (error,
+               TMPL_ERROR,
+               TMPL_ERROR_TYPE_MISMATCH,
+               "Cannot compare %s for null equality",
+               G_VALUE_TYPE_NAME (val));
+
+  return FALSE;
+}
+
+static gboolean
+ne_null (const GValue  *left,
+         const GValue  *right,
+         GValue        *return_value,
+         GError       **error)
+{
+  if (eq_null (left, right, return_value, error))
+    {
+      g_value_set_boolean (return_value, !g_value_get_boolean (return_value));
+      return TRUE;
+    }
+
+  return FALSE;
+}
+
+static gboolean
 throw_type_mismatch (GError       **error,
                      const GValue  *left,
                      const GValue  *right,
@@ -213,6 +264,10 @@ find_dispatch_slow (TmplExprSimple *node,
 
       if (G_VALUE_HOLDS_GTYPE (left) && G_VALUE_HOLDS_GTYPE (right))
         return eq_gtype_gtype;
+
+      if ((G_VALUE_HOLDS_POINTER (left) && g_value_get_pointer (left) == NULL) ||
+          (G_VALUE_HOLDS_POINTER (right) && g_value_get_pointer (right) == NULL))
+        return eq_null;
     }
 
   if (node->type == TMPL_EXPR_NE)
@@ -223,6 +278,10 @@ find_dispatch_slow (TmplExprSimple *node,
 
       if (G_VALUE_HOLDS_GTYPE (left) && G_VALUE_HOLDS_GTYPE (right))
         return ne_gtype_gtype;
+
+      if ((G_VALUE_HOLDS_POINTER (left) && g_value_get_pointer (left) == NULL) ||
+          (G_VALUE_HOLDS_POINTER (right) && g_value_get_pointer (right) == NULL))
+        return ne_null;
     }
 
   if (node->type == TMPL_EXPR_ADD)
