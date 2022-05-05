@@ -144,6 +144,12 @@ core_lib = static_library('template_glib', libtemplate_glib_sources,
    dependencies: libtemplate_glib_deps,
          c_args: release_args,
 )
+core_lib_dep = declare_dependency(
+              sources: libtemplate_glib_generated_headers,
+         dependencies: libtemplate_glib_deps,
+           link_whole: core_lib,
+  include_directories: include_directories('.'),
+)
 
 libtemplate_glib = library(
   'template_glib-' + apiversion,

@@ -23,9 +23,7 @@ foreach test: testsuite_sources
 
   test_exe = executable(test_name, test_sources,
                  c_args: testsuite_c_args,
-             link_whole: core_lib,
-           dependencies: [libtemplate_glib_deps],
-    include_directories: include_directories('../src'),
+           dependencies: [core_lib_dep],
   )
 
   test(test_name, test_exe, suite: 'Template-GLib', env: test_env)
