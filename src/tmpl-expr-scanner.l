@@ -80,12 +80,16 @@ TmplExprParser *parser = yyextra;
 "version"  { return VERSION; }
 "pass"     { return NOP; }
 
+ /* booleans */
 "true"     { yylval->b = 1; return BOOL; }
 "false"    { yylval->b = 0; return BOOL; }
 "True"     { yylval->b = 1; return BOOL; }
 "False"    { yylval->b = 0; return BOOL; }
 "TRUE"     { yylval->b = 1; return BOOL; }
 "FALSE"    { yylval->b = 0; return BOOL; }
+
+ /* constants */
+"null"     { return CONSTANT_NULL; }
 
  /* builtin functions */
 "assert"   { yylval->fn = TMPL_EXPR_BUILTIN_ASSERT; return BUILTIN; }

@@ -66,4 +66,9 @@ assert(t1)
 assert(t2)
 assert(t1 == t2)
 
+action = Gio.SimpleAction.new("myaction", null)
+assert(action)
+assert(typeof(action) == typeof(Gio.SimpleAction))
+assert(typeof(action) != typeof(Gio.SimpleActionGroup))
+
 1234;

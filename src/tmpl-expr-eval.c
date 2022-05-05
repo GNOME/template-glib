@@ -1507,6 +1507,11 @@ tmpl_expr_eval_internal (TmplExpr   *node,
     case TMPL_EXPR_NOP:
       return TRUE;
 
+    case TMPL_EXPR_NULL:
+      g_value_init (return_value, G_TYPE_POINTER);
+      g_value_set_pointer (return_value, NULL);
+      return TRUE;
+
     default:
       break;
     }

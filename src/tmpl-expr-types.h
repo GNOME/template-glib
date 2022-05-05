@@ -79,6 +79,7 @@ typedef enum
   TMPL_EXPR_ARGS,
   TMPL_EXPR_FUNC,
   TMPL_EXPR_NOP,
+  TMPL_EXPR_NULL,
 } TmplExprType;
 
 typedef enum

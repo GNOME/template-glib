@@ -115,6 +115,7 @@ add_to_list (TmplExpr *stmt,
 %}
 
 %token <b> BOOL
+%token CONSTANT_NULL
 %token <d> NUMBER
 %token <s> NAME STRING_LITERAL
 %token <fn> BUILTIN
@@ -224,6 +225,9 @@ exp: exp CMP exp {
   }
   | BOOL {
     $$ = tmpl_expr_new_boolean ($1);
+  }
+  | CONSTANT_NULL {
+    $$ = tmpl_expr_new_null ();
   }
   | STRING_LITERAL {
     $$ = tmpl_expr_new_string ($1, -1);

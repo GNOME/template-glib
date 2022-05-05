@@ -158,6 +158,7 @@ tmpl_expr_destroy (TmplExpr *self)
       break;
 
     case TMPL_EXPR_NOP:
+    case TMPL_EXPR_NULL:
       /* This should never happen,
        * but just log it if it does */
       g_return_if_reached ();
@@ -439,5 +440,12 @@ TmplExpr *
 tmpl_expr_new_nop (void)
 {
   static TmplExpr interned = { .any.type = TMPL_EXPR_NOP, .any.ref_count = 1 };
+  return tmpl_expr_ref (&interned);
+}
+
+TmplExpr *
+tmpl_expr_new_null (void)
+{
+  static TmplExpr interned = { .any.type = TMPL_EXPR_NULL, .any.ref_count = 1 };
   return tmpl_expr_ref (&interned);
 }
