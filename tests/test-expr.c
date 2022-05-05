@@ -53,6 +53,10 @@ test1 (void)
   g_assert_no_error (error);
   g_assert_true (r);
 
+  if (!G_VALUE_HOLDS_DOUBLE (&ret))
+    g_printerr ("Expected double, got %s\n",
+                G_VALUE_TYPE_NAME (&ret));
+
   g_assert_true (G_VALUE_HOLDS_DOUBLE (&ret));
   g_assert_cmpint (g_value_get_double (&ret), ==, 1234.0);
 
