@@ -92,6 +92,11 @@ tmpl_expr_destroy (TmplExpr *self)
       g_clear_pointer (&self->user_fn_call.params, tmpl_expr_unref);
       break;
 
+    case TMPL_EXPR_ANON_FN_CALL:
+      g_clear_pointer (&self->anon_fn_call.anon, tmpl_expr_unref);
+      g_clear_pointer (&self->user_fn_call.params, tmpl_expr_unref);
+      break;
+
     case TMPL_EXPR_GETATTR:
       g_clear_pointer (&self->getattr.attr, g_free);
       g_clear_pointer (&self->getattr.left, tmpl_expr_unref);
@@ -408,6 +413,22 @@ tmpl_expr_new_func (char      *name,
   ret->name = name;
   ret->symlist = symlist;
   ret->list = list;
+
+  return (TmplExpr *)ret;
+}
+
+TmplExpr *
+tmpl_expr_new_anon_call (TmplExpr *func,
+                         TmplExpr *params)
+{
+  TmplExprAnonFnCall *ret;
+
+  g_return_val_if_fail (func != NULL, NULL);
+  g_return_val_if_fail (func->any.type == TMPL_EXPR_FUNC, NULL);
+
+  ret = tmpl_expr_new (TMPL_EXPR_ANON_FN_CALL);
+  ret->anon = func;
+  ret->params = params;
 
   return (TmplExpr *)ret;
 }

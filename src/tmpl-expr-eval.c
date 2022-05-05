@@ -1090,6 +1090,93 @@ cleanup:
 }
 
 static gboolean
+tmpl_expr_anon_fn_call_eval (TmplExprAnonFnCall  *node,
+                             TmplScope           *scope,
+                             GValue              *return_value,
+                             GError             **error)
+{
+  char **args;
+  TmplExpr *params = NULL;
+  TmplScope *local_scope = NULL;
+  gboolean ret = FALSE;
+  gint n_args = 0;
+
+  g_assert (node != NULL);
+  g_assert (scope != NULL);
+  g_assert (return_value != NULL);
+
+  if (node->anon->any.type != TMPL_EXPR_FUNC)
+    {
+      g_set_error_literal (error,
+                           TMPL_ERROR,
+                           TMPL_ERROR_NOT_A_FUNCTION,
+                           "Not a function to evaluate");
+      return FALSE;
+    }
+
+  args = node->anon->func.symlist;
+  n_args = args ? g_strv_length (args) : 0;
+  local_scope = tmpl_scope_new_with_parent (scope);
+  params = node->params;
+
+  for (guint i = 0; i < n_args; i++)
+    {
+      const gchar *arg = args[i];
+      GValue value = G_VALUE_INIT;
+
+      if (params == NULL)
+        {
+          g_set_error (error,
+                       TMPL_ERROR,
+                       TMPL_ERROR_SYNTAX_ERROR,
+                       "Function takes %d arguments, got %d",
+                       n_args, i);
+          return FALSE;
+        }
+
+      if (params->any.type == TMPL_EXPR_ARGS)
+        {
+          TmplExprSimple *simple = (TmplExprSimple *)params;
+
+          if (!tmpl_expr_eval_internal (simple->left, local_scope, &value, error))
+            goto cleanup;
+
+          params = simple->right;
+        }
+      else
+        {
+          if (!tmpl_expr_eval_internal (params, local_scope, &value, error))
+            goto cleanup;
+
+          params = NULL;
+        }
+
+      tmpl_scope_set_value (local_scope, arg, &value);
+      TMPL_CLEAR_VALUE (&value);
+    }
+
+  if (params != NULL)
+    {
+      g_set_error (error,
+                   TMPL_ERROR,
+                   TMPL_ERROR_SYNTAX_ERROR,
+                   "Function takes %d params",
+                   n_args);
+      goto cleanup;
+    }
+
+  if (!tmpl_expr_eval_internal (node->anon, local_scope, return_value, error))
+    goto cleanup;
+
+  ret = TRUE;
+
+cleanup:
+  g_clear_pointer (&local_scope, tmpl_scope_unref);
+
+  return ret;
+}
+
+static gboolean
 tmpl_expr_user_fn_call_eval (TmplExprUserFnCall  *node,
                              TmplScope           *scope,
                              GValue              *return_value,
@@ -1324,6 +1411,9 @@ tmpl_expr_eval_internal (TmplExpr   *node,
 
     case TMPL_EXPR_FN_CALL:
       return tmpl_expr_fn_call_eval ((TmplExprFnCall *)node, scope, return_value, error);
+
+    case TMPL_EXPR_ANON_FN_CALL:
+      return tmpl_expr_anon_fn_call_eval ((TmplExprAnonFnCall *)node, scope, return_value, error);
 
     case TMPL_EXPR_USER_FN_CALL:
       return tmpl_expr_user_fn_call_eval ((TmplExprUserFnCall *)node, scope, return_value, error);

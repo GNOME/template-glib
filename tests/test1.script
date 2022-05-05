@@ -49,4 +49,8 @@ order3(1,2,3)
 def weird1(a) assert(a==1)
 end
 
+# anonymous functions can have a single statement
+(func() 123)()
+(func(a,b) assert((a==1)&&(b==2)))(1,2)
+
 1234;

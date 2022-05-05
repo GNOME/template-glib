@@ -64,6 +64,14 @@ typedef struct
 {
   TmplExprType   type;
   volatile gint  ref_count;
+  TmplExpr      *anon;
+  TmplExpr      *params;
+} TmplExprAnonFnCall;
+
+typedef struct
+{
+  TmplExprType   type;
+  volatile gint  ref_count;
   TmplExpr      *condition;
   TmplExpr      *primary;
   TmplExpr      *secondary;
@@ -158,6 +166,7 @@ union _TmplExpr
   TmplExprSimple       simple;
   TmplExprGiCall       gi_call;
   TmplExprFnCall       fn_call;
+  TmplExprAnonFnCall   anon_fn_call;
   TmplExprUserFnCall   user_fn_call;
   TmplExprFlow         flow;
   TmplExprNumber       number;

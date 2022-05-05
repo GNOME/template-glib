@@ -285,6 +285,12 @@ exp: exp CMP exp {
     $$ = tmpl_expr_new_user_fn_call ($1, NULL);
     g_free ($1);
   }
+  | exp '(' ')' {
+    $$ = tmpl_expr_new_anon_call ($1, NULL);
+  }
+  | exp '(' explist ')' {
+    $$ = tmpl_expr_new_anon_call ($1, $3);
+  }
   | '!' exp {
     $$ = tmpl_expr_new_invert_boolean ($2);
   }

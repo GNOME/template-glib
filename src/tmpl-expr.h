@@ -91,6 +91,9 @@ TmplExpr *tmpl_expr_new_func          (char             *name,
                                        char            **symlist,
                                        TmplExpr         *list);
 TMPL_AVAILABLE_IN_3_36
+TmplExpr *tmpl_expr_new_anon_call     (TmplExpr         *func,
+                                       TmplExpr         *params);
+TMPL_AVAILABLE_IN_3_36
 TmplExpr *tmpl_expr_new_nop           (void);
 
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (TmplExpr, tmpl_expr_unref)
