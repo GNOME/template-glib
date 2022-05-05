@@ -158,7 +158,9 @@ tmpl_expr_destroy (TmplExpr *self)
       break;
 
     case TMPL_EXPR_NOP:
-      break;
+      /* This should never happen,
+       * but just log it if it does */
+      g_return_if_reached ();
 
     default:
       g_assert_not_reached ();
@@ -436,5 +438,6 @@ tmpl_expr_new_anon_call (TmplExpr *func,
 TmplExpr *
 tmpl_expr_new_nop (void)
 {
-  return (TmplExpr *)tmpl_expr_new (TMPL_EXPR_NOP);
+  static TmplExpr interned = { .any.type = TMPL_EXPR_NOP, .any.ref_count = 1 };
+  return tmpl_expr_ref (&interned);
 }
