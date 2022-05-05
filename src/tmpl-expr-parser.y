@@ -300,6 +300,12 @@ exp: exp CMP exp {
     g_free ($2);
     g_free ($4);
   }
+  | FUNC '(' ')' stmt {
+    $$ = create_function (NULL, NULL, $4);
+  }
+  | FUNC '(' symlist ')' stmt {
+    $$ = create_function (NULL, $3, $5);
+  }
 ;
 
 explist: exp

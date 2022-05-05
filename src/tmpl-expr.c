@@ -401,8 +401,6 @@ tmpl_expr_new_func (char      *name,
 {
   TmplExprFunc *ret;
 
-  g_return_val_if_fail (name != NULL, NULL);
-
   if (list == NULL)
     list = tmpl_expr_new_nop ();
 
