@@ -1216,6 +1216,7 @@ tmpl_expr_user_fn_call_eval (TmplExprUserFnCall  *node,
         {
           args = (const char * const *)expr->func.symlist;
           n_args = args ? g_strv_length ((char **)args) : 0;
+          expr = expr->func.list;
           goto prepare;
         }
 
