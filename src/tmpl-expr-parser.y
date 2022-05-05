@@ -54,10 +54,13 @@ add_expr_to_parser (TmplExprParser *parser,
         {
           GPtrArray *ar = g_ptr_array_new_with_free_func ((GDestroyNotify)tmpl_expr_unref);
           g_ptr_array_add (ar, parser->ast);
+          g_ptr_array_add (ar, node);
           parser->ast = tmpl_expr_new_stmt_list (ar);
         }
-
-      g_ptr_array_add (parser->ast->stmt_list.stmts, node);
+      else
+        {
+          g_ptr_array_add (parser->ast->stmt_list.stmts, node);
+        }
     }
   else
     {
