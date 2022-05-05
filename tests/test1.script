@@ -53,4 +53,8 @@ end
 (func() 123)()
 (func(a,b) assert((a==1)&&(b==2)))(1,2)
 
+myfunc = func() 9;
+
+myfunc()
+
 1234;

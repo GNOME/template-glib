@@ -1182,14 +1182,14 @@ tmpl_expr_user_fn_call_eval (TmplExprUserFnCall  *node,
                              GValue              *return_value,
                              GError             **error)
 {
-  GPtrArray *args = NULL;
+  GPtrArray *args_ar = NULL;
   TmplExpr *expr = NULL;
   TmplExpr *params = NULL;
   TmplScope *local_scope = NULL;
   TmplSymbol *symbol;
+  const char * const *args = NULL;
   gboolean ret = FALSE;
   gint n_args = 0;
-  gint i;
 
   g_assert (node != NULL);
   g_assert (scope != NULL);
@@ -1209,25 +1209,41 @@ tmpl_expr_user_fn_call_eval (TmplExprUserFnCall  *node,
 
   if (tmpl_symbol_get_symbol_type (symbol) != TMPL_SYMBOL_EXPR)
     {
+      /* Check for anonymous function */
+      if (tmpl_symbol_holds (symbol, TMPL_TYPE_EXPR) &&
+          (expr = tmpl_symbol_get_boxed (symbol)) &&
+          expr->any.type == TMPL_EXPR_FUNC)
+        {
+          args = (const char * const *)expr->func.symlist;
+          n_args = args ? g_strv_length ((char **)args) : 0;
+          goto prepare;
+        }
+
       g_set_error (error,
                    TMPL_ERROR,
                    TMPL_ERROR_NOT_A_FUNCTION,
-                   "\"%s\" is not a function",
+                   "\"%s\" is not a function within scope",
                    node->symbol);
       return FALSE;
     }
 
-  expr = tmpl_symbol_get_expr (symbol, &args);
-  n_args = args != NULL ? args->len : 0;
+  expr = tmpl_symbol_get_expr (symbol, &args_ar);
+  n_args = args_ar != NULL ? args_ar->len : 0;
+  args = (const char * const *)(gpointer)args_ar->pdata;
+
+prepare:
+  g_assert (expr != NULL);
+  g_assert (n_args == 0 || args != NULL);
 
   local_scope = tmpl_scope_new_with_parent (scope);
-
   params = node->params;
 
-  for (i = 0; i < n_args; i++)
+  for (guint i = 0; i < n_args; i++)
     {
-      const gchar *arg = g_ptr_array_index (args, i);
+      const gchar *arg = args[i];
       GValue value = G_VALUE_INIT;
+
+      g_assert (arg != NULL);
 
       if (params == NULL)
         {
@@ -1342,9 +1358,17 @@ tmpl_expr_func_eval (TmplExprFunc  *node,
         g_ptr_array_add (args, g_strdup (node->symlist[i]));
     }
 
-  symbol = tmpl_scope_get (scope, node->name);
-  tmpl_symbol_assign_expr (symbol, node->list, args);
-  g_clear_pointer (&args, g_ptr_array_unref);
+  if (node->name != NULL)
+    {
+      symbol = tmpl_scope_get (scope, node->name);
+      tmpl_symbol_assign_expr (symbol, node->list, args);
+      g_clear_pointer (&args, g_ptr_array_unref);
+    }
+  else
+    {
+      g_value_init (return_value, TMPL_TYPE_EXPR);
+      g_value_set_boxed (return_value, node);
+    }
 
   return TRUE;
 }
