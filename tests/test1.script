@@ -56,4 +56,8 @@ end
 myfunc = func() 9*3
 assert(myfunc() == 27);
 
+# test out construction
+group = Gio.SimpleActionGroup.new()
+assert(group)
+
 1234;

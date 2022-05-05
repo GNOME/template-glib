@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <dlfcn.h>
 #include <girepository.h>
 #include <math.h>
 #include <string.h>
@@ -744,6 +745,7 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
   GType type;
   guint dispatch_len = 0;
   guint n_args;
+  guint offset = 0;
   guint i;
 
   g_assert (node != NULL);
@@ -906,6 +908,21 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
       goto apply_args;
     }
 
+  if (G_VALUE_HOLDS (&left, TMPL_TYPE_BASE_INFO) &&
+      (base_info = g_value_get_boxed (&left)) &&
+      g_base_info_get_type (base_info) == GI_INFO_TYPE_OBJECT)
+    {
+      const char *type_init = g_object_info_get_type_init ((GIObjectInfo *)base_info);
+      GType (*get_type) (void) = NULL;
+
+      if ((get_type = dlsym (NULL, type_init)))
+        {
+          type = get_type ();
+          object = NULL;
+          goto lookup_for_object;
+        }
+    }
+
   if (!G_VALUE_HOLDS_OBJECT (&left))
     {
       g_set_error (error,
@@ -929,6 +946,7 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
 
   type = G_OBJECT_TYPE (object);
 
+lookup_for_object:
   while (g_type_is_a (type, G_TYPE_OBJECT))
     {
       guint n_ifaces;
@@ -985,7 +1003,15 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
   in_args = g_array_new (FALSE, TRUE, sizeof (GIArgument));
   g_array_set_size (in_args, n_args + 1);
 
-  g_array_index (in_args, GIArgument, 0).v_pointer = object;
+  if (object != NULL)
+    {
+      g_array_index (in_args, GIArgument, 0).v_pointer = object;
+      offset = 1;
+    }
+  else
+    {
+      in_args->len--;
+    }
 
   dispatch_args = (GIArgument *)(gpointer)in_args->data;
   dispatch_len = in_args->len;
@@ -996,7 +1022,7 @@ apply_args:
   for (i = 0; i < n_args; i++)
     {
       g_autoptr(GIArgInfo) arg_info = g_callable_info_get_arg ((GICallableInfo *)function, i);
-      GIArgument *arg = &g_array_index (in_args, GIArgument, i + 1);
+      GIArgument *arg = &g_array_index (in_args, GIArgument, i + offset);
       GValue *value = &g_array_index (values, GValue, i);
       GITypeInfo type_info = { 0 };
 

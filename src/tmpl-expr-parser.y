@@ -237,6 +237,17 @@ exp: exp CMP exp {
     $$ = tmpl_expr_new_symbol_assign ($1, $3);
     g_free ($1);
   }
+  | BUILTIN '(' explist ')' {
+    $$ = tmpl_expr_new_fn_call ($1, $3);
+  }
+  | NAME '(' explist ')' {
+    $$ = tmpl_expr_new_user_fn_call ($1, $3);
+    g_free ($1);
+  }
+  | NAME '(' ')' {
+    $$ = tmpl_expr_new_user_fn_call ($1, NULL);
+    g_free ($1);
+  }
   | exp '.' NAME '(' ')' {
     $$ = tmpl_expr_new_gi_call ($1, $3, NULL);
     g_free ($3);
@@ -252,17 +263,6 @@ exp: exp CMP exp {
   | exp '.' NAME '=' exp {
     $$ = tmpl_expr_new_setattr ($1, $3, $5);
     g_free ($3);
-  }
-  | BUILTIN '(' explist ')' {
-    $$ = tmpl_expr_new_fn_call ($1, $3);
-  }
-  | NAME '(' explist ')' {
-    $$ = tmpl_expr_new_user_fn_call ($1, $3);
-    g_free ($1);
-  }
-  | NAME '(' ')' {
-    $$ = tmpl_expr_new_user_fn_call ($1, NULL);
-    g_free ($1);
   }
   | exp '(' ')' {
     $$ = tmpl_expr_new_anon_call ($1, NULL);
