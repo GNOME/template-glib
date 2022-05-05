@@ -142,6 +142,7 @@ endif
 
 core_lib = static_library('template_glib', libtemplate_glib_sources,
    dependencies: libtemplate_glib_deps,
+         c_args: release_args,
 )
 
 libtemplate_glib = library(

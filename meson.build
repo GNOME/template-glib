@@ -32,6 +32,29 @@ config_h = configuration_data()
 config_h.set_quoted('GETTEXT_PACKAGE', 'libtemplate_glib')
 config_h.set_quoted('LOCALEDIR', join_paths(get_option('prefix'), get_option('localedir')))
 
+cc = meson.get_compiler('c')
+
+release_args = []
+global_link_args = []
+test_link_args = [
+  '-Wl,-z,relro',
+  '-Wl,-z,now',
+]
+if not get_option('buildtype').startswith('debug')
+  add_project_arguments(['-DG_DISABLE_CAST_CHECKS'], language: 'c')
+  release_args += [ '-DG_DISABLE_ASSERT' ]
+  test_link_args += [
+    '-Wl,-Bsymbolic',
+    '-fno-plt',
+  ]
+endif
+foreach link_arg: test_link_args
+  if cc.links('int main () { return 0; }', name: link_arg, args: link_arg)
+    global_link_args += link_arg
+  endif
+endforeach
+add_project_link_arguments(global_link_args, language: 'c')
+
 configure_file(
   output: 'config.h',
   configuration: config_h,
