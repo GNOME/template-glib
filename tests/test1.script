@@ -26,14 +26,14 @@ assert(abc != "def")
 
 # we can't do builtins yet w/ >1 param so this is a
 # very bad pow() implementation that works on integers only.
-func pow(a,b) = while b > 1 do a = a * a; b = b - 1;
+pow = func(a,b) while b > 1 do a = a * a; b = b - 1; a
 assert(pow(2,3) == 8)
 assert(pow(2,3) == 8) # and here
-func multiply(x,y) = x * y
+multiply = func(x,y) x*y
 assert(multiply(10, 10) == 100)
 assert(multiply(-10, 10) == -100)
 
-func nop() = pass
+nop = func() pass
 nop()
 
 def order2(a,b) assert(a==1); assert(b==2); end

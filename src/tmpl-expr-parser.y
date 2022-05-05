@@ -150,24 +150,6 @@ expr: /* nothing */ EOL {
     YYACCEPT;
   }
 
-  | FUNC NAME '(' symlist ')' '=' list EOL {
-    define_function (parser, $2, g_steal_pointer (&$4), $7);
-    YYACCEPT;
-  }
-  | FUNC NAME '(' symlist ')' '=' list ';' {
-    define_function (parser, $2, g_steal_pointer (&$4), $7);
-    YYACCEPT;
-  }
-
-  | FUNC NAME '(' ')' '=' list EOL {
-    define_function (parser, $2, NULL, $6);
-    YYACCEPT;
-  }
-  | FUNC NAME '(' ')' '=' list ';' {
-    define_function (parser, $2, NULL, $6);
-    YYACCEPT;
-  }
-
   | DEF NAME '(' ')' EOL list END {
     define_function (parser, $2, NULL, $6);
     YYACCEPT;
