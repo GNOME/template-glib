@@ -99,6 +99,9 @@ gboolean    tmpl_scope_require         (TmplScope         *self,
 TMPL_AVAILABLE_IN_3_36
 char      **tmpl_scope_list_symbols    (TmplScope         *self,
                                         gboolean           recursive);
+TMPL_AVAILABLE_IN_3_36
+void        tmpl_scope_set_null        (TmplScope         *self,
+                                        const char        *name);
 
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (TmplScope, tmpl_scope_unref)
 

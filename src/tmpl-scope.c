@@ -483,3 +483,15 @@ tmpl_scope_list_symbols (TmplScope *self,
 
   return (char **)g_ptr_array_free (ar, FALSE);
 }
+
+void
+tmpl_scope_set_null (TmplScope  *self,
+                     const char *name)
+{
+  GValue value = G_VALUE_INIT;
+
+  g_value_init (&value, G_TYPE_POINTER);
+  g_value_set_pointer (&value, NULL);
+
+  tmpl_scope_set_value (self, name, &value);
+}
