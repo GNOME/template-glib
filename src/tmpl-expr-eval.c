@@ -1690,6 +1690,30 @@ ne_boolean_boolean (const GValue  *left,
 }
 
 static gboolean
+eq_pointer_pointer (const GValue  *left,
+                    const GValue  *right,
+                    GValue        *return_value,
+                    GError       **error)
+{
+  g_value_init (return_value, G_TYPE_BOOLEAN);
+  g_value_set_boolean (return_value,
+                       g_value_get_pointer (left) == g_value_get_pointer (right));
+  return TRUE;
+}
+
+static gboolean
+ne_pointer_pointer (const GValue  *left,
+                    const GValue  *right,
+                    GValue        *return_value,
+                    GError       **error)
+{
+  g_value_init (return_value, G_TYPE_BOOLEAN);
+  g_value_set_boolean (return_value,
+                       g_value_get_pointer (left) != g_value_get_pointer (right));
+  return TRUE;
+}
+
+static gboolean
 eq_enum_string (const GValue  *left,
                 const GValue  *right,
                 GValue        *return_value,
@@ -1804,6 +1828,9 @@ build_dispatch_table (void)
 
   ADD_DISPATCH_FUNC (TMPL_EXPR_EQ,          G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, eq_boolean_boolean);
   ADD_DISPATCH_FUNC (TMPL_EXPR_NE,          G_TYPE_BOOLEAN, G_TYPE_BOOLEAN, ne_boolean_boolean);
+
+  ADD_DISPATCH_FUNC (TMPL_EXPR_EQ,          G_TYPE_POINTER, G_TYPE_POINTER, eq_pointer_pointer);
+  ADD_DISPATCH_FUNC (TMPL_EXPR_NE,          G_TYPE_POINTER, G_TYPE_POINTER, ne_pointer_pointer);
 
 #undef ADD_DISPATCH_FUNC
 

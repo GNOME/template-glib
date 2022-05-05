@@ -71,4 +71,6 @@ assert(action)
 assert(typeof(action) == typeof(Gio.SimpleAction))
 assert(typeof(action) != typeof(Gio.SimpleActionGroup))
 
+assert(null == null)
+
 1234;
