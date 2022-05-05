@@ -68,11 +68,10 @@ add_expr_to_parser (TmplExprParser *parser,
     }
 }
 
-static void
-define_function (TmplExprParser *parser,
-                 char           *name,
-                 GPtrArray      *symlist,
-                 TmplExpr       *list)
+static TmplExpr *
+create_function (char      *name,
+                 GPtrArray *symlist,
+                 TmplExpr  *list)
 {
   char **strv = NULL;
 
@@ -82,7 +81,16 @@ define_function (TmplExprParser *parser,
       strv = (char **)(gpointer)g_ptr_array_free (symlist, FALSE);
     }
 
-  add_expr_to_parser (parser, tmpl_expr_new_func (name, strv, list));
+  return tmpl_expr_new_func (name, strv, list);
+}
+
+static void
+define_function (TmplExprParser *parser,
+                 char           *name,
+                 GPtrArray      *symlist,
+                 TmplExpr       *list)
+{
+  add_expr_to_parser (parser, create_function (name, symlist, list));
 }
 
 static TmplExpr *
