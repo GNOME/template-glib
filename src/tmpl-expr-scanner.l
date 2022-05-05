@@ -101,6 +101,7 @@ TmplExprParser *parser = yyextra;
 "sin"    { yylval->fn = TMPL_EXPR_BUILTIN_SIN; return BUILTIN; }
 "tan"    { yylval->fn = TMPL_EXPR_BUILTIN_TAN; return BUILTIN; }
 "cos"    { yylval->fn = TMPL_EXPR_BUILTIN_COS; return BUILTIN; }
+"printerr" { yylval->fn = TMPL_EXPR_BUILTIN_PRINTERR; return BUILTIN; }
 
  /* string literals */
 L?\"(\\.|[^\\"])*\" { yylval->s = copy_literal (yytext); return STRING_LITERAL; }

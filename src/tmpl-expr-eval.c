@@ -65,6 +65,9 @@ static gboolean builtin_log                  (const GValue  *value,
 static gboolean builtin_print                (const GValue  *value,
                                               GValue        *return_value,
                                               GError       **error);
+static gboolean builtin_printerr             (const GValue  *value,
+                                              GValue        *return_value,
+                                              GError       **error);
 static gboolean builtin_repr                 (const GValue  *value,
                                               GValue        *return_value,
                                               GError       **error);
@@ -111,6 +114,7 @@ static BuiltinFunc builtin_funcs [] = {
   builtin_sin,
   builtin_tan,
   builtin_cos,
+  builtin_printerr,
 };
 
 static inline guint
@@ -1846,6 +1850,23 @@ builtin_print (const GValue  *value,
 
   repr = tmpl_value_repr (value);
   g_print ("%s\n", repr);
+  g_free (repr);
+
+  g_value_init (return_value, G_TYPE_BOOLEAN);
+  g_value_set_boolean (return_value, TRUE);
+
+  return TRUE;
+}
+
+static gboolean
+builtin_printerr (const GValue  *value,
+                  GValue        *return_value,
+                  GError       **error)
+{
+  gchar *repr;
+
+  repr = tmpl_value_repr (value);
+  g_printerr ("%s\n", repr);
   g_free (repr);
 
   g_value_init (return_value, G_TYPE_BOOLEAN);
