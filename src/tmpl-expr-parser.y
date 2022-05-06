@@ -125,7 +125,7 @@ add_to_list (TmplExpr *stmt,
 %token IF THEN ELSE WHILE DO FUNC
 %token NOP
 
-%nonassoc <cmp> CMP
+%left <cmp> CMP
 %right '='
 %left '+' '-'
 %left '*' '/'

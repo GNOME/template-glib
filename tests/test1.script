@@ -94,4 +94,11 @@ multiline = (1 + \
              3)
 assert(multiline == 6)
 
+# test left associativity
+val = true && true || false
+assert(val == true)
+# if only we had compiler warnings
+val = true && false || true
+assert(val == true)
+
 1234;
