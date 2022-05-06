@@ -29,6 +29,9 @@
 #include "tmpl-symbol.h"
 #include "tmpl-util-private.h"
 
+#define DECLARE_BUILTIN(name) \
+  static gboolean builtin_##name (const GValue *, GValue *, GError **);
+
 typedef gboolean (*BuiltinFunc)  (const GValue  *value,
                                   GValue        *return_value,
                                   GError       **error);
@@ -45,48 +48,6 @@ static gboolean throw_type_mismatch          (GError       **error,
                                               const GValue  *left,
                                               const GValue  *right,
                                               const gchar   *message);
-static gboolean builtin_abs                  (const GValue  *value,
-                                              GValue        *return_value,
-                                              GError       **error);
-static gboolean builtin_assert               (const GValue  *value,
-                                              GValue        *return_value,
-                                              GError       **error);
-static gboolean builtin_ceil                 (const GValue  *value,
-                                              GValue        *return_value,
-                                              GError       **error);
-static gboolean builtin_floor                (const GValue  *value,
-                                              GValue        *return_value,
-                                              GError       **error);
-static gboolean builtin_hex                  (const GValue  *value,
-                                              GValue        *return_value,
-                                              GError       **error);
-static gboolean builtin_log                  (const GValue  *value,
-                                              GValue        *return_value,
-                                              GError       **error);
-static gboolean builtin_print                (const GValue  *value,
-                                              GValue        *return_value,
-                                              GError       **error);
-static gboolean builtin_printerr             (const GValue  *value,
-                                              GValue        *return_value,
-                                              GError       **error);
-static gboolean builtin_repr                 (const GValue  *value,
-                                              GValue        *return_value,
-                                              GError       **error);
-static gboolean builtin_sqrt                 (const GValue  *value,
-                                              GValue        *return_value,
-                                              GError       **error);
-static gboolean builtin_sin                  (const GValue  *value,
-                                              GValue        *return_value,
-                                              GError       **error);
-static gboolean builtin_tan                  (const GValue  *value,
-                                              GValue        *return_value,
-                                              GError       **error);
-static gboolean builtin_cos                  (const GValue  *value,
-                                              GValue        *return_value,
-                                              GError       **error);
-static gboolean builtin_typeof               (const GValue  *value,
-                                              GValue        *return_value,
-                                              GError       **error);
 static gboolean eq_enum_string               (const GValue  *left,
                                               const GValue  *right,
                                               GValue        *return_value,
@@ -100,6 +61,20 @@ static gboolean add_string_string_slow       (const GValue  *left,
                                               GValue        *return_value,
                                               GError       **error);
 
+DECLARE_BUILTIN (abs)
+DECLARE_BUILTIN (assert)
+DECLARE_BUILTIN (ceil)
+DECLARE_BUILTIN (floor)
+DECLARE_BUILTIN (hex)
+DECLARE_BUILTIN (log)
+DECLARE_BUILTIN (print)
+DECLARE_BUILTIN (printerr)
+DECLARE_BUILTIN (repr)
+DECLARE_BUILTIN (sqrt)
+DECLARE_BUILTIN (sin)
+DECLARE_BUILTIN (tan)
+DECLARE_BUILTIN (cos)
+DECLARE_BUILTIN (typeof)
 static GHashTable *fast_dispatch;
 static BuiltinFunc builtin_funcs [] = {
   builtin_abs,
