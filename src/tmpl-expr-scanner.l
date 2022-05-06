@@ -116,6 +116,7 @@ TmplExprParser *parser = yyextra;
 "u64"      { yylval->fn = TMPL_EXPR_BUILTIN_CAST_U64; return BUILTIN; }
 "float"    { yylval->fn = TMPL_EXPR_BUILTIN_CAST_FLOAT; return BUILTIN; }
 "double"   { yylval->fn = TMPL_EXPR_BUILTIN_CAST_DOUBLE; return BUILTIN; }
+"bool"     { yylval->fn = TMPL_EXPR_BUILTIN_CAST_BOOL; return BUILTIN; }
 
  /* string literals */
 L?\"(\\.|[^\\"])*\" { yylval->s = copy_literal (yytext); return STRING_LITERAL; }

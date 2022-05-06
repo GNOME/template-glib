@@ -83,6 +83,7 @@ DECLARE_BUILTIN (cast_i64)
 DECLARE_BUILTIN (cast_u64)
 DECLARE_BUILTIN (cast_float)
 DECLARE_BUILTIN (cast_double)
+DECLARE_BUILTIN (cast_bool)
 
 static GHashTable *fast_dispatch;
 static BuiltinFunc builtin_funcs [] = {
@@ -108,6 +109,7 @@ static BuiltinFunc builtin_funcs [] = {
   builtin_cast_u64,
   builtin_cast_float,
   builtin_cast_double,
+  builtin_cast_bool,
 };
 
 static inline guint
@@ -2159,6 +2161,42 @@ BUILTIN_CAST (i64, G_TYPE_INT64)
 BUILTIN_CAST (u64, G_TYPE_UINT64)
 BUILTIN_CAST (float, G_TYPE_FLOAT)
 BUILTIN_CAST (double, G_TYPE_DOUBLE)
+
+static gboolean
+builtin_cast_bool (const GValue  *value,
+                   GValue        *return_value,
+                   GError       **error)
+{
+  g_value_init (return_value, G_TYPE_BOOLEAN);
+
+#define BOOL_CAST(type, getter, compare) \
+  else if (G_VALUE_HOLDS (value, type)) \
+    g_value_set_boolean (return_value, g_value_get_##getter(value) != compare);
+
+  if (0) {}
+  BOOL_CAST (G_TYPE_BOOLEAN, boolean, FALSE)
+  BOOL_CAST (G_TYPE_DOUBLE, double, .0)
+  BOOL_CAST (G_TYPE_FLOAT, float, .0f)
+  BOOL_CAST (G_TYPE_INT, int, 0)
+  BOOL_CAST (G_TYPE_UINT, uint, 0)
+  BOOL_CAST (G_TYPE_CHAR, schar, 0)
+  BOOL_CAST (G_TYPE_UCHAR, uchar, 0)
+  BOOL_CAST (G_TYPE_STRING, string, NULL)
+  BOOL_CAST (G_TYPE_POINTER, pointer, NULL)
+  else if (!g_value_transform (value, return_value))
+    {
+      g_set_error (error,
+                   TMPL_ERROR,
+                   TMPL_ERROR_RUNTIME_ERROR,
+                   "Cannot convert %s to bool",
+                   G_VALUE_TYPE_NAME (value));
+      return FALSE;
+    }
+
+#undef BOOL_CAST
+
+  return TRUE;
+}
 
 static gboolean
 builtin_print (const GValue  *value,

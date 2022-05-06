@@ -101,7 +101,28 @@ assert(val == true)
 val = true && false || true
 assert(val == true)
 
-# BROKEN
+# Implicit floor() in GType conversion
+assert(double(i32(1234.56)) == 1234)
+
+# Test boolean casts
+assert(bool(1) == true)
+assert(bool(0) == false)
+assert(bool("") == true)
+assert(bool(null) == false)
+assert(bool(char(0)) == false)
+assert(bool(char(1)) == true)
+assert(bool(byte(0)) == false)
+assert(bool(byte(1)) == true)
+assert(bool(i32(0)) == false)
+assert(bool(i32(1)) == true)
+assert(bool(u32(0)) == false)
+assert(bool(u32(1)) == true)
+assert(bool(i64(0)) == false)
+assert(bool(i64(1)) == true)
+assert(bool(u64(0)) == false)
+assert(bool(u64(1)) == true)
+
+# FIXME: broken exp priority
 a1 = 1 < 3
 (a2 = 1) < 3
 assert(a1 == a2)
