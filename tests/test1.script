@@ -101,4 +101,9 @@ assert(val == true)
 val = true && false || true
 assert(val == true)
 
+# BROKEN
+a1 = 1 < 3
+(a2 = 1) < 3
+assert(a1 == a2)
+
 1234;
