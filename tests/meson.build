@@ -26,5 +26,5 @@ foreach test: testsuite_sources
            dependencies: [core_lib_dep],
   )
 
-  test(test_name, test_exe, suite: 'Template-GLib', env: test_env)
+  test(test_name, test_exe, env: test_env)
 endforeach

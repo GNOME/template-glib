@@ -1,7 +1,7 @@
 project('template-glib', 'c',
           version: '3.35.0',
           license: 'LGPLv2.1+',
-    meson_version: '>= 0.50.0',
+    meson_version: '>= 0.51.0',
   default_options: [ 'warning_level=1', 'buildtype=debugoptimized', 'c_std=gnu11' ],
 )
 
@@ -104,7 +104,7 @@ test_c_args = [
 if get_option('buildtype') != 'plain'
   test_c_args += '-fstack-protector-strong'
 endif
-if get_option('enable_profiling')
+if get_option('profiling')
   test_c_args += '-pg'
 endif
 
@@ -133,10 +133,17 @@ endif
 gnome = import('gnome')
 i18n = import('i18n')
 
+gir = find_program('g-ir-scanner', required: get_option('introspection'))
+generate_gir = gir.found() and (not meson.is_cross_build() or get_option('introspection').enabled())
+generate_vapi = generate_gir and get_option('vapi')
+
 subdir('src')
-subdir('tests')
 subdir('po')
 
-if get_option('enable_gtk_doc')
+if get_option('tests')
+  subdir('tests')
+endif
+
+if get_option('gtk_doc')
   subdir('doc')
 endif

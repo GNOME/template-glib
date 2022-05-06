@@ -1,11 +1,10 @@
 ent_conf = configuration_data()
 ent_conf.set('PACKAGE', 'Template-GLib')
-ent_conf.set('PACKAGE_BUGREPORT', 'https://bugzilla.gnome.org/enter_bug.cgi?product=template-glib')
+ent_conf.set('PACKAGE_BUGREPORT', 'https://gitlab.gnome.org/GNOME/template-glib/-/issues')
 ent_conf.set('PACKAGE_NAME', 'Template-GLib')
 ent_conf.set('PACKAGE_STRING', 'template-glib')
 ent_conf.set('PACKAGE_TARNAME', 'template-glib-' + meson.project_version())
-ent_conf.set('PACKAGE_URL', 'http://wiki.gnome.org/Apps/Builder')
+ent_conf.set('PACKAGE_URL', 'https://gitlab.gnome.org/GNOME/template-glib')
 ent_conf.set('PACKAGE_VERSION', meson.project_version())
 ent_conf.set('PACKAGE_API_VERSION', apiversion)
 configure_file(input: 'gtkdocentities.ent.in', output: 'gtkdocentities.ent', configuration: ent_conf)
-

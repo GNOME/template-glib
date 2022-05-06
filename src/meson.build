@@ -6,7 +6,7 @@ version_data.set('TMPL_MAJOR_VERSION', template_glib_version_major)
 version_data.set('TMPL_MINOR_VERSION', template_glib_version_minor)
 version_data.set('TMPL_MICRO_VERSION', template_glib_version_micro)
 version_data.set('TMPL_VERSION', meson.project_version())
-version_data.set10('ENABLE_TRACING', get_option('enable_tracing'))
+version_data.set10('ENABLE_TRACING', get_option('tracing'))
 
 tmpl_version_h = configure_file(
           input: 'tmpl-version.h.in',
@@ -69,7 +69,6 @@ libtemplate_glib_deps = [
   cc.find_library('m', required: false),
 ]
 
-
 flex = find_program('flex')
 bison = find_program('bison')
 sed = find_program('sed')
@@ -96,7 +95,6 @@ tmpl_expr_scanner = custom_target('tmpl-expr-scanner',
    output: 'tmpl-expr-scanner.c',
   command: [flex, '-o', '@OUTPUT@', '@INPUT@']
 )
-
 
 libtemplate_glib_sources = [
   libtemplate_glib_generated_headers,
@@ -169,7 +167,7 @@ libtemplate_glib_dep = declare_dependency(
   include_directories: include_directories('.'),
 )
 
-if get_option('with_introspection')
+if generate_gir
   if girdir == '' or typelibdir == ''
     error('You must set pkggirdir and pkgtypelidir when using as a subproject')
   endif
@@ -191,7 +189,7 @@ if get_option('with_introspection')
              ],
   )
 
-  if get_option('with_vapi')
+  if get_option('vapi')
     if vapidir == ''
       error('You must set pkgvapidir when using as a subproject')
     endif
@@ -210,6 +208,10 @@ install_headers(libtemplate_glib_public_headers,
   install_dir: libtemplate_glib_header_dir
 )
 
+if meson.version().version_compare('>=0.57')
+  meson.override_dependency('template-glib-@0@'.format(apiversion), libtemplate_glib_dep)
+endif
+
 pkgg = import('pkgconfig')
 
 pkgg.generate(
@@ -222,4 +224,3 @@ pkgg.generate(
      requires: 'gio-2.0',
   install_dir: join_paths(libdir, 'pkgconfig'),
 )
-
