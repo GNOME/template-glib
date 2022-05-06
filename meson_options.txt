@@ -1,18 +1,18 @@
-
 # Performance and debugging related options
-option('enable_tracing', type: 'boolean', value: false)
-option('enable_profiling', type: 'boolean', value: false)
+option('tracing', type: 'boolean', value: false)
+option('profiling', type: 'boolean', value: false)
 
 # Support for multiple languages
-option('with_introspection', type: 'boolean', value: true)
-option('with_vapi', type: 'boolean', value: true)
+option('introspection', type: 'feature', value: 'auto')
+option('vapi', type: 'boolean', value: true)
 
 # For subproject usage
 option('package_subdir', type: 'string',
   description: 'Private sub-directory used when built as a subproject'
 )
 
-option('enable_gtk_doc',
+option('gtk_doc',
        type: 'boolean', value: false,
        description: 'Whether to generate the API reference for Template-GLib')
 
+option('tests', type: 'boolean', value: true)

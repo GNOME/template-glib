@@ -25,7 +25,7 @@ private_headers = [
   'tmpl-util-private.h',
 ]
 
-glib_prefix = dependency('glib-2.0').get_pkgconfig_variable('prefix')
+glib_prefix = dependency('glib-2.0').get_variable('prefix')
 glib_docpath = join_paths(glib_prefix, 'share', 'gtk-doc', 'html')
 docpath = join_paths(get_option('datadir'), 'gtk-doc', 'html')
 
@@ -51,4 +51,3 @@ gnome.gtkdoc('template-glib',
          '--extra-dir=@0@'.format(join_paths(glib_docpath, 'gio')),
        ],
             install: true)
-
