@@ -430,8 +430,6 @@ tmpl_scope_require (TmplScope    *self,
   if (!(typelib = g_irepository_require (NULL, namespace_, version, 0, NULL)))
     return FALSE;
 
-  g_print ("Inserting %s into scope %p\n", namespace_, typelib);
-
   g_value_init (&value, TMPL_TYPE_TYPELIB);
   g_value_set_pointer (&value, typelib);
   tmpl_scope_set_value (self, namespace_, &value);
