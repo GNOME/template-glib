@@ -83,4 +83,10 @@ assert(typeof(action) != typeof(Gio.SimpleActionGroup))
 assert(typeof(action).is_a(typeof(Gio.Action)))
 assert(!typeof(action).is_a(typeof(Gio.ActionMap)))
 
+def count()
+  mycount+1
+end
+mycount = 2
+assert(count() == 3)
+
 1234;
