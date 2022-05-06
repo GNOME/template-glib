@@ -108,6 +108,14 @@ TmplExprParser *parser = yyextra;
 "sin"      { yylval->fn = TMPL_EXPR_BUILTIN_SIN; return BUILTIN; }
 "tan"      { yylval->fn = TMPL_EXPR_BUILTIN_TAN; return BUILTIN; }
 "cos"      { yylval->fn = TMPL_EXPR_BUILTIN_COS; return BUILTIN; }
+"char"     { yylval->fn = TMPL_EXPR_BUILTIN_CAST_CHAR; return BUILTIN; }
+"byte"     { yylval->fn = TMPL_EXPR_BUILTIN_CAST_BYTE; return BUILTIN; }
+"i32"      { yylval->fn = TMPL_EXPR_BUILTIN_CAST_I32; return BUILTIN; }
+"u32"      { yylval->fn = TMPL_EXPR_BUILTIN_CAST_U32; return BUILTIN; }
+"i64"      { yylval->fn = TMPL_EXPR_BUILTIN_CAST_I64; return BUILTIN; }
+"u64"      { yylval->fn = TMPL_EXPR_BUILTIN_CAST_U64; return BUILTIN; }
+"float"    { yylval->fn = TMPL_EXPR_BUILTIN_CAST_FLOAT; return BUILTIN; }
+"double"   { yylval->fn = TMPL_EXPR_BUILTIN_CAST_DOUBLE; return BUILTIN; }
 
  /* string literals */
 L?\"(\\.|[^\\"])*\" { yylval->s = copy_literal (yytext); return STRING_LITERAL; }

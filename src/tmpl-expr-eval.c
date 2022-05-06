@@ -75,6 +75,15 @@ DECLARE_BUILTIN (sin)
 DECLARE_BUILTIN (tan)
 DECLARE_BUILTIN (cos)
 DECLARE_BUILTIN (typeof)
+DECLARE_BUILTIN (cast_byte)
+DECLARE_BUILTIN (cast_char)
+DECLARE_BUILTIN (cast_i32)
+DECLARE_BUILTIN (cast_u32)
+DECLARE_BUILTIN (cast_i64)
+DECLARE_BUILTIN (cast_u64)
+DECLARE_BUILTIN (cast_float)
+DECLARE_BUILTIN (cast_double)
+
 static GHashTable *fast_dispatch;
 static BuiltinFunc builtin_funcs [] = {
   builtin_abs,
@@ -91,6 +100,14 @@ static BuiltinFunc builtin_funcs [] = {
   builtin_tan,
   builtin_cos,
   builtin_printerr,
+  builtin_cast_byte,
+  builtin_cast_char,
+  builtin_cast_i32,
+  builtin_cast_u32,
+  builtin_cast_i64,
+  builtin_cast_u64,
+  builtin_cast_float,
+  builtin_cast_double,
 };
 
 static inline guint
@@ -2111,6 +2128,37 @@ BUILTIN_MATH (sqrt)
 BUILTIN_MATH (sin)
 BUILTIN_MATH (tan)
 BUILTIN_MATH (cos)
+
+#define BUILTIN_CAST(func,type)                   \
+static gboolean                                   \
+builtin_cast_##func (const GValue  *value,        \
+                     GValue        *return_value, \
+                     GError       **error)        \
+{                                                 \
+  g_value_init (return_value, type);              \
+                                                  \
+  if (!g_value_transform (value, return_value))   \
+    {                                             \
+      g_set_error (error,                         \
+                   TMPL_ERROR,                    \
+                   TMPL_ERROR_RUNTIME_ERROR,      \
+                   "Cannot convert %s to %s",     \
+                   G_VALUE_TYPE_NAME (value),     \
+                   g_type_name (type));           \
+      return FALSE;                               \
+    }                                             \
+                                                  \
+  return TRUE;                                    \
+}
+
+BUILTIN_CAST (byte, G_TYPE_UCHAR)
+BUILTIN_CAST (char, G_TYPE_CHAR)
+BUILTIN_CAST (i32, G_TYPE_INT)
+BUILTIN_CAST (u32, G_TYPE_UINT)
+BUILTIN_CAST (i64, G_TYPE_INT64)
+BUILTIN_CAST (u64, G_TYPE_UINT64)
+BUILTIN_CAST (float, G_TYPE_FLOAT)
+BUILTIN_CAST (double, G_TYPE_DOUBLE)
 
 static gboolean
 builtin_print (const GValue  *value,
