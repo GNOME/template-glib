@@ -1222,6 +1222,8 @@ cleanup:
   TMPL_CLEAR_VALUE (&left);
   TMPL_CLEAR_VALUE (&right);
 
+  g_clear_pointer (&function, g_base_info_unref);
+
   return ret;
 }
 
@@ -1509,6 +1511,8 @@ tmpl_expr_func_eval (TmplExprFunc  *node,
       g_value_init (return_value, TMPL_TYPE_EXPR);
       g_value_set_boxed (return_value, node);
     }
+
+  g_clear_pointer (&args, g_ptr_array_unref);
 
   return TRUE;
 }
