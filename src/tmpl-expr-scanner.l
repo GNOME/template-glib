@@ -127,6 +127,7 @@ L?\"(\\.|[^\\"])*\" { yylval->s = copy_literal (yytext); return STRING_LITERAL; 
 
 "//".*
 [ \t]   /* ignore whitespace */
+"\\\n"  /* ignore escpaed newlines */
 #[^\n]* { return EOL; } /* line-wise comments should EOL things */
 "\n"    { return EOL; }
 <<EOF>> { parser->reached_eof = TRUE; return EOL; }

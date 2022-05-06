@@ -89,4 +89,9 @@ end
 mycount = 2
 assert(count() == 3)
 
+multiline = (1 + \
+             2 + \
+             3)
+assert(multiline == 6)
+
 1234;
