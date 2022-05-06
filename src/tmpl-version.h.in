@@ -24,13 +24,6 @@
 #endif
 
 /**
- * SECTION:tmpl-version
- * @short_description: Template-GLib version checking
- *
- * Template-GLib provides macros to check the version of the library at compile-time
- */
-
-/**
  * TMPL_MAJOR_VERSION:
  *
  * Template-GLibl major version component (e.g. 1 if %TMPL_VERSION is 1.2.3)
