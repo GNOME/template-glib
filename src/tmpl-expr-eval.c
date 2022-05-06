@@ -2086,6 +2086,7 @@ builtin_##func (const GValue  *value,                                   \
                                                                         \
   if (!G_VALUE_HOLDS_DOUBLE (value))                                    \
     {                                                                   \
+      g_value_init (&translated, G_TYPE_DOUBLE);                        \
       if (!g_value_transform (value, &translated))                      \
         {                                                               \
           g_set_error (error,                                           \
