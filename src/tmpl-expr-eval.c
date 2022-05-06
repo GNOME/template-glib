@@ -1359,8 +1359,11 @@ tmpl_expr_user_fn_call_eval (TmplExprUserFnCall  *node,
     }
 
   expr = tmpl_symbol_get_expr (symbol, &args_ar);
-  n_args = args_ar != NULL ? args_ar->len : 0;
-  args = (const char * const *)(gpointer)args_ar->pdata;
+
+  if (args_ar == NULL)
+    n_args = 0, args = NULL;
+  else
+    n_args = args_ar->len, args = (const char * const *)(gpointer)args_ar->pdata;
 
 prepare:
   g_assert (expr != NULL);
