@@ -64,8 +64,10 @@ TmplExprParser *parser = yyextra;
 "==" { yylval->cmp = TMPL_EXPR_EQ;  return CMP; }
 ">=" { yylval->cmp = TMPL_EXPR_GTE; return CMP; }
 "<=" { yylval->cmp = TMPL_EXPR_LTE; return CMP; }
-"||" { yylval->cmp = TMPL_EXPR_OR; return CMP; }
-"&&" { yylval->cmp = TMPL_EXPR_AND; return CMP; }
+
+ /* boolean ops */
+"||" { yylval->boolcmp = TMPL_EXPR_OR; return BOOLCMP; }
+"&&" { yylval->boolcmp = TMPL_EXPR_AND; return BOOLCMP; }
 
  /* keywords */
 "if"       { return IF; }

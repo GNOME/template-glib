@@ -26,6 +26,7 @@
   TmplExprBuiltin fn;  /* builtin call */
   int b;               /* boolean */
   int cmp;             /* comparison */
+  int boolcmp;         /* boolean comparison */
 }
 
 %{
@@ -126,6 +127,7 @@ add_to_list (TmplExpr *stmt,
 %token NOP
 
 %left <cmp> CMP
+%left <boolcmp> BOOLCMP
 %right '='
 %left '+' '-'
 %left '*' '/'
@@ -200,6 +202,9 @@ list: /* nothing */ { $$ = NULL; }
 ;
 
 exp: exp CMP exp {
+    $$ = tmpl_expr_new_simple ($2, $1, $3);
+  }
+  | exp BOOLCMP exp {
     $$ = tmpl_expr_new_simple ($2, $1, $3);
   }
   | exp '+' exp {
