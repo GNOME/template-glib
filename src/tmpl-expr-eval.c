@@ -1016,15 +1016,21 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
       (base_info = g_value_get_boxed (&left)) &&
       g_base_info_get_type (base_info) == GI_INFO_TYPE_OBJECT)
     {
-      const char *type_init = g_object_info_get_type_init ((GIObjectInfo *)base_info);
-      GType (*get_type) (void) = NULL;
+      TmplGTypeFunc gtype_func = tmpl_gi_get_gtype_func (base_info);
 
-      if ((get_type = dlsym (NULL, type_init)))
+      if (gtype_func != NULL &&
+          (type = gtype_func ()) &&
+          g_type_is_a (type, G_TYPE_OBJECT))
         {
-          type = get_type ();
           object = NULL;
           goto lookup_for_object;
         }
+
+      g_set_error (error,
+                   TMPL_ERROR,
+                   TMPL_ERROR_NOT_AN_OBJECT,
+                   "Failed to locate GType function for object");
+      goto cleanup;
     }
 
   if (!G_VALUE_HOLDS_OBJECT (&left))

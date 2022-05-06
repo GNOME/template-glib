@@ -479,3 +479,25 @@ tmpl_gi_argument_to_g_value (GValue      *value,
 
   return FALSE;
 }
+
+TmplGTypeFunc
+tmpl_gi_get_gtype_func (GIBaseInfo *base_info)
+{
+  GITypelib *typelib;
+  const char *symbol_name;
+  TmplGTypeFunc symbol = NULL;
+
+  if (base_info == NULL || GI_INFO_TYPE_OBJECT != g_base_info_get_type (base_info))
+    return NULL;
+
+  if (!(typelib = g_base_info_get_typelib (base_info)))
+    return NULL;
+
+  if (!(symbol_name = g_object_info_get_type_init (base_info)))
+    return NULL;
+
+  if (!g_typelib_symbol (typelib, symbol_name, (gpointer *)&symbol))
+    return NULL;
+
+  return symbol;
+}
