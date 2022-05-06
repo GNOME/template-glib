@@ -16,7 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
+
 #include "tmpl-token-input-stream.h"
+#include "tmpl-token-private.h"
 
 struct _TmplTokenInputStream
 {
@@ -186,6 +189,7 @@ tmpl_token_input_stream_read_token (TmplTokenInputStream  *self,
                                     GError               **error)
 {
   GDataInputStream *stream = (GDataInputStream *)self;
+  TmplToken *ret;
   GError *local_error = NULL;
   gunichar ch;
   gchar *text;
@@ -309,10 +313,12 @@ tmpl_token_input_stream_read_token (TmplTokenInputStream  *self,
   if (!(text = tmpl_token_input_stream_read_tag (self, &len, cancellable, error)))
     return NULL;
 
-  self->swallow_newline = TRUE;
+  ret = tmpl_token_new_generic (g_steal_pointer (&text));
+
+  self->swallow_newline = ret != NULL && ret->type != TMPL_TOKEN_EXPRESSION;
   self->last_was_text_with_newline = FALSE;
 
-  return tmpl_token_new_generic (text);
+  return ret;
 }
 
 /**

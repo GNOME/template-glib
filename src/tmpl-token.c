@@ -20,16 +20,12 @@
 # define _GNU_SOURCE
 #endif
 
+#include "config.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "tmpl-token.h"
-
-struct _TmplToken
-{
-  TmplTokenType type;
-  gchar *text;
-};
+#include "tmpl-token-private.h"
 
 static TmplToken *
 tmpl_token_new (void)
