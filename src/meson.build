@@ -133,10 +133,6 @@ libtemplate_glib_sources = [
   'tmpl-util.c',
 ]
 
-if libdir == '' or includedir == ''
-  error('You must set pkglibdir and pkgincludedir when using as a subproject')
-endif
-
 core_lib = static_library('template_glib', libtemplate_glib_sources,
    dependencies: libtemplate_glib_deps,
          c_args: release_args,
@@ -167,10 +163,6 @@ libtemplate_glib_dep = declare_dependency(
 )
 
 if generate_gir
-  if girdir == '' or typelibdir == ''
-    error('You must set pkggirdir and pkgtypelidir when using as a subproject')
-  endif
-
   libtemplate_glib_gir = gnome.generate_gir(libtemplate_glib,
                 sources: libtemplate_glib_generated_headers + libtemplate_glib_public_headers + libtemplate_glib_public_sources,
               nsversion: apiversion,
@@ -189,10 +181,6 @@ if generate_gir
   )
 
   if get_option('vapi')
-    if vapidir == ''
-      error('You must set pkgvapidir when using as a subproject')
-    endif
-
     libtemplate_glib_vapi = gnome.generate_vapi('template-glib-' + apiversion,
           sources: libtemplate_glib_gir[0],
          packages: [ 'gio-2.0' ],

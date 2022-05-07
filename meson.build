@@ -5,6 +5,12 @@ project('template-glib', 'c',
   default_options: [ 'warning_level=1', 'buildtype=debugoptimized', 'c_std=gnu11' ],
 )
 
+package_subdir = get_option('package_subdir')
+
+if meson.is_subproject() and package_subdir == ''
+  error('-Dpackage_subdir must be set when using @0@ as a subproject'.format(meson.project_name()))
+endif
+
 version_arr = meson.project_version().split('.')
 template_glib_version_major = version_arr[0].to_int()
 template_glib_version_minor = version_arr[1].to_int()
@@ -119,7 +125,6 @@ add_project_arguments(
 )
 
 # Setup various paths that subdirectory meson.build files need
-package_subdir = get_option('package_subdir')
 libdir = join_paths(get_option('libdir'), package_subdir)
 includedir = join_paths(get_option('includedir'), package_subdir)
 girdir = join_paths(get_option('datadir'), package_subdir, 'gir-1.0')
