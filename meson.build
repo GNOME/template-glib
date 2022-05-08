@@ -2,7 +2,7 @@ project('template-glib', 'c',
           version: '3.35.0',
           license: 'LGPLv2.1+',
     meson_version: '>= 0.51.0',
-  default_options: [ 'warning_level=1', 'buildtype=debugoptimized', 'c_std=gnu11' ],
+  default_options: [ 'warning_level=2', 'buildtype=debugoptimized', 'c_std=gnu11' ],
 )
 
 package_subdir = get_option('package_subdir')
