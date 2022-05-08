@@ -175,6 +175,7 @@ if generate_gir
                 sources: libtemplate_glib_generated_headers + libtemplate_glib_public_headers + libtemplate_glib_public_sources,
               nsversion: apiversion,
               namespace: 'Template',
+        export_packages: 'template-glib-@0@'.format(apiversion),
           symbol_prefix: 'tmpl',
       identifier_prefix: 'Tmpl',
               link_with: libtemplate_glib,
