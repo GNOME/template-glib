@@ -102,19 +102,32 @@ tmpl_token_type (TmplToken *self)
 gchar *
 tmpl_token_include_get_path (TmplToken *self)
 {
+  const char *str;
   char *path = NULL;
 
   g_return_val_if_fail (self != NULL, NULL);
   g_return_val_if_fail (self->type == TMPL_TOKEN_INCLUDE, NULL);
 
-  if (1 == sscanf (self->text, "include \"%m[^\"]", &path))
+  str = self->text;
+
+  if (!g_str_has_prefix (str, "include "))
+    return NULL;
+
+  str += strlen ("include ");
+  while (*str == ' ') str++;
+  if (str[0] != '"')
+    return NULL;
+  path = g_strdup (str+1);
+
+  if (path[0] == 0 || path[strlen(path)-1] != '"')
     {
-      gchar *tmp = g_strdup (path);
-      free (path);
-      return tmp;
+      g_free (path);
+      return NULL;
     }
 
-  return NULL;
+  path[strlen(path)-1] = 0;
+
+  return path;
 }
 
 TmplToken *
