@@ -127,4 +127,18 @@ a1 = 1 < 3
 (a2 = 1) < 3
 assert(a1 == a2)
 
+scoped = 1
+ret = (true || (scoped = 2))
+assert(scoped == 1)
+assert(ret == true)
+ret = ((scoped = 2) || (scoped = 3))
+assert(scoped == 2)
+assert(ret == true)
+ret = ((scoped = 3) && (scoped = 4))
+assert(scoped == 4)
+assert(ret == true)
+ret = ((scoped = 3) && (scoped = 0))
+assert(scoped == 0)
+assert(ret == false)
+
 1234;

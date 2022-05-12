@@ -351,33 +351,46 @@ tmpl_expr_simple_eval_logical (TmplExprSimple  *node,
 
   g_value_init (return_value, G_TYPE_BOOLEAN);
 
-  if (tmpl_expr_eval_internal (node->left, scope, &left, error) &&
-      ((node->right == NULL) ||
-       tmpl_expr_eval_internal (node->right, scope, &right, error)))
+  if (!tmpl_expr_eval_internal (node->left, scope, &left, error))
+    goto failure;
+
+  switch ((int)node->type)
     {
-      switch ((int)node->type)
+    case TMPL_EXPR_AND:
+      if (!tmpl_value_as_boolean (&left))
         {
-        case TMPL_EXPR_AND:
-          g_value_set_boolean (return_value,
-                               (tmpl_value_as_boolean (&left) && tmpl_value_as_boolean (&right)));
+          g_value_set_boolean (return_value, FALSE);
           ret = TRUE;
-          break;
-
-        case TMPL_EXPR_OR:
-          g_value_set_boolean (return_value,
-                               (tmpl_value_as_boolean (&left) || tmpl_value_as_boolean (&right)));
-          ret = TRUE;
-          break;
-
-        default:
-          g_set_error (error,
-                       TMPL_ERROR,
-                       TMPL_ERROR_RUNTIME_ERROR,
-                       "Unknown logical operator type: %d", node->type);
           break;
         }
+      if (!tmpl_expr_eval_internal (node->right, scope, &right, error))
+        goto failure;
+      g_value_set_boolean (return_value, tmpl_value_as_boolean (&right));
+      ret = TRUE;
+      break;
+
+    case TMPL_EXPR_OR:
+      if (tmpl_value_as_boolean (&left))
+        {
+          g_value_set_boolean (return_value, TRUE);
+          ret = TRUE;
+          break;
+        }
+      if (!tmpl_expr_eval_internal (node->right, scope, &right, error))
+        goto failure;
+      g_value_set_boolean (return_value, tmpl_value_as_boolean (&right));
+      ret = TRUE;
+      break;
+
+    default:
+      g_set_error (error,
+                   TMPL_ERROR,
+                   TMPL_ERROR_RUNTIME_ERROR,
+                   "Unknown logical operator type: %d", node->type);
+      break;
     }
 
+failure:
   TMPL_CLEAR_VALUE (&left);
   TMPL_CLEAR_VALUE (&right);
 
