@@ -1075,8 +1075,9 @@ lookup_for_object:
           g_set_error (error,
                        TMPL_ERROR,
                        TMPL_ERROR_GI_FAILURE,
-                       "Failed to locate GObject Introspection data. "
-                       "Consider importing required module.");
+                       "Failed to locate GObject Introspection data for %s. "
+                       "Consider importing required module.",
+                       g_type_name (type));
           goto cleanup;
         }
 
