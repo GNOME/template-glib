@@ -788,6 +788,23 @@ make_title (const gchar *str)
   return g_string_free (ret, FALSE);
 }
 
+static GIBaseInfo *
+find_by_gtype (GIRepository *repository,
+               GType         type)
+{
+  while ((type != G_TYPE_INVALID))
+    {
+      GIBaseInfo *info = g_irepository_find_by_gtype (repository, type);
+
+      if (info != NULL)
+        return info;
+
+      type = g_type_parent (type);
+    }
+
+  return NULL;
+}
+
 static gboolean
 tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
                         TmplScope       *scope,
@@ -1068,7 +1085,7 @@ lookup_for_object:
     {
       guint n_ifaces;
 
-      base_info = g_irepository_find_by_gtype (repository, type);
+      base_info = find_by_gtype (repository, type);
 
       if (base_info == NULL)
         {
