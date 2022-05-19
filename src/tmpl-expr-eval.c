@@ -956,6 +956,13 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
   if (G_VALUE_HOLDS_GTYPE (&left))
     {
       if (FALSE) {}
+      else if (g_str_equal (node->name, "name"))
+        {
+          g_value_init (return_value, G_TYPE_STRING);
+          g_value_set_static_string (return_value, g_type_name (g_value_get_gtype (&left)));
+          ret = TRUE;
+          goto cleanup;
+        }
       else if (g_str_equal (node->name, "is_a"))
         {
           if (node->params != NULL)

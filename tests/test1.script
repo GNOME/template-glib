@@ -63,6 +63,7 @@ assert(group != null)
 assert(typeof(group).is_a(typeof(Gio.ActionGroup)))
 assert(typeof(group).is_a(typeof(Gio.ActionMap)))
 assert(!typeof(group).is_a(typeof(Gio.Action)))
+assert(typeof(group).name() == "GSimpleActionGroup")
 
 t1 = typeof(group)
 t2 = typeof(Gio.SimpleActionGroup)
