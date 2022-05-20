@@ -1935,10 +1935,23 @@ SIMPLE_OP_FUNC (gt_double_double,  G_TYPE_BOOLEAN, set_boolean, get_double, >,  
 SIMPLE_OP_FUNC (eq_double_double,  G_TYPE_BOOLEAN, set_boolean, get_double, ==, get_double)
 SIMPLE_OP_FUNC (ne_double_double,  G_TYPE_BOOLEAN, set_boolean, get_double, !=, get_double)
 SIMPLE_OP_FUNC (gte_double_double, G_TYPE_BOOLEAN, set_boolean, get_double, >=, get_double)
-SIMPLE_OP_FUNC (eq_uint_double,    G_TYPE_BOOLEAN, set_boolean, get_uint,   ==, get_double)
+
+SIMPLE_OP_FUNC (eq_double_int,     G_TYPE_BOOLEAN, set_boolean, get_double, ==, get_int)
 SIMPLE_OP_FUNC (eq_double_uint,    G_TYPE_BOOLEAN, set_boolean, get_double, ==, get_uint)
-SIMPLE_OP_FUNC (ne_uint_double,    G_TYPE_BOOLEAN, set_boolean, get_uint,   !=, get_double)
+SIMPLE_OP_FUNC (eq_int_double,     G_TYPE_BOOLEAN, set_boolean, get_int,    ==, get_double)
+SIMPLE_OP_FUNC (eq_uint_double,    G_TYPE_BOOLEAN, set_boolean, get_uint,   ==, get_double)
+SIMPLE_OP_FUNC (gt_double_int,     G_TYPE_BOOLEAN, set_boolean, get_double,  >, get_int)
+SIMPLE_OP_FUNC (gt_double_uint,    G_TYPE_BOOLEAN, set_boolean, get_double,  >, get_uint)
+SIMPLE_OP_FUNC (gt_int_double,     G_TYPE_BOOLEAN, set_boolean, get_int,     >, get_double)
+SIMPLE_OP_FUNC (gt_uint_double,    G_TYPE_BOOLEAN, set_boolean, get_uint,    >, get_double)
+SIMPLE_OP_FUNC (lt_double_int,     G_TYPE_BOOLEAN, set_boolean, get_double,  <, get_int)
+SIMPLE_OP_FUNC (lt_double_uint,    G_TYPE_BOOLEAN, set_boolean, get_double,  <, get_uint)
+SIMPLE_OP_FUNC (lt_int_double,     G_TYPE_BOOLEAN, set_boolean, get_int,     <, get_double)
+SIMPLE_OP_FUNC (lt_uint_double,    G_TYPE_BOOLEAN, set_boolean, get_uint,    <, get_double)
+SIMPLE_OP_FUNC (ne_double_int,     G_TYPE_BOOLEAN, set_boolean, get_double, !=, get_uint)
 SIMPLE_OP_FUNC (ne_double_uint,    G_TYPE_BOOLEAN, set_boolean, get_double, !=, get_uint)
+SIMPLE_OP_FUNC (ne_int_double,     G_TYPE_BOOLEAN, set_boolean, get_uint,   !=, get_double)
+SIMPLE_OP_FUNC (ne_uint_double,    G_TYPE_BOOLEAN, set_boolean, get_uint,   !=, get_double)
 
 #undef SIMPLE_OP_FUNC
 
@@ -1966,10 +1979,6 @@ build_dispatch_table (void)
   ADD_DISPATCH_FUNC (TMPL_EXPR_LTE,         G_TYPE_DOUBLE, G_TYPE_DOUBLE, lte_double_double);
   ADD_DISPATCH_FUNC (TMPL_EXPR_GTE,         G_TYPE_DOUBLE, G_TYPE_DOUBLE, gte_double_double);
   ADD_DISPATCH_FUNC (TMPL_EXPR_EQ,          G_TYPE_DOUBLE, G_TYPE_DOUBLE, eq_double_double);
-  ADD_DISPATCH_FUNC (TMPL_EXPR_EQ,          G_TYPE_UINT,   G_TYPE_DOUBLE, eq_uint_double);
-  ADD_DISPATCH_FUNC (TMPL_EXPR_EQ,          G_TYPE_DOUBLE, G_TYPE_UINT,   eq_double_uint);
-  ADD_DISPATCH_FUNC (TMPL_EXPR_NE,          G_TYPE_UINT,   G_TYPE_DOUBLE, ne_uint_double);
-  ADD_DISPATCH_FUNC (TMPL_EXPR_NE,          G_TYPE_DOUBLE, G_TYPE_UINT,   ne_double_uint);
   ADD_DISPATCH_FUNC (TMPL_EXPR_MUL,         G_TYPE_STRING, G_TYPE_DOUBLE, mul_string_double);
   ADD_DISPATCH_FUNC (TMPL_EXPR_MUL,         G_TYPE_DOUBLE, G_TYPE_STRING, mul_double_string);
   ADD_DISPATCH_FUNC (TMPL_EXPR_EQ,          G_TYPE_STRING, G_TYPE_STRING, eq_string_string);
@@ -1980,6 +1989,24 @@ build_dispatch_table (void)
 
   ADD_DISPATCH_FUNC (TMPL_EXPR_EQ,          G_TYPE_POINTER, G_TYPE_POINTER, eq_pointer_pointer);
   ADD_DISPATCH_FUNC (TMPL_EXPR_NE,          G_TYPE_POINTER, G_TYPE_POINTER, ne_pointer_pointer);
+
+  ADD_DISPATCH_FUNC (TMPL_EXPR_EQ,          G_TYPE_UINT,   G_TYPE_DOUBLE, eq_uint_double);
+  ADD_DISPATCH_FUNC (TMPL_EXPR_EQ,          G_TYPE_DOUBLE, G_TYPE_UINT,   eq_double_uint);
+  ADD_DISPATCH_FUNC (TMPL_EXPR_NE,          G_TYPE_UINT,   G_TYPE_DOUBLE, ne_uint_double);
+  ADD_DISPATCH_FUNC (TMPL_EXPR_NE,          G_TYPE_DOUBLE, G_TYPE_UINT,   ne_double_uint);
+  ADD_DISPATCH_FUNC (TMPL_EXPR_GT,          G_TYPE_UINT,   G_TYPE_DOUBLE, gt_uint_double);
+  ADD_DISPATCH_FUNC (TMPL_EXPR_GT,          G_TYPE_DOUBLE, G_TYPE_UINT,   gt_double_uint);
+  ADD_DISPATCH_FUNC (TMPL_EXPR_LT,          G_TYPE_UINT,   G_TYPE_DOUBLE, lt_uint_double);
+  ADD_DISPATCH_FUNC (TMPL_EXPR_LT,          G_TYPE_DOUBLE, G_TYPE_UINT,   lt_double_uint);
+
+  ADD_DISPATCH_FUNC (TMPL_EXPR_EQ,          G_TYPE_INT,    G_TYPE_DOUBLE, eq_int_double);
+  ADD_DISPATCH_FUNC (TMPL_EXPR_EQ,          G_TYPE_DOUBLE, G_TYPE_INT,    eq_double_int);
+  ADD_DISPATCH_FUNC (TMPL_EXPR_NE,          G_TYPE_INT,    G_TYPE_DOUBLE, ne_int_double);
+  ADD_DISPATCH_FUNC (TMPL_EXPR_NE,          G_TYPE_DOUBLE, G_TYPE_INT,    ne_double_int);
+  ADD_DISPATCH_FUNC (TMPL_EXPR_GT,          G_TYPE_INT,    G_TYPE_DOUBLE, gt_int_double);
+  ADD_DISPATCH_FUNC (TMPL_EXPR_GT,          G_TYPE_DOUBLE, G_TYPE_INT,    gt_double_int);
+  ADD_DISPATCH_FUNC (TMPL_EXPR_LT,          G_TYPE_INT,    G_TYPE_DOUBLE, lt_int_double);
+  ADD_DISPATCH_FUNC (TMPL_EXPR_LT,          G_TYPE_DOUBLE, G_TYPE_INT,    lt_double_int);
 
 #undef ADD_DISPATCH_FUNC
 

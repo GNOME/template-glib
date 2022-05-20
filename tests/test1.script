@@ -142,4 +142,10 @@ ret = ((scoped = 3) && (scoped = 0))
 assert(scoped == 0)
 assert(ret == false)
 
+assert(1 == i32(1))
+assert(-2 == i32(-2))
+
+assert(1 == u32(1))
+assert(2 == abs(-2))
+
 1234;
