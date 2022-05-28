@@ -493,3 +493,34 @@ tmpl_scope_set_null (TmplScope  *self,
 
   tmpl_scope_set_value (self, name, &value);
 }
+
+/**
+ * tmpl_scope_dup_string:
+ * @self: a #TmplScope
+ *
+ * Gets a string if the symbol @name is a string.
+ *
+ * Otherwise, %NULL is returned.
+ *
+ * Returns: (transfer full) (nullable): a string or %NULL
+ *
+ * Since: 3.36
+ */
+char *
+tmpl_scope_dup_string (TmplScope  *self,
+                       const char *name)
+{
+  GValue value = G_VALUE_INIT;
+  TmplSymbol *symbol;
+  char *ret = NULL;
+
+  if (!(symbol = tmpl_scope_peek (self, name)))
+    return NULL;
+
+  tmpl_symbol_get_value (symbol, &value);
+  if (G_VALUE_HOLDS_STRING (&value))
+    ret = g_value_dup_string (&value);
+  g_value_unset (&value);
+
+  return ret;
+}
