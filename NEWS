@@ -1,4 +1,18 @@
 ==============
+Version 3.35.0
+==============
+
+This is a development release, not intended for end users.
+
+Changes in this release:
+
+ • Build system improvements and test suites
+ • Many fixes to TmplExpr lexing, parsing, and evaluation
+ • A number of new AST nodes and symbo API
+ • Various new builtin functions
+ • Improved support for swallowing newlines from templates
+
+==============
 Version 3.34.1
 ==============
 
