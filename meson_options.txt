@@ -6,7 +6,14 @@ option('profiling', type: 'boolean', value: false)
 option('introspection', type: 'feature', value: 'auto')
 option('vapi', type: 'boolean', value: true)
 
-# For subproject usage
+# For subproject usage.
+#
+# If this is a subproject and you want the installed files to be private
+# that means you can set package_subdir=gnome-builder and install them in
+# someplace like:
+#
+# /usr/lib/gnome-builder/libtemplate_glib-1.0.so
+# /usr/lib/girepository-1.0/gnome-builder/TemplateGLib-1.0.typelib
 option('package_subdir', type: 'string',
   description: 'Private sub-directory used when built as a subproject'
 )
