@@ -1,21 +1,22 @@
 # Turkish translation for template-glib.
 # Copyright (C) 2019 template-glib's COPYRIGHT HOLDER
 # This file is distributed under the same license as the template-glib package.
+#
 # Serdar Sağlam <teknomobil@msn.com>, 2019.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: template-glib master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/template-glib/issues\n"
-"POT-Creation-Date: 2018-11-21 13:22+0000\n"
+"POT-Creation-Date: 2022-09-18 14:32+0000\n"
 "PO-Revision-Date: 2019-01-29 03:05+0300\n"
-"Language-Team: Turkish <tr@li.org>\n"
+"Last-Translator: Serdar Sağlam <teknomobil@yandex.com>\n"
+"Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"Last-Translator: Serdar Sağlam <teknomobil@yandex.com>\n"
 "X-Generator: Poedit 2.2.1\n"
 
 #: src/tmpl-parser.c:199
