@@ -1114,10 +1114,12 @@ lookup_for_object:
       n_ifaces = g_object_info_get_n_interfaces ((GIObjectInfo *)base_info);
       for (i = 0; function == NULL && i < n_ifaces; i++)
         {
-          GIInterfaceInfo *iface_info;
+          GIInterfaceInfo *iface_info = NULL;
 
           iface_info = g_object_info_get_interface ((GIObjectInfo *)base_info, i);
           function = g_interface_info_find_method (iface_info, node->name);
+
+          g_clear_pointer (&iface_info, g_base_info_unref);
         }
 
       if (function != NULL)
