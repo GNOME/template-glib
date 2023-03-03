@@ -1,4 +1,14 @@
 ==============
+Version 3.36.1
+==============
+
+This release contains important fixes suggested for distribution to end users.
+
+ • Fix leak of GObject Introspection interface info
+ • Document usage of package_subdir
+ • Translation updates
+
+==============
 Version 3.36.0
 ==============
 
