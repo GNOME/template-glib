@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <dlfcn.h>
 #include <girepository.h>
 #include <math.h>
 #include <string.h>
