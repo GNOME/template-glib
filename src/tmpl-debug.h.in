@@ -30,7 +30,7 @@ G_BEGIN_DECLS
 # undef TMPL_ENABLE_TRACE
 #endif
 
-#define TMPL_LOG_LEVEL_TRACE (1 << TMPL_LOG_LEVEL_USER_SHIFT)
+#define TMPL_LOG_LEVEL_TRACE (1 << G_LOG_LEVEL_USER_SHIFT)
 
 #ifdef TMPL_ENABLE_TRACE
 # define TMPL_TRACE_MSG(fmt, ...)                                         \
