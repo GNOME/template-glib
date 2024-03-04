@@ -1,4 +1,13 @@
 ==============
+Version 3.36.2
+==============
+
+This release contains bug fixes only
+
+ • Fix trace level define
+ • Fix unused dlfcn.h include
+
+==============
 Version 3.36.1
 ==============
 
