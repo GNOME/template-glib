@@ -1,0 +1,38 @@
+# Kabyle translation for template-glib
+# Copyright (c) 2020 Rosetta Contributors and Canonical Ltd 2020
+# This file is distributed under the same license as the template-glib package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: template-glib\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2022-08-03 23:44+0000\n"
+"PO-Revision-Date: 2020-03-10 16:21+0000\n"
+"Last-Translator: tasutlelli17 <Unknown>\n"
+"Language-Team: Kabyle <kab@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2022-08-25 22:52+0000\n"
+"X-Generator: Launchpad (build 813bec7783fe35df624c0e68cd38fcaa442fb8d1)\n"
+
+#: src/tmpl-parser.c:199
+#, c-format
+msgid "%s() may only be called once"
+msgstr "%s() ala yiwet n tikkelt i yezmer ad d-yettusawel"
+
+#: src/tmpl-parser.c:211
+#, c-format
+msgid "Parser does not contain an input stream"
+msgstr "Amaslaḍ ur yesɛi ara asuddem n unekcum"
+
+#: src/tmpl-template.c:454
+#, c-format
+msgid "Must parse template before expanding"
+msgstr "Ilaq ad tettusleḍ tneɣrfut uqbel asennerni"
+
+#: src/tmpl-template-locator.c:117
+#, c-format
+msgid "Failed to locate template “%s”"
+msgstr "D awezɣi ad d-tettussideg tneɣruft \"%s\""
