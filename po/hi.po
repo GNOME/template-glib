@@ -1,0 +1,39 @@
+# Hindi translation for template-glib.
+# Copyright (C) 2024 template-glib's COPYRIGHT HOLDER
+# This file is distributed under the same license as the template-glib package.
+# Scrambled777 <weblate.scrambled777@simplelogin.com>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: template-glib main\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/template-glib/issues\n"
+"POT-Creation-Date: 2024-03-18 21:22+0000\n"
+"PO-Revision-Date: 2024-04-01 23:41+0530\n"
+"Last-Translator: Scrambled777 <weblate.scrambled777@simplelogin.com>\n"
+"Language-Team: Hindi\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Gtranslator 46.0\n"
+
+#: src/tmpl-parser.c:199
+#, c-format
+msgid "%s() may only be called once"
+msgstr "%s() को केवल एक बार ही बुलाया जा सकता है"
+
+#: src/tmpl-parser.c:211
+#, c-format
+msgid "Parser does not contain an input stream"
+msgstr "पार्सर में कोई इनपुट स्ट्रीम नहीं है"
+
+#: src/tmpl-template.c:454
+#, c-format
+msgid "Must parse template before expanding"
+msgstr "विस्तार करने से पहले खाका को पार्स करना होगा"
+
+#: src/tmpl-template-locator.c:117
+#, c-format
+msgid "Failed to locate template “%s”"
+msgstr "खाका “%s” ढूँढने में विफल"
