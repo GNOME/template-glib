@@ -19,17 +19,18 @@
 #ifndef TMPL_UTIL_PRIVATE_H
 #define TMPL_UTIL_PRIVATE_H
 
-#include <glib.h>
+#include <girepository/girepository.h>
 
 G_BEGIN_DECLS
 
 #define TMPL_CLEAR_VALUE(v) { if (G_VALUE_TYPE(v)) g_value_unset(v); }
 
-void      tmpl_destroy_in_main_context (GMainContext   *main_context,
-                                        gpointer        data,
-                                        GDestroyNotify  destroy);
-gchar    *tmpl_value_repr              (const GValue   *value);
-gboolean  tmpl_value_as_boolean        (const GValue   *value);
+void          tmpl_destroy_in_main_context (GMainContext   *main_context,
+                                            gpointer        data,
+                                            GDestroyNotify  destroy);
+gchar        *tmpl_value_repr              (const GValue   *value);
+gboolean      tmpl_value_as_boolean        (const GValue   *value);
+GIRepository *tmpl_repository_get_default  (void);
 
 G_END_DECLS
 

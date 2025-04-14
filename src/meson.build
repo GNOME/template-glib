@@ -64,7 +64,7 @@ libtemplate_glib_public_sources = [
 
 libtemplate_glib_deps = [
   dependency('gio-2.0'),
-  dependency('gobject-introspection-1.0'),
+  dependency('girepository-2.0'),
   cc.find_library('m', required: false),
 ]
 

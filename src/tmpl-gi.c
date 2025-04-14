@@ -19,13 +19,14 @@
 
 #include "tmpl-error.h"
 #include "tmpl-gi-private.h"
+#include "tmpl-util-private.h"
 
 G_DEFINE_POINTER_TYPE (TmplTypelib, tmpl_typelib)
 
 typedef struct GIBaseInfo TmplBaseInfo;
 G_DEFINE_BOXED_TYPE (TmplBaseInfo, tmpl_base_info,
-                     (GBoxedCopyFunc)g_base_info_ref,
-                     (GBoxedFreeFunc)g_base_info_unref)
+                     (GBoxedCopyFunc)gi_base_info_ref,
+                     (GBoxedFreeFunc)gi_base_info_unref)
 
 #define return_type_mismatch(value, type)                          \
   G_STMT_START {                                                   \
@@ -48,16 +49,16 @@ find_enum_value (GIEnumInfo  *info,
                  const gchar *str,
                  gint        *v_int)
 {
-  guint n = g_enum_info_get_n_values (info);
+  guint n = gi_enum_info_get_n_values (info);
 
   for (guint i = 0; i < n; i++)
     {
       g_autoptr(GIBaseInfo) vinfo = NULL;
 
-      vinfo = (GIBaseInfo *)g_enum_info_get_value (info, i);
-      if (g_strcmp0 (str, g_base_info_get_name (vinfo)) == 0)
+      vinfo = (GIBaseInfo *)gi_enum_info_get_value (info, i);
+      if (g_strcmp0 (str, gi_base_info_get_name (vinfo)) == 0)
         {
-          *v_int = g_value_info_get_value ((GIValueInfo *)vinfo);
+          *v_int = gi_value_info_get_value ((GIValueInfo *)vinfo);
           return TRUE;
         }
     }
@@ -72,8 +73,8 @@ tmpl_gi_argument_from_g_value (const GValue  *value,
                                GIArgument    *arg,
                                GError       **error)
 {
-  GITypeTag type_tag = g_type_info_get_tag (type_info);
-  GITransfer xfer = g_arg_info_get_ownership_transfer (arg_info);
+  GITypeTag type_tag = gi_type_info_get_tag (type_info);
+  GITransfer xfer = gi_arg_info_get_ownership_transfer (arg_info);
 
   /* For the long handling: long can be equivalent to
    * int32 or int64, depending on the architecture, but
@@ -173,7 +174,7 @@ tmpl_gi_argument_from_g_value (const GValue  *value,
       else if (G_VALUE_HOLDS (value, TMPL_TYPE_BASE_INFO) &&
                g_value_get_boxed (value) != NULL &&
                GI_IS_REGISTERED_TYPE_INFO (g_value_get_boxed (value)))
-        arg->v_long = g_registered_type_info_get_g_type (g_value_get_boxed (value));
+        arg->v_long = gi_registered_type_info_get_g_type (g_value_get_boxed (value));
       else
         return_type_mismatch (value, G_TYPE_GTYPE);
       return TRUE;
@@ -209,21 +210,19 @@ tmpl_gi_argument_from_g_value (const GValue  *value,
     case GI_TYPE_TAG_INTERFACE:
       {
         g_autoptr(GIBaseInfo) info = NULL;
-        GIInfoType info_type;
 
-        info = g_type_info_get_interface (type_info);
-        info_type = g_base_info_get_type (info);
+        info = gi_type_info_get_interface (type_info);
 
-        switch (info_type)
+        if (GI_IS_FLAGS_INFO (info))
           {
-          case GI_INFO_TYPE_FLAGS:
             if (G_VALUE_HOLDS (value, G_TYPE_FLAGS))
               arg->v_uint = g_value_get_flags (value);
             else
               return_type_mismatch (value, G_TYPE_FLAGS);
             return TRUE;
-
-          case GI_INFO_TYPE_ENUM:
+          }
+        else if (GI_IS_ENUM_INFO (info))
+          {
             if (G_VALUE_HOLDS_STRING (value))
               {
                 if (find_enum_value ((GIEnumInfo *)info, g_value_get_string (value), &arg->v_int))
@@ -238,18 +237,17 @@ tmpl_gi_argument_from_g_value (const GValue  *value,
 
             arg->v_int = g_value_get_enum (value);
             return TRUE;
-
-          case GI_INFO_TYPE_INTERFACE:
-          case GI_INFO_TYPE_OBJECT:
+          }
+        else if (GI_IS_INTERFACE_INFO (info) || GI_IS_OBJECT_INFO (info))
+          {
             if (G_VALUE_HOLDS_PARAM (value))
               arg->v_pointer = xfer == GI_TRANSFER_NOTHING ? g_value_get_param (value) : g_value_dup_param (value);
             else
               arg->v_pointer = xfer == GI_TRANSFER_NOTHING ? g_value_get_object (value) : g_value_dup_object (value);
             return TRUE;
-
-          case GI_INFO_TYPE_BOXED:
-          case GI_INFO_TYPE_STRUCT:
-          case GI_INFO_TYPE_UNION:
+          }
+        else if (GI_IS_STRUCT_INFO (info) || GI_IS_UNION_INFO (info))
+          {
             if (G_VALUE_HOLDS (value, G_TYPE_BOXED))
               arg->v_pointer = xfer == GI_TRANSFER_NOTHING ? g_value_get_boxed (value) : g_value_dup_boxed (value);
             else if (G_VALUE_HOLDS (value, G_TYPE_VARIANT))
@@ -266,26 +264,14 @@ tmpl_gi_argument_from_g_value (const GValue  *value,
                 return FALSE;
               }
             return TRUE;
-
-          case GI_INFO_TYPE_INVALID:
-          case GI_INFO_TYPE_INVALID_0:
-          case GI_INFO_TYPE_FUNCTION:
-          case GI_INFO_TYPE_CONSTANT:
-          case GI_INFO_TYPE_CALLBACK:
-          case GI_INFO_TYPE_VALUE:
-          case GI_INFO_TYPE_SIGNAL:
-          case GI_INFO_TYPE_VFUNC:
-          case GI_INFO_TYPE_PROPERTY:
-          case GI_INFO_TYPE_FIELD:
-          case GI_INFO_TYPE_ARG:
-          case GI_INFO_TYPE_TYPE:
-          case GI_INFO_TYPE_UNRESOLVED:
-          default:
+          }
+        else
+          {
             g_set_error (error,
                          TMPL_ERROR,
                          TMPL_ERROR_NOT_IMPLEMENTED,
                          "Converting GValue's of type '%s' is not implemented.",
-                         g_info_type_to_string (info_type));
+                         g_type_name (G_TYPE_FROM_INSTANCE (info)));
             return FALSE;
           }
 
@@ -331,7 +317,7 @@ tmpl_gi_argument_to_g_value (GValue      *value,
   g_assert (type_info != NULL);
   g_assert (arg != NULL);
 
-  tag = g_type_info_get_tag (type_info);
+  tag = gi_type_info_get_tag (type_info);
 
   switch (tag)
     {
@@ -410,43 +396,19 @@ tmpl_gi_argument_to_g_value (GValue      *value,
 
     case GI_TYPE_TAG_INTERFACE:
       {
-        g_autoptr(GIBaseInfo) info = g_type_info_get_interface (type_info);
-        GIInfoType info_type = g_base_info_get_type (info);
+        g_autoptr(GIBaseInfo) info = gi_type_info_get_interface (type_info);
 
-        switch (info_type)
+        if (GI_IS_OBJECT_INFO (info) || GI_IS_INTERFACE_INFO (info))
           {
-          case GI_INFO_TYPE_INTERFACE:
-          case GI_INFO_TYPE_OBJECT:
             g_value_init (value, G_TYPE_OBJECT);
             if (xfer == GI_TRANSFER_NOTHING)
               g_value_set_object (value, arg->v_pointer);
             else
               g_value_take_object (value, arg->v_pointer);
             return TRUE;
-
-          case GI_INFO_TYPE_FLAGS:
-          case GI_INFO_TYPE_ENUM:
-          case GI_INFO_TYPE_BOXED:
-          case GI_INFO_TYPE_STRUCT:
-          case GI_INFO_TYPE_UNION:
-          case GI_INFO_TYPE_INVALID:
-          case GI_INFO_TYPE_INVALID_0:
-          case GI_INFO_TYPE_FUNCTION:
-          case GI_INFO_TYPE_CONSTANT:
-          case GI_INFO_TYPE_CALLBACK:
-          case GI_INFO_TYPE_VALUE:
-          case GI_INFO_TYPE_SIGNAL:
-          case GI_INFO_TYPE_VFUNC:
-          case GI_INFO_TYPE_PROPERTY:
-          case GI_INFO_TYPE_FIELD:
-          case GI_INFO_TYPE_ARG:
-          case GI_INFO_TYPE_TYPE:
-          case GI_INFO_TYPE_UNRESOLVED:
-          default:
-            g_warning ("TODO: proper return marshaling");
-            /* TODO: more marshalling of return types */
-            break;
           }
+
+        g_critical ("Cannot marshal type %s", g_type_name (G_TYPE_FROM_INSTANCE (info)));
       }
       break;
 
@@ -487,16 +449,16 @@ tmpl_gi_get_gtype_func (GIBaseInfo *base_info)
   const char *symbol_name;
   TmplGTypeFunc symbol = NULL;
 
-  if (base_info == NULL || GI_INFO_TYPE_OBJECT != g_base_info_get_type (base_info))
+  if (base_info == NULL || !GI_IS_OBJECT_INFO (base_info))
     return NULL;
 
-  if (!(typelib = g_base_info_get_typelib (base_info)))
+  if (!(typelib = gi_base_info_get_typelib (base_info)))
     return NULL;
 
-  if (!(symbol_name = g_object_info_get_type_init (base_info)))
+  if (!(symbol_name = gi_object_info_get_type_init_function_name (GI_OBJECT_INFO (base_info))))
     return NULL;
 
-  if (!g_typelib_symbol (typelib, symbol_name, (gpointer *)&symbol))
+  if (!gi_typelib_symbol (typelib, symbol_name, (gpointer *)&symbol))
     return NULL;
 
   return symbol;

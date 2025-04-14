@@ -93,7 +93,7 @@ tmpl_value_repr (const GValue *value)
 
           if (tl != NULL)
             {
-              const gchar *ns = g_typelib_get_namespace (tl);
+              const gchar *ns = gi_typelib_get_namespace (tl);
               ret = g_strdup_printf ("<Namespace \"%s\">", ns);
             }
           else
@@ -168,4 +168,19 @@ tmpl_value_as_boolean (const GValue *value)
     }
 
   return ret;
+}
+
+GIRepository *
+tmpl_repository_get_default (void)
+{
+  static GIRepository *instance;
+
+  if (instance == NULL)
+#if GLIB_CHECK_VERSION(2, 85, 0)
+    instance = gi_repository_dup_default ();
+#else
+    instance = gi_repository_new ();
+#endif
+
+  return instance;
 }
