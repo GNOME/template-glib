@@ -17,7 +17,7 @@
 #ifndef TMPL_GI_PRIVATE_H
 #define TMPL_GI_PRIVATE_H
 
-#include <girepository.h>
+#include <girepository/girepository.h>
 
 G_BEGIN_DECLS
 
@@ -40,10 +40,6 @@ gboolean tmpl_gi_argument_to_g_value   (GValue        *value,
                                         GError       **error);
 TmplGTypeFunc
          tmpl_gi_get_gtype_func        (GIBaseInfo    *base_info);
-
-
-G_DEFINE_AUTOPTR_CLEANUP_FUNC (GIBaseInfo, g_base_info_unref)
-G_DEFINE_AUTOPTR_CLEANUP_FUNC (GIArgInfo, g_base_info_unref)
 
 G_END_DECLS
 

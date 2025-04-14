@@ -16,9 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <girepository.h>
+#include "config.h"
+
 #include <math.h>
 #include <string.h>
+
+#include <girepository/girepository.h>
 
 #include "tmpl-error.h"
 #include "tmpl-expr.h"
@@ -619,16 +622,16 @@ tmpl_expr_getattr_eval (TmplExprGetattr  *node,
   if (G_VALUE_HOLDS (&left, TMPL_TYPE_TYPELIB) &&
       g_value_get_pointer (&left) != NULL)
     {
-      GIRepository *repository = g_irepository_get_default ();
+      GIRepository *repository = tmpl_repository_get_default ();
       GITypelib *typelib = g_value_get_pointer (&left);
-      const gchar *ns = g_typelib_get_namespace (typelib);
+      const gchar *ns = gi_typelib_get_namespace (typelib);
       GIBaseInfo *base_info;
 
       /* Maybe we can resolve this dot accessor (.foo) using GObject
        * Introspection from the first object.
        */
 
-      base_info = g_irepository_find_by_name (repository, ns, node->attr);
+      base_info = gi_repository_find_by_name (repository, ns, node->attr);
 
       if (base_info == NULL)
         {
@@ -793,7 +796,7 @@ find_by_gtype (GIRepository *repository,
 {
   while ((type != G_TYPE_INVALID))
     {
-      GIBaseInfo *info = g_irepository_find_by_gtype (repository, type);
+      GIBaseInfo *info = gi_repository_find_by_gtype (repository, type);
 
       if (info != NULL)
         return info;
@@ -1004,15 +1007,15 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
       goto cleanup;
     }
 
-  repository = g_irepository_get_default ();
+  repository = tmpl_repository_get_default ();
 
   if (G_VALUE_HOLDS (&left, TMPL_TYPE_TYPELIB) &&
       g_value_get_pointer (&left) != NULL)
     {
       GITypelib *typelib = g_value_get_pointer (&left);
-      const gchar *ns = g_typelib_get_namespace (typelib);
+      const gchar *ns = gi_typelib_get_namespace (typelib);
 
-      base_info = g_irepository_find_by_name (repository, ns, node->name);
+      base_info = gi_repository_find_by_name (repository, ns, node->name);
 
       if (base_info == NULL || !GI_IS_FUNCTION_INFO (base_info))
         {
@@ -1026,7 +1029,7 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
 
       function = (GIFunctionInfo *)base_info;
 
-      n_args = g_callable_info_get_n_args ((GICallableInfo *)function);
+      n_args = gi_callable_info_get_n_args ((GICallableInfo *)function);
 
       values = g_array_new (FALSE, TRUE, sizeof (GValue));
       g_array_set_clear_func (values, (GDestroyNotify)g_value_unset);
@@ -1044,7 +1047,7 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
 
   if (G_VALUE_HOLDS (&left, TMPL_TYPE_BASE_INFO) &&
       (base_info = g_value_get_boxed (&left)) &&
-      g_base_info_get_type (base_info) == GI_INFO_TYPE_OBJECT)
+      GI_IS_OBJECT_INFO (base_info))
     {
       TmplGTypeFunc gtype_func = tmpl_gi_get_gtype_func (base_info);
 
@@ -1105,20 +1108,20 @@ lookup_for_object:
         }
 
       /* First locate the function in the object */
-      function = g_object_info_find_method ((GIObjectInfo *)base_info, node->name);
+      function = gi_object_info_find_method ((GIObjectInfo *)base_info, node->name);
       if (function != NULL)
         break;
 
       /* Maybe the function is found in an interface */
-      n_ifaces = g_object_info_get_n_interfaces ((GIObjectInfo *)base_info);
+      n_ifaces = gi_object_info_get_n_interfaces ((GIObjectInfo *)base_info);
       for (i = 0; function == NULL && i < n_ifaces; i++)
         {
           GIInterfaceInfo *iface_info = NULL;
 
-          iface_info = g_object_info_get_interface ((GIObjectInfo *)base_info, i);
-          function = g_interface_info_find_method (iface_info, node->name);
+          iface_info = gi_object_info_get_interface ((GIObjectInfo *)base_info, i);
+          function = gi_interface_info_find_method (iface_info, node->name);
 
-          g_clear_pointer (&iface_info, g_base_info_unref);
+          g_clear_pointer (&iface_info, gi_base_info_unref);
         }
 
       if (function != NULL)
@@ -1137,7 +1140,7 @@ lookup_for_object:
       goto cleanup;
     }
 
-  n_args = g_callable_info_get_n_args ((GICallableInfo *)function);
+  n_args = gi_callable_info_get_n_args ((GICallableInfo *)function);
 
   values = g_array_new (FALSE, TRUE, sizeof (GValue));
   g_array_set_clear_func (values, (GDestroyNotify)g_value_unset);
@@ -1164,12 +1167,12 @@ apply_args:
 
   for (i = 0; i < n_args; i++)
     {
-      g_autoptr(GIArgInfo) arg_info = g_callable_info_get_arg ((GICallableInfo *)function, i);
+      g_autoptr(GIArgInfo) arg_info = gi_callable_info_get_arg ((GICallableInfo *)function, i);
       GIArgument *arg = &g_array_index (in_args, GIArgument, i + offset);
       GValue *value = &g_array_index (values, GValue, i);
       GITypeInfo type_info = { 0 };
 
-      if (g_arg_info_get_direction (arg_info) != GI_DIRECTION_IN)
+      if (gi_arg_info_get_direction (arg_info) != GI_DIRECTION_IN)
         {
           g_set_error (error,
                        TMPL_ERROR,
@@ -1203,10 +1206,15 @@ apply_args:
           args = NULL;
         }
 
-      g_arg_info_load_type (arg_info, &type_info);
+      gi_arg_info_load_type_info (arg_info, &type_info);
 
       if (!tmpl_gi_argument_from_g_value (value, &type_info, arg_info, arg, error))
-        goto cleanup;
+        {
+          gi_base_info_clear (&type_info);
+          goto cleanup;
+        }
+
+      gi_base_info_clear (&type_info);
     }
 
   if ((args != NULL) && (n_args > 0))
@@ -1219,17 +1227,17 @@ apply_args:
       goto cleanup;
     }
 
-  if (!g_function_info_invoke (function,
-                               dispatch_args,
-                               dispatch_len,
-                               NULL,
-                               0,
-                               &return_value_arg,
-                               error))
+  if (!gi_function_info_invoke (function,
+                                dispatch_args,
+                                dispatch_len,
+                                NULL,
+                                0,
+                                &return_value_arg,
+                                error))
     goto cleanup;
 
-  g_callable_info_load_return_type ((GICallableInfo *)function, &return_value_type);
-  xfer = g_callable_info_get_caller_owns ((GICallableInfo *)function);
+  gi_callable_info_load_return_type ((GICallableInfo *)function, &return_value_type);
+  xfer = gi_callable_info_get_caller_owns ((GICallableInfo *)function);
 
   if (!tmpl_gi_argument_to_g_value (return_value, &return_value_type, &return_value_arg, xfer, error))
     goto cleanup;
@@ -1255,7 +1263,7 @@ cleanup:
   TMPL_CLEAR_VALUE (&left);
   TMPL_CLEAR_VALUE (&right);
 
-  g_clear_pointer (&function, g_base_info_unref);
+  g_clear_pointer (&function, gi_base_info_unref);
 
   return ret;
 }
@@ -1487,7 +1495,7 @@ tmpl_expr_require_eval (TmplExprRequire  *node,
   g_assert (scope != NULL);
   g_assert (return_value != NULL);
 
-  typelib = g_irepository_require (g_irepository_get_default (),
+  typelib = gi_repository_require (tmpl_repository_get_default (),
                                    node->name,
                                    node->version,
                                    0,
@@ -2309,7 +2317,7 @@ builtin_typeof (const GValue  *value,
       g_value_get_boxed (value) != NULL &&
       GI_IS_REGISTERED_TYPE_INFO (g_value_get_boxed (value)))
     g_value_set_gtype (return_value,
-                       g_registered_type_info_get_g_type (g_value_get_boxed (value)));
+                       gi_registered_type_info_get_g_type (g_value_get_boxed (value)));
   else if (G_VALUE_HOLDS_OBJECT (value) &&
            g_value_get_object (value) != NULL)
     g_value_set_gtype (return_value, G_OBJECT_TYPE (g_value_get_object (value)));

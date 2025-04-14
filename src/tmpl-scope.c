@@ -21,6 +21,7 @@
 #include "tmpl-gi-private.h"
 #include "tmpl-scope.h"
 #include "tmpl-symbol.h"
+#include "tmpl-util-private.h"
 
 struct _TmplScope
 {
@@ -427,7 +428,7 @@ tmpl_scope_require (TmplScope    *self,
   g_return_val_if_fail (self != NULL, FALSE);
   g_return_val_if_fail (namespace_ != NULL, FALSE);
 
-  if (!(typelib = g_irepository_require (NULL, namespace_, version, 0, NULL)))
+  if (!(typelib = gi_repository_require (tmpl_repository_get_default (), namespace_, version, 0, NULL)))
     return FALSE;
 
   g_value_init (&value, TMPL_TYPE_TYPELIB);
