@@ -1237,12 +1237,11 @@ apply_args:
     goto cleanup;
 
   gi_callable_info_load_return_type ((GICallableInfo *)function, &return_value_type);
+
   xfer = gi_callable_info_get_caller_owns ((GICallableInfo *)function);
+  ret = tmpl_gi_argument_to_g_value (return_value, &return_value_type, &return_value_arg, xfer, error);
 
-  if (!tmpl_gi_argument_to_g_value (return_value, &return_value_type, &return_value_arg, xfer, error))
-    goto cleanup;
-
-  ret = TRUE;
+  gi_base_info_clear (&return_value_type);
 
 cleanup:
   g_clear_pointer (&in_args, g_array_unref);
