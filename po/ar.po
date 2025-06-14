@@ -1,0 +1,38 @@
+# Arabic translation for template-glib.
+# Copyright (C) 2025 template-glib's COPYRIGHT HOLDER
+# This file is distributed under the same license as the template-glib package.
+# Ahmed Najmawi <iramosu@protonmail.com>,  2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: template-glib main\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/template-glib/issues\n"
+"POT-Creation-Date: 2025-05-29 18:42+0000\n"
+"PO-Revision-Date: 2025-06-08 16:11+0300\n"
+"Last-Translator: Ahmed Najmawi <iramosu@protonmail.com>\n"
+"Language-Team: Arabic <Arabic>\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.5\n"
+
+#: src/tmpl-parser.c:199
+#, c-format
+msgid "%s() may only be called once"
+msgstr "لا يمكن استدعاء %s() إلا مرة واحدة"
+
+#: src/tmpl-parser.c:211
+#, c-format
+msgid "Parser does not contain an input stream"
+msgstr "لا يحتوي المحلِّل على تدفق دَخْل"
+
+#: src/tmpl-template.c:454
+#, c-format
+msgid "Must parse template before expanding"
+msgstr "يجب تحليل القالب قبل توسيعه"
+
+#: src/tmpl-template-locator.c:117
+#, c-format
+msgid "Failed to locate template “%s”"
+msgstr "تعذَّر العثور على القالب «%s»"
