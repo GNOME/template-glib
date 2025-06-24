@@ -96,6 +96,7 @@ tmpl_node_real_accept (TmplNode      *self,
           break;
 
         case TMPL_TOKEN_EOF:
+          tmpl_token_free (token);
           TMPL_RETURN (TRUE);
 
         case TMPL_TOKEN_ELSE_IF:
