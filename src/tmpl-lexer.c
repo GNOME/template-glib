@@ -67,6 +67,12 @@ tmpl_lexer_free (TmplLexer *self)
           g_object_unref (stream);
         }
 
+      if (self->unget != NULL)
+        {
+          g_slist_free_full (self->unget, (GDestroyNotify)tmpl_token_free);
+          self->unget = NULL;
+        }
+
       g_clear_pointer (&self->circular, g_hash_table_unref);
       g_clear_pointer (&self->stream_stack, g_queue_free);
       g_clear_object (&self->locator);
