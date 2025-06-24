@@ -29,7 +29,7 @@ struct _TmplLexer
   GQueue               *stream_stack;
   TmplTemplateLocator  *locator;
   GHashTable           *circular;
-  GSList               *unget;
+  GQueue                unget;
 };
 
 G_DEFINE_POINTER_TYPE (TmplLexer, tmpl_lexer)
@@ -67,12 +67,7 @@ tmpl_lexer_free (TmplLexer *self)
           g_object_unref (stream);
         }
 
-      if (self->unget != NULL)
-        {
-          g_slist_free_full (self->unget, (GDestroyNotify)tmpl_token_free);
-          self->unget = NULL;
-        }
-
+      g_queue_clear_full (&self->unget, (GDestroyNotify)tmpl_token_free);
       g_clear_pointer (&self->circular, g_hash_table_unref);
       g_clear_pointer (&self->stream_stack, g_queue_free);
       g_clear_object (&self->locator);
@@ -112,10 +107,9 @@ tmpl_lexer_next (TmplLexer     *self,
 
   *token = NULL;
 
-  if (self->unget != NULL)
+  if (self->unget.length > 0)
     {
-      *token = self->unget->data;
-      self->unget = g_slist_remove_link (self->unget, self->unget);
+      *token = g_queue_pop_head (&self->unget);
       TMPL_RETURN (TRUE);
     }
 
@@ -213,5 +207,5 @@ tmpl_lexer_unget (TmplLexer *self,
   g_return_if_fail (self != NULL);
   g_return_if_fail (token != NULL);
 
-  self->unget = g_slist_prepend (self->unget, token);
+  g_queue_push_head (&self->unget, token);
 }
