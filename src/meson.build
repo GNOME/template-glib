@@ -8,6 +8,11 @@ version_data.set('TMPL_MICRO_VERSION', template_glib_version_micro)
 version_data.set('TMPL_VERSION', meson.project_version())
 version_data.set10('ENABLE_TRACING', get_option('tracing'))
 
+core_lib_include_directories = [
+  include_directories('.'),
+  include_directories('..'),
+]
+
 tmpl_version_h = configure_file(
           input: 'tmpl-version.h.in',
          output: 'tmpl-version.h',
@@ -133,15 +138,20 @@ libtemplate_glib_sources = [
   'tmpl-util.c',
 ]
 
+core_lib_c_args = [
+  '-DTMPL_GLIB_COMPILATION',
+]
+
 core_lib = static_library('template_glib', libtemplate_glib_sources,
-   dependencies: libtemplate_glib_deps,
-         c_args: release_args,
+         dependencies: libtemplate_glib_deps,
+               c_args: release_args + core_lib_c_args,
+  include_directories: core_lib_include_directories,
 )
 core_lib_dep = declare_dependency(
               sources: libtemplate_glib_generated_headers,
          dependencies: libtemplate_glib_deps,
            link_whole: core_lib,
-  include_directories: include_directories('.'),
+  include_directories: core_lib_include_directories,
 )
 
 libtemplate_glib = library(
@@ -159,7 +169,7 @@ libtemplate_glib_dep = declare_dependency(
               sources: libtemplate_glib_generated_headers,
          dependencies: libtemplate_glib_deps,
             link_with: libtemplate_glib,
-  include_directories: include_directories('.'),
+  include_directories: core_lib_include_directories,
 )
 
 if generate_gir
@@ -174,6 +184,7 @@ if generate_gir
                includes: [ 'Gio-2.0' ],
                 install: true,
         install_dir_gir: girdir,
+    include_directories: core_lib_include_directories,
     install_dir_typelib: typelibdir,
              extra_args: [
                '--c-include=tmpl-glib.h',

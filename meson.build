@@ -66,13 +66,6 @@ configure_file(
   configuration: config_h,
 )
 
-add_project_arguments([
-  '-DHAVE_CONFIG_H',
-  '-I' + meson.build_root(),
-  '-I' + join_paths(meson.source_root(), 'src'),
-  '-DTMPL_GLIB_COMPILATION',
-], language: 'c')
-
 cc = meson.get_compiler('c')
 
 global_c_args = []
