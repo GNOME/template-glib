@@ -1,4 +1,13 @@
 ==============
+Version 3.37.0
+==============
+
+Release for GNOME 49 Alpha
+
+ • Port to libgirepository-2.0
+ • Improve testsuite for ASAN/LSAN findings
+
+==============
 Version 3.36.3
 ==============
 
