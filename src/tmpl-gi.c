@@ -413,6 +413,25 @@ tmpl_gi_argument_to_g_value (GValue      *value,
       break;
 
     case GI_TYPE_TAG_ARRAY:
+      {
+        g_autoptr(GITypeInfo) param_type = gi_type_info_get_param_type (type_info, 0);
+
+        /* Handle NULL terminated char** */
+        if (param_type &&
+            gi_type_info_get_tag (param_type) == GI_TYPE_TAG_UTF8 &&
+            gi_type_info_is_zero_terminated (type_info))
+          {
+            g_value_init (value, G_TYPE_STRV);
+            if (xfer != GI_TRANSFER_EVERYTHING)
+              g_value_set_boxed (value, arg->v_pointer);
+            else
+              g_value_take_boxed (value, arg->v_pointer);
+            return TRUE;
+          }
+      }
+
+      break;
+
     case GI_TYPE_TAG_GLIST:
     case GI_TYPE_TAG_GSLIST:
     case GI_TYPE_TAG_GHASH:
@@ -437,7 +456,7 @@ tmpl_gi_argument_to_g_value (GValue      *value,
   g_set_error (error,
                TMPL_ERROR,
                TMPL_ERROR_TYPE_MISMATCH,
-               "Failed to decode value from GObject Introspection");
+               "Failed to decode value from GObject Introspection (0x%x)", tag);
 
   return FALSE;
 }
