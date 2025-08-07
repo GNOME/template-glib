@@ -803,7 +803,7 @@ cleanup:
 static char *
 make_mangle (const char *name)
 {
-  gboolean split_first_cap = FALSE;
+  gboolean split_first_cap = TRUE;
   GString *symbol_name = g_string_new ("");
   int i;
 
