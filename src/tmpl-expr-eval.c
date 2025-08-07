@@ -208,6 +208,38 @@ ne_null (const GValue  *left,
 }
 
 static gboolean
+strv_eq (const GValue  *left,
+         const GValue  *right,
+         GValue        *return_value,
+         GError       **error)
+{
+  g_value_init (return_value, G_TYPE_BOOLEAN);
+
+  if (g_value_get_boxed (left) == g_value_get_boxed (right) ||
+      (g_value_get_boxed (left) && g_value_get_boxed (right) && g_strv_equal (g_value_get_boxed (left), g_value_get_boxed (right))))
+    g_value_set_boolean (return_value, TRUE);
+  else
+    g_value_set_boolean (return_value, FALSE);
+
+  return TRUE;
+}
+
+static gboolean
+strv_ne (const GValue  *left,
+         const GValue  *right,
+         GValue        *return_value,
+         GError       **error)
+{
+  if (strv_eq (left, right, return_value, error))
+    {
+      g_value_set_boolean (return_value, !g_value_get_boolean (return_value));
+      return TRUE;
+    }
+
+  return FALSE;
+}
+
+static gboolean
 throw_type_mismatch (GError       **error,
                      const GValue  *left,
                      const GValue  *right,
@@ -264,6 +296,9 @@ find_dispatch_slow (TmplExprSimple *node,
       if ((G_VALUE_HOLDS_POINTER (left) && g_value_get_pointer (left) == NULL) ||
           (G_VALUE_HOLDS_POINTER (right) && g_value_get_pointer (right) == NULL))
         return eq_null;
+
+      if (G_VALUE_HOLDS (left, G_TYPE_STRV) && G_VALUE_HOLDS (right, G_TYPE_STRV))
+        return strv_eq;
     }
 
   if (node->type == TMPL_EXPR_NE)
@@ -278,6 +313,9 @@ find_dispatch_slow (TmplExprSimple *node,
       if ((G_VALUE_HOLDS_POINTER (left) && g_value_get_pointer (left) == NULL) ||
           (G_VALUE_HOLDS_POINTER (right) && g_value_get_pointer (right) == NULL))
         return ne_null;
+
+      if (G_VALUE_HOLDS (left, G_TYPE_STRV) && G_VALUE_HOLDS (right, G_TYPE_STRV))
+        return strv_ne;
     }
 
   if (node->type == TMPL_EXPR_ADD)

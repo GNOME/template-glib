@@ -149,5 +149,6 @@ assert(1 == u32(1))
 assert(2 == abs(-2))
 
 assert(GLib.strjoinv("_", GLib.strsplit("abc", "b", i32(2))) == "a_c")
+assert(GLib.strsplit("123", "2", i32(0)) == GLib.strsplit("123", "2", i32(0)))
 
 1234;
