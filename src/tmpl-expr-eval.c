@@ -761,6 +761,30 @@ cleanup:
   return ret;
 }
 
+/* Based on gtkbuilderscope.c */
+static char *
+make_mangle (const char *name)
+{
+  gboolean split_first_cap = FALSE;
+  GString *symbol_name = g_string_new ("");
+  int i;
+
+  for (i = 0; name[i] != '\0'; i++)
+    {
+      /* skip if uppercase, first or previous is uppercase */
+      if ((name[i] == g_ascii_toupper (name[i]) &&
+             ((i > 0 && name[i-1] != g_ascii_toupper (name[i-1])) ||
+              (i == 1 && name[0] == g_ascii_toupper (name[0]) && split_first_cap))) ||
+           (i > 2 && name[i]  == g_ascii_toupper (name[i]) &&
+           name[i-1] == g_ascii_toupper (name[i-1]) &&
+           name[i-2] == g_ascii_toupper (name[i-2])))
+        g_string_append_c (symbol_name, '_');
+      g_string_append_c (symbol_name, g_ascii_tolower (name[i]));
+    }
+
+  return g_string_free (symbol_name, FALSE);
+}
+
 static gchar *
 make_title (const gchar *str)
 {
@@ -914,6 +938,12 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
         {
           g_value_init (return_value, G_TYPE_STRING);
           g_value_take_string (return_value, make_title (str));
+          ret = TRUE;
+        }
+      else if (g_str_equal (node->name, "mangle"))
+        {
+          g_value_init (return_value, G_TYPE_STRING);
+          g_value_take_string (return_value, make_mangle (str));
           ret = TRUE;
         }
       else
