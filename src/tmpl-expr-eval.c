@@ -1069,8 +1069,8 @@ tmpl_expr_gi_call_eval (TmplExprGiCall  *node,
       g_array_set_size (in_args, n_args + 1);
 
       /* Skip past first param, which is used for Object below */
-      dispatch_args = ((GIArgument *)(gpointer)in_args->data) + 1;
-      dispatch_len = in_args->len - 1;
+      dispatch_args = ((GIArgument *)(gpointer)in_args->data);
+      dispatch_len = n_args;
 
       goto apply_args;
     }
