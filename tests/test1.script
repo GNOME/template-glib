@@ -151,4 +151,16 @@ assert(2 == abs(-2))
 assert(GLib.strjoinv("_", GLib.strsplit("abc", "b", i32(2))) == "a_c")
 assert(GLib.strsplit("123", "2", i32(0)) == GLib.strsplit("123", "2", i32(0)))
 
+def m(x,y)
+  x * y
+end
+
+a = 10
+if true then a = m(10, 2)
+assert(a == 20)
+
+libname = "libfoo"
+if GLib.str_has_prefix(libname, "lib") then libname = GLib.utf8_substring(libname, i64(3), i64(-1))
+assert(libname == "foo")
+
 1234;
