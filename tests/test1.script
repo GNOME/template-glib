@@ -163,4 +163,8 @@ libname = "libfoo"
 if GLib.str_has_prefix(libname, "lib") then libname = GLib.utf8_substring(libname, i64(3), i64(-1))
 assert(libname == "foo")
 
+aa = 30
+if false then aa = 10
+assert(aa == 30)
+
 1234;

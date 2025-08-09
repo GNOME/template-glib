@@ -479,18 +479,18 @@ tmpl_expr_flow_eval (TmplExprFlow  *node,
       if (tmpl_value_as_boolean (&cond))
         {
           if (node->primary != NULL)
-            {
-              ret = tmpl_expr_eval_internal (node->primary, scope, return_value, error);
-              goto cleanup;
-            }
+            ret = tmpl_expr_eval_internal (node->primary, scope, return_value, error);
+          else
+            ret = TRUE;
+          goto cleanup;
         }
       else
         {
           if (node->secondary != NULL)
-            {
-              ret = tmpl_expr_eval_internal (node->secondary, scope, return_value, error);
-              goto cleanup;
-            }
+            ret = tmpl_expr_eval_internal (node->secondary, scope, return_value, error);
+          else
+            ret = TRUE;
+          goto cleanup;
         }
     }
   else if (node->type == TMPL_EXPR_WHILE)
