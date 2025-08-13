@@ -142,6 +142,6 @@ if get_option('tests')
   subdir('tests')
 endif
 
-if get_option('gtk_doc')
+if get_option('docs')
   subdir('doc')
 endif
