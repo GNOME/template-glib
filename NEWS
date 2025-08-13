@@ -1,4 +1,17 @@
 ==============
+Version 3.37.1
+==============
+
+Release for GNOME 49 Beta
+
+ * Add `.mangle()` for strings to make it simpler to convert
+   ClassName to class_name.
+ * Fix calls to a function in a GIRepository like GLib.strsplit
+ * Add support for GStrv in GI parameter types
+ * Allow comparing GStrv for == and != comparison
+ * Fix handling for null branches
+
+==============
 Version 3.37.0
 ==============
 
