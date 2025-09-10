@@ -98,72 +98,229 @@ tmpl_gi_argument_from_g_value (const GValue  *value,
       return TRUE;
 
     case GI_TYPE_TAG_INT8:
-      return_if_not_type (value, G_TYPE_CHAR);
-      arg->v_int8 = g_value_get_schar (value);
+#define MINVAL G_MININT8
+#define MAXVAL G_MAXINT8
+      if G_LIKELY (G_VALUE_HOLDS (value, G_TYPE_CHAR))
+        arg->v_int8 = g_value_get_schar (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_UCHAR) && g_value_get_uchar (value) <= MAXVAL)
+        arg->v_int8 = g_value_get_uchar (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_INT) && g_value_get_int (value) >= MINVAL && g_value_get_int (value) <= MAXVAL)
+        arg->v_int8 = g_value_get_int (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_UINT) && g_value_get_uint (value) >= MINVAL && g_value_get_uint (value) <= MAXVAL)
+        arg->v_int8 = g_value_get_uint (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_LONG) && g_value_get_long (value) >= MINVAL && g_value_get_long (value) <= MAXVAL)
+        arg->v_int8 = g_value_get_long (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_ULONG) && g_value_get_ulong (value) >= MINVAL && g_value_get_ulong (value) <= MAXVAL)
+        arg->v_int8 = g_value_get_ulong (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_INT64) && g_value_get_int64 (value) >= MINVAL && g_value_get_int64 (value) <= MAXVAL)
+        arg->v_int8 = g_value_get_int64 (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_UINT64) && g_value_get_uint64 (value) >= MINVAL && g_value_get_uint64 (value) <= MAXVAL)
+        arg->v_int8 = g_value_get_uint64 (value);
+      else
+        return_type_mismatch (value, G_TYPE_CHAR);
       return TRUE;
+#undef MINVAL
+#undef MAXVAL
 
     case GI_TYPE_TAG_INT16:
-    case GI_TYPE_TAG_INT32:
-      if (G_VALUE_HOLDS (value, G_TYPE_LONG))
-        arg->v_int = g_value_get_long (value);
-      else if (G_VALUE_HOLDS (value, G_TYPE_INT))
+#define MINVAL G_MININT16
+#define MAXVAL G_MAXINT16
+      if (G_VALUE_HOLDS (value, G_TYPE_INT) && g_value_get_int (value) >= MINVAL && g_value_get_int (value) <= MAXVAL)
         arg->v_int = g_value_get_int (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_UINT) && g_value_get_uint (value) >= MINVAL && g_value_get_uint (value) <= MAXVAL)
+        arg->v_int = g_value_get_uint (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_LONG) && g_value_get_long (value) >= MINVAL && g_value_get_long (value) <= MAXVAL)
+        arg->v_int = g_value_get_long (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_ULONG) && g_value_get_ulong (value) >= MINVAL && g_value_get_ulong (value) <= MAXVAL)
+        arg->v_int = g_value_get_ulong (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_INT64) && g_value_get_int64 (value) >= MINVAL && g_value_get_int64 (value) <= MAXVAL)
+        arg->v_int = g_value_get_int64 (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_UINT64) && g_value_get_uint64 (value) >= MINVAL && g_value_get_uint64 (value) <= MAXVAL)
+        arg->v_int = g_value_get_uint64 (value);
       else
         return_type_mismatch (value, G_TYPE_INT);
       return TRUE;
+#undef MINVAL
+#undef MAXVAL
+
+    case GI_TYPE_TAG_INT32:
+#define MINVAL G_MININT32
+#define MAXVAL G_MAXINT32
+      if (G_VALUE_HOLDS (value, G_TYPE_INT))
+        arg->v_int = g_value_get_int (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_UINT) && g_value_get_uint (value) >= MINVAL && g_value_get_uint (value) <= MAXVAL)
+        arg->v_int = g_value_get_uint (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_LONG) && g_value_get_long (value) >= MINVAL && g_value_get_long (value) <= MAXVAL)
+        arg->v_int = g_value_get_long (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_ULONG) && g_value_get_ulong (value) >= MINVAL && g_value_get_ulong (value) <= MAXVAL)
+        arg->v_int = g_value_get_ulong (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_INT64) && g_value_get_int64 (value) >= MINVAL && g_value_get_int64 (value) <= MAXVAL)
+        arg->v_int = g_value_get_int64 (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_UINT64) && g_value_get_uint64 (value) >= MINVAL && g_value_get_uint64 (value) <= MAXVAL)
+        arg->v_int = g_value_get_uint64 (value);
+      else
+        return_type_mismatch (value, G_TYPE_INT);
+      return TRUE;
+#undef MINVAL
+#undef MAXVAL
 
     case GI_TYPE_TAG_INT64:
-      if (G_VALUE_HOLDS (value, G_TYPE_LONG))
-        arg->v_int64 = g_value_get_long (value);
-      else if (G_VALUE_HOLDS (value, G_TYPE_INT64))
+#define MINVAL G_MININT64
+#define MAXVAL G_MAXINT64
+      if (G_VALUE_HOLDS (value, G_TYPE_INT64))
         arg->v_int64 = g_value_get_int64 (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_INT))
+        arg->v_int64 = g_value_get_int (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_UINT))
+        arg->v_int64 = g_value_get_uint (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_LONG))
+        arg->v_int64 = g_value_get_long (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_ULONG))
+        arg->v_int64 = g_value_get_ulong (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_UINT64) && g_value_get_uint64 (value) <= MAXVAL)
+        arg->v_int64 = g_value_get_uint64 (value);
       else
-        return_type_mismatch (value, G_TYPE_INT64);
+        return_type_mismatch (value, G_TYPE_INT);
       return TRUE;
+#undef MINVAL
+#undef MAXVAL
 
     case GI_TYPE_TAG_UINT8:
+#define MINVAL 0
+#define MAXVAL G_MAXUINT8
       if (G_VALUE_HOLDS (value, G_TYPE_UCHAR))
         arg->v_uint8 = g_value_get_uchar (value);
+      else if G_LIKELY (G_VALUE_HOLDS (value, G_TYPE_CHAR) && g_value_get_schar (value) >= MINVAL)
+        arg->v_uint8 = g_value_get_schar (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_INT) && g_value_get_int (value) >= MINVAL && g_value_get_int (value) <= MAXVAL)
+        arg->v_uint8 = g_value_get_int (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_UINT) && g_value_get_uint (value) <= MAXVAL)
+        arg->v_uint8 = g_value_get_uint (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_LONG) && g_value_get_long (value) >= MINVAL && g_value_get_long (value) <= MAXVAL)
+        arg->v_uint8 = g_value_get_long (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_ULONG) && g_value_get_ulong (value) <= MAXVAL)
+        arg->v_uint8 = g_value_get_ulong (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_INT64) && g_value_get_int64 (value) >= MINVAL && g_value_get_int64 (value) <= MAXVAL)
+        arg->v_uint8 = g_value_get_int64 (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_UINT64) && g_value_get_uint64 (value) <= MAXVAL)
+        arg->v_uint8 = g_value_get_uint64 (value);
       else
-        return_type_mismatch (value, G_TYPE_UCHAR);
+        return_type_mismatch (value, G_TYPE_CHAR);
       return TRUE;
+#undef MINVAL
+#undef MAXVAL
 
     case GI_TYPE_TAG_UINT16:
-    case GI_TYPE_TAG_UINT32:
-      if (G_VALUE_HOLDS (value, G_TYPE_ULONG))
-        arg->v_uint = g_value_get_ulong (value);
-      else if (G_VALUE_HOLDS (value, G_TYPE_UINT))
+#define MINVAL 0
+#define MAXVAL G_MAXUINT16
+      if (G_VALUE_HOLDS (value, G_TYPE_UINT) && g_value_get_uint (value) <= MAXVAL)
         arg->v_uint = g_value_get_uint (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_INT) && g_value_get_int (value) >= MINVAL && g_value_get_int (value) <= MAXVAL)
+        arg->v_uint = g_value_get_int (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_LONG) && g_value_get_long (value) >= MINVAL && g_value_get_long (value) <= MAXVAL)
+        arg->v_uint = g_value_get_long (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_ULONG) && g_value_get_ulong (value) <= MAXVAL)
+        arg->v_uint = g_value_get_ulong (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_INT64) && g_value_get_int64 (value) >= MINVAL && g_value_get_int64 (value) <= MAXVAL)
+        arg->v_uint = g_value_get_int64 (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_UINT64) && g_value_get_uint64 (value) <= MAXVAL)
+        arg->v_uint = g_value_get_uint64 (value);
       else
         return_type_mismatch (value, G_TYPE_UINT);
       return TRUE;
+#undef MINVAL
+#undef MAXVAL
+
+
+    case GI_TYPE_TAG_UINT32:
+#define MINVAL 0
+#define MAXVAL G_MAXUINT32
+      if (G_VALUE_HOLDS (value, G_TYPE_UINT))
+        arg->v_uint = g_value_get_uint (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_INT) && g_value_get_int (value) >= MINVAL)
+        arg->v_uint = g_value_get_int (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_LONG) && g_value_get_long (value) >= MINVAL && g_value_get_long (value) <= MAXVAL)
+        arg->v_uint = g_value_get_long (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_ULONG) && g_value_get_ulong (value) <= MAXVAL)
+        arg->v_uint = g_value_get_ulong (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_INT64) && g_value_get_int64 (value) >= MINVAL && g_value_get_int64 (value) <= MAXVAL)
+        arg->v_uint = g_value_get_int64 (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_UINT64) && g_value_get_uint64 (value) <= MAXVAL)
+        arg->v_uint = g_value_get_uint64 (value);
+      else
+        return_type_mismatch (value, G_TYPE_UINT);
+      return TRUE;
+#undef MINVAL
+#undef MAXVAL
 
     case GI_TYPE_TAG_UINT64:
-      if (G_VALUE_HOLDS (value, G_TYPE_ULONG))
-        arg->v_uint64 = g_value_get_ulong (value);
-      else if (G_VALUE_HOLDS (value, G_TYPE_UINT64))
+#define MINVAL 0
+#define MAXVAL G_MAXINT64
+      if (G_VALUE_HOLDS (value, G_TYPE_UINT64))
         arg->v_uint64 = g_value_get_uint64 (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_INT64) && g_value_get_int64 (value) >= MINVAL)
+        arg->v_uint64 = g_value_get_int64 (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_INT) && g_value_get_int (value) >= MINVAL)
+        arg->v_uint64 = g_value_get_int (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_UINT))
+        arg->v_uint64 = g_value_get_uint (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_LONG) && g_value_get_long (value) >= MINVAL)
+        arg->v_uint64 = g_value_get_long (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_ULONG))
+        arg->v_uint64 = g_value_get_ulong (value);
       else
-        return_type_mismatch (value, G_TYPE_UINT64);
+        return_type_mismatch (value, G_TYPE_INT);
       return TRUE;
+#undef MINVAL
+#undef MAXVAL
 
     case GI_TYPE_TAG_UNICHAR:
       if (G_VALUE_HOLDS (value, G_TYPE_CHAR))
         arg->v_uint32 = g_value_get_schar (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_INT) && g_value_get_int (value) >= 0)
+        arg->v_uint32 = (guint)g_value_get_int (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_UINT))
+        arg->v_uint32 = g_value_get_uint (value);
       else
         return_type_mismatch (value, G_TYPE_CHAR);
       return TRUE;
 
     case GI_TYPE_TAG_FLOAT:
-      if (G_VALUE_HOLDS (value, G_TYPE_FLOAT))
+      if (G_VALUE_HOLDS (value, G_TYPE_DOUBLE))
+        arg->v_float = g_value_get_double (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_FLOAT))
         arg->v_float = g_value_get_float (value);
-      else
-        return_type_mismatch (value, G_TYPE_FLOAT);
+      else if (G_VALUE_HOLDS (value, G_TYPE_INT))
+        arg->v_float = g_value_get_int (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_UINT))
+        arg->v_float = g_value_get_uint (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_LONG))
+        arg->v_float = g_value_get_long (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_ULONG))
+        arg->v_float = g_value_get_ulong (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_INT64))
+        arg->v_float = g_value_get_int64 (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_UINT64))
+        arg->v_float = g_value_get_uint64 (value);
       return TRUE;
 
     case GI_TYPE_TAG_DOUBLE:
       if (G_VALUE_HOLDS (value, G_TYPE_DOUBLE))
         arg->v_double = g_value_get_double (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_FLOAT))
+        arg->v_double = g_value_get_float (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_INT))
+        arg->v_double = g_value_get_int (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_UINT))
+        arg->v_double = g_value_get_uint (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_LONG))
+        arg->v_double = g_value_get_long (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_ULONG))
+        arg->v_double = g_value_get_ulong (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_INT64))
+        arg->v_double = g_value_get_int64 (value);
+      else if (G_VALUE_HOLDS (value, G_TYPE_UINT64))
+        arg->v_double = g_value_get_uint64 (value);
       else
         return_type_mismatch (value, G_TYPE_DOUBLE);
       return TRUE;
