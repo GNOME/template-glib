@@ -1,4 +1,15 @@
 ==============
+Version 3.38.0
+==============
+
+This is a stable release for GNOME 49.0
+
+ * Allow GObject Introspection to automatically cast various numerics into
+   the arguments of a call-site when the will fit in the destination type
+   and size.
+ * Use gi-doc for documentation.
+
+==============
 Version 3.37.1
 ==============
 
