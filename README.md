@@ -12,6 +12,10 @@ methods.
 
  * Christian Hergert <chergert@redhat.com>
 
+## Documentation
+
+ * API documentation can be found at https://gnome.pages.gitlab.gnome.org/template-glib/template-glib-1.0/
+
 ## Examples
 
 See `examples/` for more detailed examples.
