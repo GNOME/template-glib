@@ -2,6 +2,7 @@ include:
   - project: "GNOME/citemplates"
     file: "templates/default-rules.yml"
   - component: gitlab.gnome.org/GNOME/citemplates/gnomeos-basic-ci@master
+    inputs:
       meson-options: "-Ddocs=true"
   - component: gitlab.gnome.org/GNOME/citemplates/release-service@master
     inputs:
