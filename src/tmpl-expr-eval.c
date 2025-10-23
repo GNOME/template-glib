@@ -62,6 +62,14 @@ static gboolean add_string_string_slow       (const GValue  *left,
                                               const GValue  *right,
                                               GValue        *return_value,
                                               GError       **error);
+static gboolean eq_object_object             (const GValue  *left,
+                                              const GValue  *right,
+                                              GValue        *return_value,
+                                              GError       **error);
+static gboolean ne_object_object             (const GValue  *left,
+                                              const GValue  *right,
+                                              GValue        *return_value,
+                                              GError       **error);
 
 DECLARE_BUILTIN (abs)
 DECLARE_BUILTIN (assert)
@@ -336,6 +344,9 @@ find_dispatch_slow (TmplExprSimple *node,
 
       if ((G_VALUE_HOLDS_ENUM (left) && G_VALUE_HOLDS_ENUM (right)))
         return enum_eq;
+
+      if ((G_VALUE_HOLDS_OBJECT (left) && G_VALUE_HOLDS_OBJECT (right)))
+        return eq_object_object;
     }
 
   if (node->type == TMPL_EXPR_NE)
@@ -356,6 +367,9 @@ find_dispatch_slow (TmplExprSimple *node,
 
       if ((G_VALUE_HOLDS_ENUM (left) && G_VALUE_HOLDS_ENUM (right)))
         return enum_ne;
+
+      if ((G_VALUE_HOLDS_OBJECT (left) && G_VALUE_HOLDS_OBJECT (right)))
+        return ne_object_object;
     }
 
   if (node->type == TMPL_EXPR_ADD)
@@ -2045,6 +2059,30 @@ ne_pointer_pointer (const GValue  *left,
 }
 
 static gboolean
+eq_object_object (const GValue  *left,
+                  const GValue  *right,
+                  GValue        *return_value,
+                  GError       **error)
+{
+  g_value_init (return_value, G_TYPE_BOOLEAN);
+  g_value_set_boolean (return_value,
+                       g_value_get_object (left) == g_value_get_object (right));
+  return TRUE;
+}
+
+static gboolean
+ne_object_object (const GValue  *left,
+                  const GValue  *right,
+                  GValue        *return_value,
+                  GError       **error)
+{
+  g_value_init (return_value, G_TYPE_BOOLEAN);
+  g_value_set_boolean (return_value,
+                       g_value_get_object (left) != g_value_get_object (right));
+  return TRUE;
+}
+
+static gboolean
 eq_enum_string (const GValue  *left,
                 const GValue  *right,
                 GValue        *return_value,
@@ -2171,6 +2209,9 @@ build_dispatch_table (void)
 
   ADD_DISPATCH_FUNC (TMPL_EXPR_EQ,          G_TYPE_POINTER, G_TYPE_POINTER, eq_pointer_pointer);
   ADD_DISPATCH_FUNC (TMPL_EXPR_NE,          G_TYPE_POINTER, G_TYPE_POINTER, ne_pointer_pointer);
+
+  ADD_DISPATCH_FUNC (TMPL_EXPR_EQ,          G_TYPE_OBJECT, G_TYPE_OBJECT, eq_object_object);
+  ADD_DISPATCH_FUNC (TMPL_EXPR_NE,          G_TYPE_OBJECT, G_TYPE_OBJECT, ne_object_object);
 
   ADD_DISPATCH_FUNC (TMPL_EXPR_EQ,          G_TYPE_UINT,   G_TYPE_DOUBLE, eq_uint_double);
   ADD_DISPATCH_FUNC (TMPL_EXPR_EQ,          G_TYPE_DOUBLE, G_TYPE_UINT,   eq_double_uint);
