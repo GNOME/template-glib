@@ -240,6 +240,40 @@ strv_ne (const GValue  *left,
 }
 
 static gboolean
+enum_eq (const GValue  *left,
+         const GValue  *right,
+         GValue        *return_value,
+         GError       **error)
+{
+  if (G_VALUE_TYPE (left) == G_VALUE_TYPE (right))
+    {
+      g_value_init (return_value, G_TYPE_BOOLEAN);
+      g_value_set_boolean (return_value,
+                           g_value_get_enum (left) == g_value_get_enum (right));
+      return TRUE;
+    }
+
+  return throw_type_mismatch (error, left, right, "invalid op ==");
+}
+
+static gboolean
+enum_ne (const GValue  *left,
+         const GValue  *right,
+         GValue        *return_value,
+         GError       **error)
+{
+  if (G_VALUE_TYPE (left) == G_VALUE_TYPE (right))
+    {
+      g_value_init (return_value, G_TYPE_BOOLEAN);
+      g_value_set_boolean (return_value,
+                           g_value_get_enum (left) != g_value_get_enum (right));
+      return TRUE;
+    }
+
+  return throw_type_mismatch (error, left, right, "invalid op !=");
+}
+
+static gboolean
 throw_type_mismatch (GError       **error,
                      const GValue  *left,
                      const GValue  *right,
@@ -299,6 +333,9 @@ find_dispatch_slow (TmplExprSimple *node,
 
       if (G_VALUE_HOLDS (left, G_TYPE_STRV) && G_VALUE_HOLDS (right, G_TYPE_STRV))
         return strv_eq;
+
+      if ((G_VALUE_HOLDS_ENUM (left) && G_VALUE_HOLDS_ENUM (right)))
+        return enum_eq;
     }
 
   if (node->type == TMPL_EXPR_NE)
@@ -316,6 +353,9 @@ find_dispatch_slow (TmplExprSimple *node,
 
       if (G_VALUE_HOLDS (left, G_TYPE_STRV) && G_VALUE_HOLDS (right, G_TYPE_STRV))
         return strv_ne;
+
+      if ((G_VALUE_HOLDS_ENUM (left) && G_VALUE_HOLDS_ENUM (right)))
+        return enum_ne;
     }
 
   if (node->type == TMPL_EXPR_ADD)
@@ -687,6 +727,72 @@ tmpl_expr_getattr_eval (TmplExprGetattr  *node,
       ret = TRUE;
 
       goto cleanup;
+    }
+
+  if (G_VALUE_HOLDS (&left, TMPL_TYPE_BASE_INFO) &&
+      g_value_get_boxed (&left) != NULL)
+    {
+      GIBaseInfo *base_info = g_value_get_boxed (&left);
+
+      /* Check if this is an enum and try to extract the requested attribute */
+      if (GI_IS_ENUM_INFO (base_info))
+        {
+          GIEnumInfo *enum_info = (GIEnumInfo *)base_info;
+          guint n_values = gi_enum_info_get_n_values (enum_info);
+
+          /* Search through enum values to find a match */
+          for (guint i = 0; i < n_values; i++)
+            {
+              g_autoptr(GIBaseInfo) value_info = NULL;
+              const gchar *value_name;
+
+              value_info = (GIBaseInfo *)gi_enum_info_get_value (enum_info, i);
+              value_name = gi_base_info_get_name (value_info);
+
+              if (strcasecmp (value_name, node->attr) == 0)
+                {
+                  gint enum_value = gi_value_info_get_value ((GIValueInfo *)value_info);
+                  GType enum_gtype;
+
+                  /* Get the GType for this enum */
+                  enum_gtype = gi_registered_type_info_get_g_type ((GIRegisteredTypeInfo *)base_info);
+
+                  if (enum_gtype != G_TYPE_INVALID)
+                    {
+                      g_value_init (return_value, enum_gtype);
+                      g_value_set_enum (return_value, enum_value);
+                      ret = TRUE;
+                      goto cleanup;
+                    }
+                  else
+                    {
+                      g_set_error (error,
+                                   TMPL_ERROR,
+                                   TMPL_ERROR_GI_FAILURE,
+                                   "Failed to get GType for enum %s",
+                                   gi_base_info_get_name (base_info));
+                      goto cleanup;
+                    }
+                }
+            }
+
+          /* If we get here, the attribute wasn't found in the enum values */
+          g_set_error (error,
+                       TMPL_ERROR,
+                       TMPL_ERROR_GI_FAILURE,
+                       "No such enum value \"%s\" in enum %s",
+                       node->attr, gi_base_info_get_name (base_info));
+          goto cleanup;
+        }
+      else
+        {
+          g_set_error (error,
+                       TMPL_ERROR,
+                       TMPL_ERROR_GI_FAILURE,
+                       "Cannot access attribute \"%s\" of non-enum BaseInfo",
+                       node->attr);
+          goto cleanup;
+        }
     }
 
   if (!G_VALUE_HOLDS_OBJECT (&left))
