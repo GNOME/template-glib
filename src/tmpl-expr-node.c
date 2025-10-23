@@ -25,6 +25,7 @@ struct _TmplExprNode
 {
   TmplNode  parent_instance;
   TmplExpr *expr;
+  guint silence : 1;
 };
 
 G_DEFINE_TYPE (TmplExprNode, tmpl_expr_node, TMPL_TYPE_NODE)
@@ -86,12 +87,14 @@ tmpl_expr_node_init (TmplExprNode *self)
  * Returns: (transfer full): A #TmplExprNode
  */
 TmplNode *
-tmpl_expr_node_new (TmplExpr *expr)
+tmpl_expr_node_new (TmplExpr *expr,
+                    gboolean  silence)
 {
   TmplExprNode *self;
 
   self = g_object_new (TMPL_TYPE_EXPR_NODE, NULL);
   self->expr = expr;
+  self->silence = silence;
 
   return TMPL_NODE (self);
 }
@@ -109,4 +112,12 @@ tmpl_expr_node_get_expr (TmplExprNode *self)
   g_return_val_if_fail (TMPL_IS_EXPR_NODE (self), NULL);
 
   return self->expr;
+}
+
+gboolean
+tmpl_expr_node_get_silence (TmplExprNode *self)
+{
+  g_return_val_if_fail (TMPL_IS_EXPR_NODE (self), FALSE);
+
+  return self->silence;
 }

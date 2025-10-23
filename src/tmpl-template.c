@@ -321,7 +321,9 @@ tmpl_template_expand_visitor (TmplNode *node,
           return;
         }
 
-      value_into_string (&return_value, state->output);
+      if (!tmpl_expr_node_get_silence (TMPL_EXPR_NODE (node)))
+        value_into_string (&return_value, state->output);
+
       g_value_unset (&return_value);
     }
   else if (TMPL_IS_BRANCH_NODE (node))

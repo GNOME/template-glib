@@ -35,6 +35,12 @@ foo
 {{end}}
 ```
 
+If you do not want an expression node to output text, you can use `{% %}` instead of `{{ }}`.
+
+```
+{% a = 123 %}
+```
+
 ### Includes
 
  * `{{include "path-to-template.tmpl"}}`

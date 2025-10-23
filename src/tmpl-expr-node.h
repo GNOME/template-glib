@@ -28,8 +28,10 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (TmplExprNode, tmpl_expr_node, TMPL, EXPR_NODE, TmplNode)
 
-TmplNode *tmpl_expr_node_new      (TmplExpr     *expr);
-TmplExpr *tmpl_expr_node_get_expr (TmplExprNode *self);
+TmplNode *tmpl_expr_node_new         (TmplExpr     *expr,
+                                      gboolean      silence);
+TmplExpr *tmpl_expr_node_get_expr    (TmplExprNode *self);
+gboolean  tmpl_expr_node_get_silence (TmplExprNode *self);
 
 G_END_DECLS
 

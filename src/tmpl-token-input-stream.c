@@ -91,6 +91,7 @@ tmpl_token_input_stream_read_unichar (TmplTokenInputStream  *self,
 
 static gchar *
 tmpl_token_input_stream_read_tag (TmplTokenInputStream  *self,
+                                  char                   first,
                                   gsize                 *length,
                                   GCancellable          *cancellable,
                                   GError               **error)
@@ -130,13 +131,17 @@ tmpl_token_input_stream_read_tag (TmplTokenInputStream  *self,
           in_string = !in_string;
           break;
 
+        case '%':
         case '}':
           if (!in_string)
             {
+              if (first != c)
+                break;
+
               if (-1 == (c = g_buffered_input_stream_read_byte (stream, cancellable, &local_error)))
                 goto failure;
 
-              /* Check if we got }} */
+              /* Check if we got matching }} or %} */
               if (c == '}')
                 goto finish;
 
@@ -294,9 +299,9 @@ tmpl_token_input_stream_read_token (TmplTokenInputStream  *self,
     }
 
   /*
-   * If this is not a {{, then just return a string for the pair.
+   * If this is not a {{ or {%, then just return a string for the pair.
    */
-  if (ch != '{')
+  if (ch != '{' && ch != '%')
     {
       gchar str[8] = { 0 };
 
@@ -308,12 +313,13 @@ tmpl_token_input_stream_read_token (TmplTokenInputStream  *self,
     }
 
   /*
-   * Scan ahead until we find }}.
+   * Scan ahead until we find matching }} or %}.
    */
-  if (!(text = tmpl_token_input_stream_read_tag (self, &len, cancellable, error)))
+  if (!(text = tmpl_token_input_stream_read_tag (self, ch == '{' ? '}' : '%', &len, cancellable, error)))
     return NULL;
 
   ret = tmpl_token_new_generic (g_steal_pointer (&text));
+  ret->silence = ch == '%';
 
   self->swallow_newline = ret != NULL && ret->type != TMPL_TOKEN_EXPRESSION;
   self->last_was_text_with_newline = FALSE;

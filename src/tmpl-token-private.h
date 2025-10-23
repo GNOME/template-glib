@@ -27,6 +27,7 @@ struct _TmplToken
 {
   TmplTokenType type;
   gchar *text;
+  guint silence : 1;
 };
 
 G_END_DECLS

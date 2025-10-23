@@ -33,6 +33,7 @@
 #include "tmpl-node.h"
 #include "tmpl-parser.h"
 #include "tmpl-text-node.h"
+#include "tmpl-token-private.h"
 
 typedef struct
 {
@@ -275,7 +276,7 @@ tmpl_node_new_for_token (TmplToken  *token,
         if (!(expr = tmpl_expr_from_string (exprstr, error)))
           TMPL_RETURN (NULL);
 
-        ret = tmpl_expr_node_new (expr);
+        ret = tmpl_expr_node_new (expr, token->silence);
         TMPL_RETURN (ret);
       }
 
