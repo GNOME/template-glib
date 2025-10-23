@@ -347,8 +347,12 @@ tmpl_gi_argument_from_g_value (const GValue  *value,
           else
             arg->v_string = g_value_dup_string (value);
         }
-      else
-        return_type_mismatch (value, G_TYPE_STRING);
+      else if (G_VALUE_HOLDS (value, G_TYPE_POINTER) &&
+               g_value_get_pointer (value) == NULL)
+        {
+          arg->v_string = NULL;
+        }
+      else return_type_mismatch (value, G_TYPE_STRING);
       return TRUE;
 
     case GI_TYPE_TAG_GLIST:
