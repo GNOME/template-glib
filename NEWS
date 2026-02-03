@@ -1,4 +1,16 @@
 ==============
+Version 3.39.0
+==============
+
+Release for GNOME 50 Beta
+
+ * Allow loading and comparing enums during eval
+ * Allow null gpointer to gchararray cast
+ * Add a new silencing expression node using {% %}
+ * Allow object comparison by pointer
+ * Translation updates
+
+==============
 Version 3.38.0
 ==============
 
