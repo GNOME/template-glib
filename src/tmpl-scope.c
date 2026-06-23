@@ -312,6 +312,8 @@ tmpl_scope_set_object (TmplScope   *self,
  *
  * Sets the value of the symbol named @name to the variant @value.
  *
+ * As of 3.42 this supports `a{sv}` dictionaries and arrays.
+ *
  * If @value has a floating reference, it is consumed.
  */
 void

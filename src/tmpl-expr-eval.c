@@ -809,6 +809,77 @@ tmpl_expr_getattr_eval (TmplExprGetattr  *node,
         }
     }
 
+  if (G_VALUE_HOLDS_VARIANT (&left))
+    {
+      GVariant *variant = g_value_get_variant (&left);
+
+      if (g_variant_is_of_type (variant, G_VARIANT_TYPE ("a{sv}")))
+        {
+          GVariant *child = g_variant_lookup_value (variant, node->attr, NULL);
+
+          if (child == NULL)
+            {
+              g_set_error (error,
+                           TMPL_ERROR,
+                           TMPL_ERROR_NO_SUCH_PROPERTY,
+                           "No such key \"%s\" in variant dict",
+                           node->attr);
+              goto cleanup;
+            }
+
+          /* If an {sv} dict */
+          if (g_variant_is_of_type (child, G_VARIANT_TYPE_VARIANT))
+            {
+              GVariant *inner = g_variant_get_variant (child);
+              g_variant_unref (child);
+              child = inner;
+            }
+
+          if (g_variant_is_of_type (child, G_VARIANT_TYPE_STRING))
+            {
+              g_value_init (return_value, G_TYPE_STRING);
+              g_value_set_string (return_value, g_variant_get_string (child, NULL));
+            }
+          else if (g_variant_is_of_type (child, G_VARIANT_TYPE_BOOLEAN))
+            {
+              g_value_init (return_value, G_TYPE_BOOLEAN);
+              g_value_set_boolean (return_value, g_variant_get_boolean (child));
+            }
+          else if (g_variant_is_of_type (child, G_VARIANT_TYPE_DOUBLE))
+            {
+              g_value_init (return_value, G_TYPE_DOUBLE);
+              g_value_set_double (return_value, g_variant_get_double (child));
+            }
+          else if (g_variant_is_of_type (child, G_VARIANT_TYPE_INT32))
+            {
+              g_value_init (return_value, G_TYPE_INT);
+              g_value_set_int (return_value, g_variant_get_int32 (child));
+            }
+          else if (g_variant_is_of_type (child, G_VARIANT_TYPE_INT64))
+            {
+              g_value_init (return_value, G_TYPE_INT64);
+              g_value_set_int64 (return_value, g_variant_get_int64 (child));
+            }
+          else
+            {
+              g_value_init (return_value, G_TYPE_VARIANT);
+              g_value_take_variant (return_value, child);
+              child = NULL;
+            }
+
+          g_clear_pointer (&child, g_variant_unref);
+          ret = TRUE;
+          goto cleanup;
+        }
+
+      g_set_error (error,
+                   TMPL_ERROR,
+                   TMPL_ERROR_NOT_AN_OBJECT,
+                   "Cannot access property \"%s\" of variant type \"%s\"",
+                   node->attr, g_variant_get_type_string (variant));
+      goto cleanup;
+    }
+
   if (!G_VALUE_HOLDS_OBJECT (&left))
     {
       g_set_error (error,

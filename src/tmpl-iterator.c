@@ -98,6 +98,86 @@ strv_get_value (TmplIterator *iter,
 }
 
 static gboolean
+variant_array_move_next (TmplIterator *iter)
+{
+  guint index = GPOINTER_TO_UINT (iter->data1);
+  guint n_children = GPOINTER_TO_UINT (iter->data2);
+
+  index++;
+
+  if (index <= n_children)
+    {
+      iter->data1 = GUINT_TO_POINTER (index);
+      return TRUE;
+    }
+
+  return FALSE;
+}
+
+static gboolean
+variant_array_get_value (TmplIterator *iter,
+                         GValue       *value)
+{
+  guint index = GPOINTER_TO_UINT (iter->data1);
+  GVariant *child;
+
+  g_return_val_if_fail (index > 0, FALSE);
+
+  child = g_variant_get_child_value (iter->instance, index - 1);
+
+  if (g_variant_is_of_type (child, G_VARIANT_TYPE_VARIANT))
+    {
+      GVariant *inner = g_variant_get_variant (child);
+      g_variant_unref (child);
+      child = inner;
+    }
+
+  if (g_variant_is_of_type (child, G_VARIANT_TYPE_STRING))
+    {
+      g_value_init (value, G_TYPE_STRING);
+      g_value_set_string (value, g_variant_get_string (child, NULL));
+      g_variant_unref (child);
+    }
+  else if (g_variant_is_of_type (child, G_VARIANT_TYPE_BOOLEAN))
+    {
+      g_value_init (value, G_TYPE_BOOLEAN);
+      g_value_set_boolean (value, g_variant_get_boolean (child));
+      g_variant_unref (child);
+    }
+  else if (g_variant_is_of_type (child, G_VARIANT_TYPE_DOUBLE))
+    {
+      g_value_init (value, G_TYPE_DOUBLE);
+      g_value_set_double (value, g_variant_get_double (child));
+      g_variant_unref (child);
+    }
+  else if (g_variant_is_of_type (child, G_VARIANT_TYPE_INT32))
+    {
+      g_value_init (value, G_TYPE_INT);
+      g_value_set_int (value, g_variant_get_int32 (child));
+      g_variant_unref (child);
+    }
+  else if (g_variant_is_of_type (child, G_VARIANT_TYPE_INT64))
+    {
+      g_value_init (value, G_TYPE_INT64);
+      g_value_set_int64 (value, g_variant_get_int64 (child));
+      g_variant_unref (child);
+    }
+  else
+    {
+      g_value_init (value, G_TYPE_VARIANT);
+      g_value_take_variant (value, child);
+    }
+
+  return TRUE;
+}
+
+static void
+variant_array_destroy (TmplIterator *iter)
+{
+  g_clear_pointer (&iter->instance, g_variant_unref);
+}
+
+static gboolean
 list_model_move_next (TmplIterator *iter)
 {
   guint index = GPOINTER_TO_INT (iter->data1);
@@ -166,6 +246,18 @@ tmpl_iterator_init (TmplIterator *iter,
           iter->data1 = GUINT_TO_POINTER (iter->data1);
           iter->data2 = GUINT_TO_POINTER (n_items);
         }
+    }
+  else if (G_VALUE_HOLDS_VARIANT (value) &&
+           g_variant_is_of_type (g_value_get_variant (value), G_VARIANT_TYPE_ARRAY) &&
+           !g_variant_is_of_type (g_value_get_variant (value), G_VARIANT_TYPE_STRING_ARRAY))
+    {
+      GVariant *variant = g_value_get_variant (value);
+      iter->instance = g_variant_ref (variant);
+      iter->move_next = variant_array_move_next;
+      iter->get_value = variant_array_get_value;
+      iter->destroy = variant_array_destroy;
+      iter->data1 = GUINT_TO_POINTER (0);
+      iter->data2 = GUINT_TO_POINTER (g_variant_n_children (variant));
     }
   else if (G_VALUE_HOLDS_VARIANT(value) &&
             g_variant_is_of_type (
