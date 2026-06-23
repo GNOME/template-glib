@@ -402,6 +402,8 @@ tmpl_template_expand_visitor (TmplNode *node,
                 break;
             }
 
+          tmpl_iterator_destroy (&iter);
+
           state->scope = old_scope;
           tmpl_scope_unref (new_scope);
         }
