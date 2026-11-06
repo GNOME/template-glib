@@ -1602,7 +1602,7 @@ tmpl_expr_anon_fn_call_eval (TmplExprAnonFnCall  *node,
       goto cleanup;
     }
 
-  if (!tmpl_expr_eval_internal (node->anon, local_scope, return_value, error))
+  if (!tmpl_expr_eval_internal (node->anon->func.list, local_scope, return_value, error))
     goto cleanup;
 
   ret = TRUE;

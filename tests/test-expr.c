@@ -18,6 +18,8 @@
  * SPDX-License-Identifier: LGPL-3.0-or-later
  */
 
+#include "config.h"
+
 #include "tmpl-glib.h"
 
 static char *
@@ -252,8 +254,92 @@ test_variant_array_of_dicts (void)
   g_assert_finalize_object (tmpl);
 }
 
+static void
+test_precedence (void)
+{
+  static const struct
+  {
+    const char *text;
+    gboolean expected;
+  } cases[] = {
+    { "a = 1 < 3; a", TRUE },
+    { "a = 3 < 1; a", FALSE },
+    { "a = b = 1 < 3; a && b", TRUE },
+    { "a = true && false; a", FALSE },
+    { "true || false && false", TRUE },
+    { "(true || false) && false", FALSE },
+    { "false && true || true", TRUE },
+    { "1 < 2 && 3 < 4", TRUE },
+    { "1 > 2 || 3 < 4", TRUE },
+    { "!false && false", FALSE },
+    { "!(false && false)", TRUE },
+    { "!!true", TRUE },
+    { "!bool(0) && true", TRUE },
+    { "2 + 3 * 4 == 14", TRUE },
+    { "10 - 3 - 2 == 5", TRUE },
+    { "-abs(-2) * 3 == -6", TRUE },
+    { "f = func(x) x * 2 + 1; f(3) == 7", TRUE },
+    { "(func(x) x * 2 + 1)(3) == 7", TRUE },
+    { "a = 0; true || false && (a = 1); a == 0", TRUE },
+    { "action.enabled = 3 < 1; action.enabled", FALSE },
+    { "action.enabled = 1 < 3; !action.enabled", FALSE },
+  };
+
+  for (guint i = 0; i < G_N_ELEMENTS (cases); i++)
+    {
+      g_autoptr(TmplScope) scope = tmpl_scope_new ();
+      g_autoptr(GSimpleAction) action = g_simple_action_new ("test", NULL);
+      g_autoptr(TmplExpr) expr = NULL;
+      g_autoptr(GError) error = NULL;
+      GValue value = G_VALUE_INIT;
+      gboolean ret;
+
+      g_test_message ("%s", cases[i].text);
+      tmpl_scope_set_object (scope, "action", action);
+      expr = tmpl_expr_from_string (cases[i].text, &error);
+      g_assert_no_error (error);
+      g_assert_nonnull (expr);
+
+      ret = tmpl_expr_eval (expr, scope, &value, &error);
+      g_assert_no_error (error);
+      g_assert_true (ret);
+      g_assert_true (G_VALUE_HOLDS_BOOLEAN (&value));
+      g_assert_cmpint (g_value_get_boolean (&value), ==, cases[i].expected);
+      g_value_unset (&value);
+    }
+}
+
+static void
+test_syntax_errors (void)
+{
+  static const char *cases[] = {
+    "1 +",
+    "name + )",
+    "func(a,b) 1 +",
+    "def f(a,b)\n1 +\nend",
+    "def f(a,b)\n",
+    "if true then else )",
+    "require Gio version",
+    "require Gio version 1",
+    "f(1,)",
+    "\"text\" + )",
+    "a = 1; b = 2 +",
+  };
+
+  for (guint i = 0; i < G_N_ELEMENTS (cases); i++)
+    {
+      g_autoptr(TmplExpr) expr = NULL;
+      g_autoptr(GError) error = NULL;
+
+      g_test_message ("%s", cases[i]);
+      expr = tmpl_expr_from_string (cases[i], &error);
+      g_assert_error (error, TMPL_ERROR, TMPL_ERROR_SYNTAX_ERROR);
+      g_assert_null (expr);
+    }
+}
+
 int
-main (int argc,
+main (int   argc,
       char *argv[])
 {
   g_test_init (&argc, &argv, NULL);
@@ -263,5 +349,7 @@ main (int argc,
   g_test_add_func ("/Tmpl/Expr/variant-dict-mixed-types", test_variant_dict_mixed_types);
   g_test_add_func ("/Tmpl/Expr/variant-nested-dict", test_variant_nested_dict);
   g_test_add_func ("/Tmpl/Expr/variant-array-of-dicts", test_variant_array_of_dicts);
+  g_test_add_func ("/Tmpl/Expr/precedence", test_precedence);
+  g_test_add_func ("/Tmpl/Expr/syntax-errors", test_syntax_errors);
   return g_test_run ();
 }

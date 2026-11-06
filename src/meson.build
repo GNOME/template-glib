@@ -75,27 +75,15 @@ libtemplate_glib_deps = [
 
 flex = find_program('flex')
 bison = find_program('bison')
-sed = find_program('sed')
 
 tmpl_expr_parser = custom_target('tmpl-expr-parser',
     input: 'tmpl-expr-parser.y',
    output: ['tmpl-expr-parser.c', 'tmpl-expr-parser.h'],
-  command: [bison, '@INPUT@', '--defines=@OUTPUT1@', '--output=@OUTPUT0@']
-
+  command: [bison, '-Wall', '@INPUT@', '--defines=@OUTPUT1@', '--output=@OUTPUT0@']
 )
 
-# This is an awful workaround, flex files embed options to control the output
-# this fails with meson which wants to output to specific directories
-# and just to avoid any regressions we don't want to modify the autotools files
-tmpl_expr_scanner_flex = custom_target('tmpl-expr-scanner-flex',
-    input: 'tmpl-expr-scanner.l',
-   output: 'tmpl-expr-meson-scanner.l',
-  capture: true,
-  command: [sed, '-e', 's/^%option header-file.*$//',
-                 '-e', 's/^%option outfile.*$//', '@INPUT@']
-)
 tmpl_expr_scanner = custom_target('tmpl-expr-scanner',
-    input: tmpl_expr_scanner_flex,
+    input: 'tmpl-expr-scanner.l',
    output: 'tmpl-expr-scanner.c',
   command: [flex, '-o', '@OUTPUT@', '@INPUT@']
 )

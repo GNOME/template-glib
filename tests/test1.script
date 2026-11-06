@@ -95,10 +95,9 @@ multiline = (1 + \
              3)
 assert(multiline == 6)
 
-# test left associativity
+# Boolean operators bind more tightly than assignment
 val = true && true || false
 assert(val == true)
-# if only we had compiler warnings
 val = true && false || true
 assert(val == true)
 
@@ -123,10 +122,11 @@ assert(bool(i64(1)) == true)
 assert(bool(u64(0)) == false)
 assert(bool(u64(1)) == true)
 
-# FIXME: broken exp priority
+# Assignment stores the comparison result; parentheses can override it.
 a1 = 1 < 3
 (a2 = 1) < 3
-assert(a1 == a2)
+assert(a1 == true)
+assert(a2 == 1)
 
 scoped = 1
 ret = (true || (scoped = 2))
@@ -166,5 +166,22 @@ assert(libname == "foo")
 aa = 30
 if false then aa = 10
 assert(aa == 30)
+
+# Empty definitions share the normal nullable statement-list rule.
+def empty() end
+empty()
+def empty_line()
+end
+empty_line()
+def empty_arg(a) end
+empty_arg(1)
+def empty_arg_line(a)
+end
+empty_arg_line(1)
+
+# The inner if owns its else; extra semicolons close the enclosing statements.
+nested = 0
+if true then if false then nested = 1; else nested = 2;;;
+assert(nested == 2)
 
 1234;

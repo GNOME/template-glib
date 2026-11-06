@@ -1,6 +1,7 @@
 %define api.pure
 %define parse.error verbose
-%name-prefix "tmpl_expr_parser_"
+%define api.prefix {tmpl_expr_parser_}
+%expect 0
 %defines
 %parse-param { TmplExprParser *parser }
 %lex-param { void *scanner }
@@ -15,7 +16,9 @@
 # include "tmpl-expr-private.h"
 # include "tmpl-expr-parser-private.h"
 
+/* Bison generates partial switches for symbols with destructors. */
 #pragma GCC diagnostic ignored "-Wswitch-default"
+#pragma GCC diagnostic ignored "-Wswitch-enum"
 %}
 
 %union {
@@ -120,19 +123,32 @@ add_to_list (TmplExpr *stmt,
 %token <d> NUMBER
 %token <s> NAME STRING_LITERAL
 %token <fn> BUILTIN
-%token <s> REQUIRE VERSION
+%token REQUIRE VERSION
 %token EOL
 %token DEF END
 %token IF THEN ELSE WHILE DO FUNC
 %token NOP
 
+/* Function and control-flow bodies consume as much input as possible. */
+%precedence BODY
+/* Assignment is weakest; comparisons bind more tightly than boolean ops. */
+%precedence '='
+%left <boolcmp> OR
+%left <boolcmp> AND
 %left <cmp> CMP
-%left <boolcmp> BOOLCMP
-%right '='
 %left '+' '-'
 %left '*' '/'
 
-%nonassoc '|' UMINUS
+%precedence UMINUS '!'
+/* Calls and member access bind more tightly than arithmetic. NAME must
+ * shift '(' to retain named calls and GI method calls as distinct AST nodes.
+ */
+%precedence NAME
+%precedence '.' '('
+
+%destructor { g_clear_pointer (&$$, tmpl_expr_unref); } <a>
+%destructor { g_free ($$); } <s>
+%destructor { g_ptr_array_unref ($$); } <sl>
 
 %type <a> exp stmt list explist
 %type <sl> symlist
@@ -141,7 +157,7 @@ add_to_list (TmplExpr *stmt,
 
 %%
 
-expr: /* nothing */ EOL {
+expr: EOL {
     YYACCEPT;
   }
   | stmt EOL {
@@ -161,10 +177,6 @@ expr: /* nothing */ EOL {
     define_function (parser, $2, NULL, $5);
     YYACCEPT;
   }
-  | DEF NAME '(' ')' EOL END {
-    define_function (parser, $2, NULL, NULL);
-    YYACCEPT;
-  }
 
   | DEF NAME '(' symlist ')' EOL list END {
     define_function (parser, $2, $4, $7);
@@ -172,10 +184,6 @@ expr: /* nothing */ EOL {
   }
   | DEF NAME '(' symlist ')' list END {
     define_function (parser, $2, $4, $6);
-    YYACCEPT;
-  }
-  | DEF NAME '(' symlist ')' EOL END {
-    define_function (parser, $2, $4, NULL);
     YYACCEPT;
   }
 ;
@@ -189,10 +197,10 @@ stmt: IF exp THEN list {
   | WHILE exp DO list {
     $$ = tmpl_expr_new_flow (TMPL_EXPR_WHILE, $2, $4, NULL);
   }
-  | exp
+  | exp %prec BODY
 ;
 
-list: /* nothing */ { $$ = NULL; }
+list: %empty %prec BODY { $$ = NULL; }
   | stmt ';' list {
     $$ = add_to_list ($1, $3);
   }
@@ -204,7 +212,10 @@ list: /* nothing */ { $$ = NULL; }
 exp: exp CMP exp {
     $$ = tmpl_expr_new_simple ($2, $1, $3);
   }
-  | exp BOOLCMP exp {
+  | exp OR exp {
+    $$ = tmpl_expr_new_simple ($2, $1, $3);
+  }
+  | exp AND exp {
     $$ = tmpl_expr_new_simple ($2, $1, $3);
   }
   | exp '+' exp {

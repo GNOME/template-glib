@@ -5,14 +5,13 @@
 %option yylineno
 %option nodefault
 
-%option header-file="tmpl-expr-scanner.h"
-%option outfile="tmpl-expr-scanner.c"
-
 %{
 # include "tmpl-error.h"
 # include "tmpl-expr-private.h"
 # include "tmpl-expr-parser-private.h"
 # include "tmpl-expr-parser.h"
+
+# define YYSTYPE TMPL_EXPR_PARSER_STYPE
 
 #pragma GCC diagnostic ignored "-Wswitch-default"
 #pragma GCC diagnostic ignored "-Wunused-function"
@@ -66,8 +65,8 @@ TmplExprParser *parser = yyextra;
 "<=" { yylval->cmp = TMPL_EXPR_LTE; return CMP; }
 
  /* boolean ops */
-"||" { yylval->boolcmp = TMPL_EXPR_OR; return BOOLCMP; }
-"&&" { yylval->boolcmp = TMPL_EXPR_AND; return BOOLCMP; }
+"||" { yylval->boolcmp = TMPL_EXPR_OR; return OR; }
+"&&" { yylval->boolcmp = TMPL_EXPR_AND; return AND; }
 
  /* keywords */
 "if"       { return IF; }
